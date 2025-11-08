@@ -12,7 +12,7 @@ from datetime import datetime
 import secrets
 
 # Thêm src vào path
-sys.path.insert(0, str(Path(__file__).parent / 'src'))
+# sys.path.insert(0, str(Path(__file__).parent / 'src'))
 
 from src import KeyManager, DSASignature
 from src.utils import format_hex
