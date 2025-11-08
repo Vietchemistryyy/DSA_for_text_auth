@@ -64,12 +64,12 @@ def menu_key_management(key_manager):
         choice = input("\nChọn chức năng: ").strip()
 
         if choice == '1':
-            print("\n🔑 Đang tạo cặp khóa mới...")
+            print("\n Đang tạo cặp khóa mới...")
             key_manager.generate_keys()
 
         elif choice == '2':
             if not key_manager.has_private_key():
-                print("❌ Chưa có private key!")
+                print(" Chưa có private key!")
                 continue
             filepath = input("Nhập đường dẫn lưu (mặc định: keys/private_key.json): ").strip()
             if not filepath:
@@ -78,7 +78,7 @@ def menu_key_management(key_manager):
 
         elif choice == '3':
             if not key_manager.has_public_key():
-                print("❌ Chưa có public key!")
+                print(" Chưa có public key!")
                 continue
             filepath = input("Nhập đường dẫn lưu (mặc định: keys/public_key.json): ").strip()
             if not filepath:
@@ -91,7 +91,7 @@ def menu_key_management(key_manager):
                 try:
                     key_manager.load_private_key(filepath)
                 except Exception as e:
-                    print(f"❌ Lỗi: {e}")
+                    print(f"Lỗi: {e}")
 
         elif choice == '5':
             filepath = input("Nhập đường dẫn file public key: ").strip()
@@ -99,7 +99,7 @@ def menu_key_management(key_manager):
                 try:
                     key_manager.load_public_key(filepath)
                 except Exception as e:
-                    print(f"❌ Lỗi: {e}")
+                    print(f"Lỗi: {e}")
 
         elif choice == '6':
             print("\n" + "=" * 60)
@@ -108,15 +108,15 @@ def menu_key_management(key_manager):
             if key_manager.has_private_key():
                 print_key_info("Private", key_manager.get_private_key())
             else:
-                print("❌ Chưa có Private Key")
+                print("Chưa có Private Key")
 
             if key_manager.has_public_key():
                 print_key_info("Public", key_manager.get_public_key())
             else:
-                print("❌ Chưa có Public Key")
+                print("Chưa có Public Key")
 
         elif choice == '7':
-            confirm = input("⚠️  Xác nhận xóa tất cả khóa? (y/n): ").strip().lower()
+            confirm = input("Xác nhận xóa tất cả khóa? (y/n): ").strip().lower()
             if confirm == 'y':
                 key_manager.clear_keys()
 
@@ -124,7 +124,7 @@ def menu_key_management(key_manager):
             break
 
         else:
-            print("❌ Lựa chọn không hợp lệ!")
+            print("Lựa chọn không hợp lệ!")
 
 
 def menu_sign_message(signature):
@@ -134,7 +134,7 @@ def menu_sign_message(signature):
     print("=" * 60)
 
     if not signature.key_manager.has_private_key():
-        print("❌ Chưa có private key! Hãy tạo hoặc tải khóa trước.")
+        print("Chưa có private key! Hãy tạo hoặc tải khóa trước.")
         return
 
     print("\nNhập văn bản cần ký (Enter 2 lần để kết thúc):")
@@ -149,12 +149,12 @@ def menu_sign_message(signature):
     message = "\n".join(lines)
 
     if not message.strip():
-        print("❌ Văn bản trống!")
+        print("Văn bản trống!")
         return
 
     try:
         sig = signature.sign_message(message)
-        print(f"\n💾 Lưu chữ ký?")
+        print(f"\nLưu chữ ký?")
         save = input("Nhập đường dẫn file (Enter để bỏ qua): ").strip()
 
         if save:
@@ -172,10 +172,10 @@ def menu_sign_message(signature):
             Path(save).parent.mkdir(parents=True, exist_ok=True)
             with open(save, 'w', encoding='utf-8') as f:
                 json.dump(sig_data, f, indent=2, ensure_ascii=False)
-            print(f"✅ Đã lưu chữ ký: {save}")
+            print(f"Đã lưu chữ ký: {save}")
 
     except Exception as e:
-        print(f"❌ Lỗi: {e}")
+        print(f"Lỗi: {e}")
 
 
 def menu_verify_message(signature):
@@ -218,7 +218,7 @@ def menu_verify_message(signature):
             signature.verify_message(message, sig, pub_key)
 
         except Exception as e:
-            print(f"❌ Lỗi: {e}")
+            print(f"Lỗi: {e}")
 
     elif choice == '2':
         filepath = input("Nhập đường dẫn file chữ ký: ").strip()
@@ -240,7 +240,7 @@ def menu_verify_message(signature):
             signature.verify_message(message, sig, pub_key)
 
         except Exception as e:
-            print(f"❌ Lỗi: {e}")
+            print(f"Lỗi: {e}")
 
 
 def menu_sign_file(signature):
@@ -250,13 +250,13 @@ def menu_sign_file(signature):
     print("=" * 60)
 
     if not signature.key_manager.has_private_key():
-        print("❌ Chưa có private key! Hãy tạo hoặc tải khóa trước.")
+        print("Chưa có private key! Hãy tạo hoặc tải khóa trước.")
         return
 
     filepath = input("\nNhập đường dẫn file cần ký: ").strip()
 
     if not Path(filepath).exists():
-        print(f"❌ File không tồn tại: {filepath}")
+        print(f"File không tồn tại: {filepath}")
         return
 
     output = input("Đường dẫn lưu chữ ký (Enter để dùng mặc định): ").strip()
@@ -266,7 +266,7 @@ def menu_sign_file(signature):
     try:
         signature.sign_file(filepath, output)
     except Exception as e:
-        print(f"❌ Lỗi: {e}")
+        print(f"Lỗi: {e}")
 
 
 def menu_verify_file(signature):
@@ -278,7 +278,7 @@ def menu_verify_file(signature):
     filepath = input("\nNhập đường dẫn file cần xác thực: ").strip()
 
     if not Path(filepath).exists():
-        print(f"❌ File không tồn tại: {filepath}")
+        print(f"File không tồn tại: {filepath}")
         return
 
     sig_file = input("Đường dẫn file chữ ký (Enter để dùng mặc định): ").strip()
@@ -286,13 +286,13 @@ def menu_verify_file(signature):
         sig_file = filepath + ".sig"
 
     if not Path(sig_file).exists():
-        print(f"❌ File chữ ký không tồn tại: {sig_file}")
+        print(f"File chữ ký không tồn tại: {sig_file}")
         return
 
     try:
         signature.verify_file(filepath, sig_file)
     except Exception as e:
-        print(f"❌ Lỗi: {e}")
+        print(f"Lỗi: {e}")
 
 
 def quick_demo():
@@ -301,34 +301,34 @@ def quick_demo():
     print("           DEMO NHANH")
     print("=" * 60)
 
-    print("\n🚀 Bắt đầu demo...")
+    print("\nBắt đầu demo...")
 
     # Tạo khóa
-    print("\n📍 Bước 1: Tạo cặp khóa")
+    print("\nBước 1: Tạo cặp khóa")
     km = KeyManager()
     km.generate_keys(verbose=False)
-    print("✅ Đã tạo cặp khóa")
+    print("Đã tạo cặp khóa")
 
     # Ký message
-    print("\n📍 Bước 2: Ký văn bản")
+    print("\nBước 2: Ký văn bản")
     sig = DSASignature(km)
     message = "Đây là một văn bản demo cho hệ thống chữ ký số DSA!"
-    print(f"📝 Message: {message}")
+    print(f"Message: {message}")
 
     signature = sig.sign_message(message)
-    print("✅ Đã ký văn bản")
+    print("Đã ký văn bản")
 
     # Xác thực
-    print("\n📍 Bước 3: Xác thực chữ ký")
+    print("\nBước 3: Xác thực chữ ký")
     is_valid = sig.verify_message(message, signature)
 
     # Thử với message sai
-    print("\n📍 Bước 4: Thử xác thực với văn bản bị thay đổi")
+    print("\nBước 4: Thử xác thực với văn bản bị thay đổi")
     tampered = message + " (đã sửa đổi)"
     is_valid_tampered = sig.verify_message(tampered, signature)
 
     print("\n" + "=" * 60)
-    print("✅ DEMO HOÀN TẤT!")
+    print("DEMO HOÀN TẤT!")
     print("=" * 60)
 
     input("\nNhấn Enter để tiếp tục...")
@@ -363,7 +363,7 @@ def main():
 
         elif choice == '6':
             if not signature.key_manager.has_private_key():
-                print("❌ Chưa có private key!")
+                print("Chưa có private key!")
                 continue
 
             message = input("\nNhập văn bản: ").strip()
@@ -373,7 +373,7 @@ def main():
                 try:
                     signature.create_signature_package(message, output)
                 except Exception as e:
-                    print(f"❌ Lỗi: {e}")
+                    print(f"Lỗi: {e}")
 
         elif choice == '7':
             filepath = input("\nNhập đường dẫn gói chữ ký: ").strip()
@@ -382,18 +382,18 @@ def main():
                     new_sig = DSASignature()
                     new_sig.verify_signature_package(filepath)
                 except Exception as e:
-                    print(f"❌ Lỗi: {e}")
+                    print(f"Lỗi: {e}")
 
         elif choice == '8':
             quick_demo()
 
         elif choice == '0':
-            print("\n👋 Cảm ơn bạn đã sử dụng DSA Digital Signature System!")
-            print("Hẹn gặp lại! 🔐\n")
+            print("\nCảm ơn bạn đã sử dụng DSA Digital Signature System!")
+            print("Hẹn gặp lại!\n")
             break
 
         else:
-            print("❌ Lựa chọn không hợp lệ!")
+            print("Lựa chọn không hợp lệ!")
 
         input("\nNhấn Enter để tiếp tục...")
 
@@ -402,9 +402,9 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n👋 Đã hủy chương trình. Tạm biệt!")
+        print("\n\nĐã hủy chương trình. Tạm biệt!")
     except Exception as e:
-        print(f"\n❌ Lỗi nghiêm trọng: {e}")
+        print(f"\nLỗi nghiêm trọng: {e}")
         import traceback
 
         traceback.print_exc()
