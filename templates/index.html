@@ -1,10 +1,878 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Digital Signature System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .key-status {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .key-status h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .key-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .key-item {
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .key-item.has-key {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .key-item.no-key {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+
+        .key-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .result-box h4 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            padding: 12px 30px;
+            background: #6c757d;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .file-name {
+            margin-left: 15px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .icon {
+            font-size: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .key-info {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .key-actions {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
 </head>
 <body>
-$END$
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔐 DSA Digital Signature System</h1>
+            <p>Hệ thống Chữ ký Số an toàn với thuật toán DSA</p>
+        </div>
+
+        <!-- Key Status -->
+        <div class="key-status" id="keyStatus">
+            <h3>📊 Trạng thái Khóa</h3>
+            <div class="key-info">
+                <div class="key-item no-key" id="privateKeyStatus">
+                    <strong>🔒 Private Key:</strong> <span id="privateKeyText">Chưa có</span>
+                </div>
+                <div class="key-item no-key" id="publicKeyStatus">
+                    <strong>🔓 Public Key:</strong> <span id="publicKeyText">Chưa có</span>
+                </div>
+            </div>
+            <div class="key-actions">
+                <button class="btn btn-primary" onclick="generateKeys()">
+                    <span class="icon">🔑</span> Tạo Khóa Mới
+                </button>
+                <button class="btn btn-success" onclick="exportKey('public')">
+                    <span class="icon">📤</span> Export Public Key
+                </button>
+                <button class="btn btn-secondary" onclick="document.getElementById('importKeyFile').click()">
+                    <span class="icon">📥</span> Import Key
+                </button>
+                <button class="btn btn-danger" onclick="clearKeys()">
+                    <span class="icon">🗑️</span> Xóa Khóa
+                </button>
+            </div>
+            <input type="file" id="importKeyFile" style="display:none" accept=".json" onchange="importKey(this)">
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('sign-message')">
+                ✍️ Ký Văn bản
+            </button>
+            <button class="tab-button" onclick="switchTab('verify-message')">
+                ✅ Xác thực Văn bản
+            </button>
+            <button class="tab-button" onclick="switchTab('sign-file')">
+                📄 Ký File
+            </button>
+            <button class="tab-button" onclick="switchTab('verify-file')">
+                🔍 Xác thực File
+            </button>
+        </div>
+
+        <!-- Tab: Sign Message -->
+        <div class="tab-content active" id="sign-message">
+            <h2>✍️ Ký Văn bản</h2>
+            <div class="alert" id="signMessageAlert"></div>
+
+            <div class="form-group">
+                <label>Văn bản cần ký:</label>
+                <textarea class="form-control" id="messageToSign" placeholder="Nhập văn bản cần ký..."></textarea>
+            </div>
+
+            <button class="btn btn-primary btn-block" onclick="signMessage()">
+                <span class="icon">✍️</span> Ký Văn bản
+            </button>
+
+            <div class="loading" id="signMessageLoading">
+                <div class="spinner"></div>
+                <p>Đang ký...</p>
+            </div>
+
+            <div id="signatureResult"></div>
+        </div>
+
+        <!-- Tab: Verify Message -->
+        <div class="tab-content" id="verify-message">
+            <h2>✅ Xác thực Chữ ký Văn bản</h2>
+            <div class="alert" id="verifyMessageAlert"></div>
+
+            <div class="form-group">
+                <label>Văn bản gốc:</label>
+                <textarea class="form-control" id="messageToVerify" placeholder="Nhập văn bản gốc..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Chữ ký (r):</label>
+                <input type="text" class="form-control" id="signatureR" placeholder="0x...">
+            </div>
+
+            <div class="form-group">
+                <label>Chữ ký (s):</label>
+                <input type="text" class="form-control" id="signatureS" placeholder="0x...">
+            </div>
+
+            <div class="form-group">
+                <label>Public Key:</label>
+                <input type="text" class="form-control" id="publicKeyForVerify" placeholder="0x...">
+            </div>
+
+            <button class="btn btn-success btn-block" onclick="verifyMessage()">
+                <span class="icon">✅</span> Xác thực
+            </button>
+
+            <div class="loading" id="verifyMessageLoading">
+                <div class="spinner"></div>
+                <p>Đang xác thực...</p>
+            </div>
+
+            <div id="verifyResult"></div>
+        </div>
+
+        <!-- Tab: Sign File -->
+        <div class="tab-content" id="sign-file">
+            <h2>📄 Ký File</h2>
+            <div class="alert" id="signFileAlert"></div>
+
+            <div class="form-group">
+                <label>Chọn file cần ký:</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileToSign" onchange="updateFileName('fileToSign', 'fileToSignName')">
+                    <label for="fileToSign" class="file-input-label">
+                        📁 Chọn File
+                    </label>
+                    <span class="file-name" id="fileToSignName">Chưa chọn file</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-block" onclick="signFile()">
+                <span class="icon">✍️</span> Ký File
+            </button>
+
+            <div class="loading" id="signFileLoading">
+                <div class="spinner"></div>
+                <p>Đang ký file...</p>
+            </div>
+
+            <div id="signFileResult"></div>
+        </div>
+
+        <!-- Tab: Verify File -->
+        <div class="tab-content" id="verify-file">
+            <h2>🔍 Xác thực File</h2>
+            <div class="alert" id="verifyFileAlert"></div>
+
+            <div class="form-group">
+                <label>File gốc:</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileToVerify" onchange="updateFileName('fileToVerify', 'fileToVerifyName')">
+                    <label for="fileToVerify" class="file-input-label">
+                        📁 Chọn File
+                    </label>
+                    <span class="file-name" id="fileToVerifyName">Chưa chọn file</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>File chữ ký (.sig):</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="signatureFile" accept=".sig,.json" onchange="updateFileName('signatureFile', 'signatureFileName')">
+                    <label for="signatureFile" class="file-input-label">
+                        📁 Chọn File Chữ ký
+                    </label>
+                    <span class="file-name" id="signatureFileName">Chưa chọn file</span>
+                </div>
+            </div>
+
+            <button class="btn btn-success btn-block" onclick="verifyFile()">
+                <span class="icon">🔍</span> Xác thực File
+            </button>
+
+            <div class="loading" id="verifyFileLoading">
+                <div class="spinner"></div>
+                <p>Đang xác thực...</p>
+            </div>
+
+            <div id="verifyFileResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // Switch tabs
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Update key status
+        async function updateKeyStatus() {
+            try {
+                const response = await fetch('/api/get-key-status');
+                const data = await response.json();
+
+                if (data.success) {
+                    const status = data.status;
+
+                    // Private key
+                    const privateKeyStatus = document.getElementById('privateKeyStatus');
+                    const privateKeyText = document.getElementById('privateKeyText');
+                    if (status.has_private) {
+                        privateKeyStatus.classList.remove('no-key');
+                        privateKeyStatus.classList.add('has-key');
+                        privateKeyText.textContent = status.private_key;
+                    } else {
+                        privateKeyStatus.classList.remove('has-key');
+                        privateKeyStatus.classList.add('no-key');
+                        privateKeyText.textContent = 'Chưa có';
+                    }
+
+                    // Public key
+                    const publicKeyStatus = document.getElementById('publicKeyStatus');
+                    const publicKeyText = document.getElementById('publicKeyText');
+                    if (status.has_public) {
+                        publicKeyStatus.classList.remove('no-key');
+                        publicKeyStatus.classList.add('has-key');
+                        publicKeyText.textContent = status.public_key;
+                    } else {
+                        publicKeyStatus.classList.remove('has-key');
+                        publicKeyStatus.classList.add('no-key');
+                        publicKeyText.textContent = 'Chưa có';
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating key status:', error);
+            }
+        }
+
+        // Generate keys
+        async function generateKeys() {
+            try {
+                const response = await fetch('/api/generate-keys', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('signMessageAlert', data.message, 'success');
+                    await updateKeyStatus();
+                } else {
+                    showAlert('signMessageAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('signMessageAlert', 'Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Sign message
+        async function signMessage() {
+            const message = document.getElementById('messageToSign').value;
+
+            if (!message.trim()) {
+                showAlert('signMessageAlert', 'Vui lòng nhập văn bản!', 'error');
+                return;
+            }
+
+            showLoading('signMessageLoading', true);
+
+            try {
+                const response = await fetch('/api/sign-message', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message})
+                });
+                const data = await response.json();
+
+                showLoading('signMessageLoading', false);
+
+                if (data.success) {
+                    showAlert('signMessageAlert', data.message, 'success');
+                    displaySignature(data.signature);
+                } else {
+                    showAlert('signMessageAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showLoading('signMessageLoading', false);
+                showAlert('signMessageAlert', 'Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Verify message
+        async function verifyMessage() {
+            const message = document.getElementById('messageToVerify').value;
+            const signatureR = document.getElementById('signatureR').value;
+            const signatureS = document.getElementById('signatureS').value;
+            const publicKey = document.getElementById('publicKeyForVerify').value;
+
+            if (!message || !signatureR || !signatureS || !publicKey) {
+                showAlert('verifyMessageAlert', 'Vui lòng nhập đầy đủ thông tin!', 'error');
+                return;
+            }
+
+            showLoading('verifyMessageLoading', true);
+
+            try {
+                const response = await fetch('/api/verify-message', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        message,
+                        signature_r: signatureR,
+                        signature_s: signatureS,
+                        public_key: publicKey
+                    })
+                });
+                const data = await response.json();
+
+                showLoading('verifyMessageLoading', false);
+
+                if (data.success) {
+                    const type = data.valid ? 'success' : 'error';
+                    showAlert('verifyMessageAlert', data.message, type);
+
+                    const resultDiv = document.getElementById('verifyResult');
+                    resultDiv.innerHTML = `
+                        <div class="result-box">
+                            <h4>${data.valid ? '✅ Kết quả: HỢP LỆ' : '❌ Kết quả: KHÔNG HỢP LỆ'}</h4>
+                            <p>${data.valid ? 'Văn bản chưa bị thay đổi và chữ ký đúng.' : 'Văn bản có thể đã bị thay đổi hoặc chữ ký sai.'}</p>
+                        </div>
+                    `;
+                } else {
+                    showAlert('verifyMessageAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showLoading('verifyMessageLoading', false);
+                showAlert('verifyMessageAlert', 'Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Sign file
+        async function signFile() {
+            const fileInput = document.getElementById('fileToSign');
+
+            if (!fileInput.files.length) {
+                showAlert('signFileAlert', 'Vui lòng chọn file!', 'error');
+                return;
+            }
+
+            showLoading('signFileLoading', true);
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/api/sign-file', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                showLoading('signFileLoading', false);
+
+                if (data.success) {
+                    showAlert('signFileAlert', data.message, 'success');
+
+                    const resultDiv = document.getElementById('signFileResult');
+                    resultDiv.innerHTML = `
+                        <div class="result-box">
+                            <h4>✅ Đã ký file thành công!</h4>
+                            <p><strong>File:</strong> ${data.filename}</p>
+                            <p><strong>Chữ ký:</strong> ${data.signature_file}</p>
+                        </div>
+                    `;
+                } else {
+                    showAlert('signFileAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showLoading('signFileLoading', false);
+                showAlert('signFileAlert', 'Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Verify file
+        async function verifyFile() {
+            const fileInput = document.getElementById('fileToVerify');
+            const sigInput = document.getElementById('signatureFile');
+
+            if (!fileInput.files.length || !sigInput.files.length) {
+                showAlert('verifyFileAlert', 'Vui lòng chọn cả file và chữ ký!', 'error');
+                return;
+            }
+
+            showLoading('verifyFileLoading', true);
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('signature', sigInput.files[0]);
+
+            try {
+                const response = await fetch('/api/verify-file', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                showLoading('verifyFileLoading', false);
+
+                if (data.success) {
+                    const type = data.valid ? 'success' : 'error';
+                    showAlert('verifyFileAlert', data.message, type);
+
+                    const resultDiv = document.getElementById('verifyFileResult');
+                    resultDiv.innerHTML = `
+                        <div class="result-box">
+                            <h4>${data.valid ? '✅ File HỢP LỆ' : '❌ File KHÔNG HỢP LỆ'}</h4>
+                            <p>${data.valid ? 'File chưa bị thay đổi.' : 'File có thể đã bị thay đổi.'}</p>
+                        </div>
+                    `;
+                } else {
+                    showAlert('verifyFileAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showLoading('verifyFileLoading', false);
+                showAlert('verifyFileAlert', 'Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Export key
+        async function exportKey(type) {
+            try {
+                const response = await fetch('/api/export-keys', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({type})
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    // Download file
+                    const blob = new Blob([data.data], {type: 'application/json'});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${type}_key.json`;
+                    a.click();
+
+                    showAlert('signMessageAlert', data.message, 'success');
+                } else {
+                    showAlert('signMessageAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('signMessageAlert', 'Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Import key
+        async function importKey(input) {
+            if (!input.files.length) return;
+
+            const formData = new FormData();
+            formData.append('file', input.files[0]);
+
+            try {
+                const response = await fetch('/api/import-key', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('signMessageAlert', data.message, 'success');
+                    await updateKeyStatus();
+                } else {
+                    showAlert('signMessageAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('signMessageAlert', 'Lỗi: ' + error.message, 'error');
+            }
+
+            input.value = '';
+        }
+
+        // Clear keys
+        async function clearKeys() {
+            if (!confirm('Bạn có chắc muốn xóa tất cả khóa?')) return;
+
+            try {
+                const response = await fetch('/api/clear-keys', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('signMessageAlert', data.message, 'success');
+                    await updateKeyStatus();
+                } else {
+                    showAlert('signMessageAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('signMessageAlert', 'Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Helper functions
+        function showAlert(elementId, message, type) {
+            const alert = document.getElementById(elementId);
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        function showLoading(elementId, show) {
+            const loading = document.getElementById(elementId);
+            if (show) {
+                loading.classList.add('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+
+        function displaySignature(signature) {
+            const resultDiv = document.getElementById('signatureResult');
+            resultDiv.innerHTML = `
+                <div class="result-box">
+                    <h4>✅ Chữ ký đã tạo:</h4>
+                    <p><strong>r:</strong> 0x${signature.r}</p>
+                    <p><strong>s:</strong> 0x${signature.s}</p>
+                    <button class="btn btn-secondary" onclick="copySignature('0x${signature.r}', '0x${signature.s}')">
+                        📋 Copy Chữ ký
+                    </button>
+                </div>
+            `;
+        }
+
+        function copySignature(r, s) {
+            const text = `r: ${r}\ns: ${s}`;
+            navigator.clipboard.writeText(text);
+            alert('Đã copy chữ ký!');
+        }
+
+        function updateFileName(inputId, displayId) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
+            if (input.files.length) {
+                display.textContent = input.files[0].name;
+            } else {
+                display.textContent = 'Chưa chọn file';
+            }
+        }
+
+        // Load key status on page load
+        updateKeyStatus();
+    </script>
 </body>
 </html>
