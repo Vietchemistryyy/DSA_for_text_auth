@@ -331,33 +331,33 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>🔐 DSA Digital Signature System</h1>
-            <p>Hệ thống Chữ ký Số an toàn với thuật toán DSA</p>
+            <h1>DSA Digital Signature System</h1>
+            <b>Hệ thống Chữ ký Số an toàn với thuật toán DSA</b>
         </div>
 
         <!-- Key Status -->
         <div class="key-status" id="keyStatus">
-            <h3>📊 Trạng thái Khóa</h3>
+            <h3> Trạng thái Khóa</h3>
             <div class="key-info">
                 <div class="key-item no-key" id="privateKeyStatus">
-                    <strong>🔒 Private Key:</strong> <span id="privateKeyText">Chưa có</span>
+                    <strong>Private Key:</strong> <span id="privateKeyText">Chưa có</span>
                 </div>
                 <div class="key-item no-key" id="publicKeyStatus">
-                    <strong>🔓 Public Key:</strong> <span id="publicKeyText">Chưa có</span>
+                    <strong>Public Key:</strong> <span id="publicKeyText">Chưa có</span>
                 </div>
             </div>
             <div class="key-actions">
                 <button class="btn btn-primary" onclick="generateKeys()">
-                    <span class="icon">🔑</span> Tạo Khóa Mới
+                    <span class="icon"></span> Tạo Khóa Mới
                 </button>
                 <button class="btn btn-success" onclick="exportKey('public')">
-                    <span class="icon">📤</span> Export Public Key
+                    <span class="icon"></span> Export Public Key
                 </button>
                 <button class="btn btn-secondary" onclick="document.getElementById('importKeyFile').click()">
-                    <span class="icon">📥</span> Import Key
+                    <span class="icon"></span> Import Key
                 </button>
                 <button class="btn btn-danger" onclick="clearKeys()">
-                    <span class="icon">🗑️</span> Xóa Khóa
+                    <span class="icon">️</span> Xóa Khóa
                 </button>
             </div>
             <input type="file" id="importKeyFile" style="display:none" accept=".json" onchange="importKey(this)">
@@ -366,22 +366,22 @@
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('sign-message')">
-                ✍️ Ký Văn bản
+                Ký Văn bản
             </button>
             <button class="tab-button" onclick="switchTab('verify-message')">
-                ✅ Xác thực Văn bản
+                Xác thực Văn bản
             </button>
             <button class="tab-button" onclick="switchTab('sign-file')">
-                📄 Ký File
+                Ký File
             </button>
             <button class="tab-button" onclick="switchTab('verify-file')">
-                🔍 Xác thực File
+                Xác thực File
             </button>
         </div>
 
         <!-- Tab: Sign Message -->
         <div class="tab-content active" id="sign-message">
-            <h2>✍️ Ký Văn bản</h2>
+            <h2>Ký Văn bản</h2>
             <div class="alert" id="signMessageAlert"></div>
 
             <div class="form-group">
@@ -390,7 +390,7 @@
             </div>
 
             <button class="btn btn-primary btn-block" onclick="signMessage()">
-                <span class="icon">✍️</span> Ký Văn bản
+                <span class="icon"></span> Ký Văn bản
             </button>
 
             <div class="loading" id="signMessageLoading">
@@ -403,7 +403,7 @@
 
         <!-- Tab: Verify Message -->
         <div class="tab-content" id="verify-message">
-            <h2>✅ Xác thực Chữ ký Văn bản</h2>
+            <h2> Xác thực Chữ ký Văn bản</h2>
             <div class="alert" id="verifyMessageAlert"></div>
 
             <div class="form-group">
@@ -427,7 +427,7 @@
             </div>
 
             <button class="btn btn-success btn-block" onclick="verifyMessage()">
-                <span class="icon">✅</span> Xác thực
+                <span class="icon"></span> Xác thực
             </button>
 
             <div class="loading" id="verifyMessageLoading">
@@ -440,7 +440,7 @@
 
         <!-- Tab: Sign File -->
         <div class="tab-content" id="sign-file">
-            <h2>📄 Ký File</h2>
+            <h2>Ký File</h2>
             <div class="alert" id="signFileAlert"></div>
 
             <div class="form-group">
@@ -448,14 +448,14 @@
                 <div class="file-input-wrapper">
                     <input type="file" id="fileToSign" onchange="updateFileName('fileToSign', 'fileToSignName')">
                     <label for="fileToSign" class="file-input-label">
-                        📁 Chọn File
+                        Chọn File
                     </label>
                     <span class="file-name" id="fileToSignName">Chưa chọn file</span>
                 </div>
             </div>
 
             <button class="btn btn-primary btn-block" onclick="signFile()">
-                <span class="icon">✍️</span> Ký File
+                <span class="icon"></span> Ký File
             </button>
 
             <div class="loading" id="signFileLoading">
@@ -468,7 +468,7 @@
 
         <!-- Tab: Verify File -->
         <div class="tab-content" id="verify-file">
-            <h2>🔍 Xác thực File</h2>
+            <h2>Xác thực File</h2>
             <div class="alert" id="verifyFileAlert"></div>
 
             <div class="form-group">
@@ -476,7 +476,7 @@
                 <div class="file-input-wrapper">
                     <input type="file" id="fileToVerify" onchange="updateFileName('fileToVerify', 'fileToVerifyName')">
                     <label for="fileToVerify" class="file-input-label">
-                        📁 Chọn File
+                        Chọn File
                     </label>
                     <span class="file-name" id="fileToVerifyName">Chưa chọn file</span>
                 </div>
@@ -487,7 +487,7 @@
                 <div class="file-input-wrapper">
                     <input type="file" id="signatureFile" accept=".sig,.json" onchange="updateFileName('signatureFile', 'signatureFileName')">
                     <label for="signatureFile" class="file-input-label">
-                        📁 Chọn File Chữ ký
+                        Chọn File Chữ ký
                     </label>
                     <span class="file-name" id="signatureFileName">Chưa chọn file</span>
                 </div>
@@ -644,7 +644,7 @@
                     const resultDiv = document.getElementById('verifyResult');
                     resultDiv.innerHTML = `
                         <div class="result-box">
-                            <h4>${data.valid ? '✅ Kết quả: HỢP LỆ' : '❌ Kết quả: KHÔNG HỢP LỆ'}</h4>
+                            <h4>${data.valid ? ' Kết quả: HỢP LỆ' : ' Kết quả: KHÔNG HỢP LỆ'}</h4>
                             <p>${data.valid ? 'Văn bản chưa bị thay đổi và chữ ký đúng.' : 'Văn bản có thể đã bị thay đổi hoặc chữ ký sai.'}</p>
                         </div>
                     `;
@@ -686,7 +686,7 @@
                     const resultDiv = document.getElementById('signFileResult');
                     resultDiv.innerHTML = `
                         <div class="result-box">
-                            <h4>✅ Đã ký file thành công!</h4>
+                            <h4> Đã ký file thành công!</h4>
                             <p><strong>File:</strong> ${data.filename}</p>
                             <p><strong>Chữ ký:</strong> ${data.signature_file}</p>
                         </div>
@@ -732,7 +732,7 @@
                     const resultDiv = document.getElementById('verifyFileResult');
                     resultDiv.innerHTML = `
                         <div class="result-box">
-                            <h4>${data.valid ? '✅ File HỢP LỆ' : '❌ File KHÔNG HỢP LỆ'}</h4>
+                            <h4>${data.valid ? ' File HỢP LỆ' : ' File KHÔNG HỢP LỆ'}</h4>
                             <p>${data.valid ? 'File chưa bị thay đổi.' : 'File có thể đã bị thay đổi.'}</p>
                         </div>
                     `;
@@ -845,11 +845,11 @@
             const resultDiv = document.getElementById('signatureResult');
             resultDiv.innerHTML = `
                 <div class="result-box">
-                    <h4>✅ Chữ ký đã tạo:</h4>
+                    <h4>Chữ ký đã tạo:</h4>
                     <p><strong>r:</strong> 0x${signature.r}</p>
                     <p><strong>s:</strong> 0x${signature.s}</p>
                     <button class="btn btn-secondary" onclick="copySignature('0x${signature.r}', '0x${signature.s}')">
-                        📋 Copy Chữ ký
+                        Copy Chữ ký
                     </button>
                 </div>
             `;
