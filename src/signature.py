@@ -48,7 +48,7 @@ class DSASignature:
         private_key = self.key_manager.get_private_key()
         signature = self.dsa.sign(message_hash, private_key)
 
-        print(f"✅ Đã ký văn bản thành công!")
+        print(f"Đã ký văn bản thành công!")
         print(f"   Message: {message[:50]}{'...' if len(message) > 50 else ''}")
         print(f"   Signature (r): {format_hex(signature[0])}")
         print(f"   Signature (s): {format_hex(signature[1])}")
@@ -84,10 +84,10 @@ class DSASignature:
         is_valid = self.dsa.verify(message_hash, signature, public_key)
 
         if is_valid:
-            print(f"✅ Chữ ký HỢP LỆ!")
+            print(f"Chữ ký HỢP LỆ!")
             print(f"   Văn bản chưa bị thay đổi và chữ ký đúng.")
         else:
-            print(f"❌ Chữ ký KHÔNG HỢP LỆ!")
+            print(f"Chữ ký KHÔNG HỢP LỆ!")
             print(f"   Văn bản có thể đã bị thay đổi hoặc chữ ký sai.")
 
         return is_valid
@@ -130,7 +130,7 @@ class DSASignature:
         with open(output_filepath, 'w') as f:
             json.dump(signature_data, f, indent=2)
 
-        print(f"💾 Đã lưu chữ ký vào: {output_filepath}")
+        print(f"Đã lưu chữ ký vào: {output_filepath}")
 
         return signature
 
@@ -201,7 +201,7 @@ class DSASignature:
         with open(output_filepath, 'w') as f:
             json.dump(package, f, indent=2, ensure_ascii=False)
 
-        print(f"📦 Đã tạo gói chữ ký hoàn chỉnh: {output_filepath}")
+        print(f"Đã tạo gói chữ ký hoàn chỉnh: {output_filepath}")
 
     def verify_signature_package(self, package_filepath: str) -> bool:
         """
@@ -235,7 +235,7 @@ class DSASignature:
             self.dsa = dsa_temp
 
         # Xác thực
-        print(f"\n📦 Đang xác thực gói chữ ký từ: {package_filepath}")
+        print(f"\nĐang xác thực gói chữ ký từ: {package_filepath}")
         return self.verify_message(message, signature, public_key, hash_algorithm)
 
     def batch_sign_files(self, filepaths: list, output_dir: str = 'signatures',
@@ -261,7 +261,7 @@ class DSASignature:
                 results.append((filepath, 'FAILED', str(e)))
 
         # In báo cáo
-        print(f"\n📊 Báo cáo ký hàng loạt:")
+        print(f"\nBáo cáo ký hàng loạt:")
         print(f"{'=' * 60}")
         for filepath, status, info in results:
             print(f"{Path(filepath).name}: {status}")
