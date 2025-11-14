@@ -38,7 +38,7 @@ class KeyManager:
         self.private_key, self.public_key = self.dsa.generate_key_pair()
 
         if verbose:
-            print("\n🔐 Đã tạo cặp khóa DSA thành công!")
+            print("\nĐã tạo cặp khóa DSA thành công!")
             print_key_info("Private", self.private_key)
             print_key_info("Public", self.public_key)
 
@@ -86,7 +86,7 @@ class KeyManager:
 
         # TODO: Thêm mã hóa với password nếu cần
         if password:
-            print("⚠️  Cảnh báo: Mã hóa với password chưa được triển khai")
+            print("⚠Cảnh báo: Mã hóa với password chưa được triển khai")
 
         Path(filepath).parent.mkdir(parents=True, exist_ok=True)
 
@@ -95,7 +95,7 @@ class KeyManager:
 
         # Đặt quyền chỉ đọc cho owner
         os.chmod(filepath, 0o600)
-        print(f"✅ Đã lưu private key vào: {filepath}")
+        print(f"Đã lưu private key vào: {filepath}")
 
     def save_public_key(self, filepath: str):
         """
@@ -125,7 +125,7 @@ class KeyManager:
         with open(filepath, 'w') as f:
             json.dump(key_data, f, indent=2)
 
-        print(f"✅ Đã lưu public key vào: {filepath}")
+        print(f"Đã lưu public key vào: {filepath}")
 
     def load_private_key(self, filepath: str, password: str = None) -> int:
         """
@@ -153,7 +153,7 @@ class KeyManager:
 
         # TODO: Giải mã với password nếu cần
         if password:
-            print("⚠️  Cảnh báo: Giải mã với password chưa được triển khai")
+            print("Cảnh báo: Giải mã với password chưa được triển khai")
 
         self.private_key = int(key_data['key'], 16)
 
@@ -166,7 +166,7 @@ class KeyManager:
                 g=int(params['g'], 16)
             )
 
-        print(f"✅ Đã tải private key từ: {filepath}")
+        print(f"Đã tải private key từ: {filepath}")
         return self.private_key
 
     def load_public_key(self, filepath: str) -> int:
@@ -203,7 +203,7 @@ class KeyManager:
                 g=int(params['g'], 16)
             )
 
-        print(f"✅ Đã tải public key từ: {filepath}")
+        print(f"Đã tải public key từ: {filepath}")
         return self.public_key
 
     def export_keys(self) -> dict:
@@ -239,7 +239,7 @@ class KeyManager:
         """Xóa tất cả khóa trong bộ nhớ"""
         self.private_key = None
         self.public_key = None
-        print("🗑️  Đã xóa tất cả khóa khỏi bộ nhớ")
+        print("Đã xóa tất cả khóa khỏi bộ nhớ")
 
     def __str__(self) -> str:
         """String representation"""
