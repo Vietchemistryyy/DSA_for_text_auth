@@ -23,11 +23,9 @@ CORS(app)
 
 # Thư mục lưu trữ
 UPLOAD_FOLDER = Path('uploads')
-KEYS_FOLDER = Path('web_keys')
 SIGNATURES_FOLDER = Path('web_signatures')
 
 UPLOAD_FOLDER.mkdir(exist_ok=True)
-KEYS_FOLDER.mkdir(exist_ok=True)
 SIGNATURES_FOLDER.mkdir(exist_ok=True)
 
 # Dictionary lưu key managers theo session
@@ -197,11 +195,16 @@ def sign_file():
         sig_file = SIGNATURES_FOLDER / f"{filename}.sig"
         signature = sig.sign_file(str(filepath), str(sig_file))
 
+        # Đọc nội dung file signature để trả về
+        with open(sig_file, 'r') as f:
+            sig_content = f.read()
+
         return jsonify({
             'success': True,
             'message': 'Đã ký file thành công!',
             'filename': filename,
-            'signature_file': sig_file.name
+            'signature_file': sig_file.name,
+            'signature_content': sig_content  # Thêm nội dung để download
         })
     except Exception as e:
         return jsonify({
@@ -213,6 +216,9 @@ def sign_file():
 @app.route('/api/verify-file', methods=['POST'])
 def verify_file():
     """API xác thực file"""
+    temp_file = None
+    temp_sig = None
+    
     try:
         if 'file' not in request.files or 'signature' not in request.files:
             return jsonify({
@@ -231,29 +237,47 @@ def verify_file():
         file.save(temp_file)
         sig_file.save(temp_sig)
 
+        # Đọc public key từ file signature
+        with open(temp_sig, 'r') as f:
+            sig_data = json.load(f)
+        
+        public_key_hex = sig_data.get('public_key')
+        public_key_info = None
+        
+        if public_key_hex:
+            public_key_info = f"0x{public_key_hex[:16]}..."
+        
         # Xác thực
         sig = DSASignature()
         is_valid = sig.verify_file(str(temp_file), str(temp_sig))
 
-        # Xóa file tạm
-        temp_file.unlink()
-        temp_sig.unlink()
-
         return jsonify({
             'success': True,
             'valid': is_valid,
-            'message': 'File hợp lệ!' if is_valid else 'File không hợp lệ!'
+            'message': 'File hợp lệ!' if is_valid else 'File không hợp lệ!',
+            'public_key_used': public_key_info
         })
+        
     except Exception as e:
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': f'Lỗi xác thực: {str(e)}'
         }), 500
+        
+    finally:
+        # Đảm bảo luôn xóa file tạm dù có lỗi hay không
+        try:
+            if temp_file and temp_file.exists():
+                temp_file.unlink()
+            if temp_sig and temp_sig.exists():
+                temp_sig.unlink()
+        except Exception as cleanup_error:
+            print(f"Lỗi khi xóa file tạm: {cleanup_error}")
 
 
 @app.route('/api/export-keys', methods=['POST'])
 def export_keys():
-    """API export khóa"""
+    """API export khóa - chỉ trả về data để download, không lưu vào server"""
     try:
         data = request.json
         key_type = data.get('type', 'public')  # 'public' or 'private'
@@ -287,15 +311,12 @@ def export_keys():
             }
             filename = 'public_key.json'
 
-        # Lưu file
-        key_file = KEYS_FOLDER / filename
-        with open(key_file, 'w') as f:
-            json.dump(key_data, f, indent=2)
-
+        # Chỉ trả về data để frontend download, không lưu vào server
         return jsonify({
             'success': True,
             'message': f'Đã export {key_type} key!',
-            'data': json.dumps(key_data, indent=2)
+            'data': json.dumps(key_data, indent=2),
+            'filename': filename
         })
     except Exception as e:
         return jsonify({
@@ -318,15 +339,21 @@ def import_key():
         key_data = json.load(file)
 
         km = get_key_manager()
+        key_preview = None
 
         if key_data.get('type') == 'DSA_PRIVATE_KEY':
             private_key = int(key_data['key'], 16)
             km.set_keys(private_key=private_key)
+            # Tính public key từ private key
+            public_key = pow(km.dsa.g, private_key, km.dsa.p)
+            km.set_keys(public_key=public_key)
             message = 'Đã import private key thành công!'
+            key_preview = format_hex(private_key)[:20] + '...'
         elif key_data.get('type') == 'DSA_PUBLIC_KEY':
             public_key = int(key_data['key'], 16)
             km.set_keys(public_key=public_key)
             message = 'Đã import public key thành công!'
+            key_preview = format_hex(public_key)[:20] + '...'
         else:
             return jsonify({
                 'success': False,
@@ -335,7 +362,8 @@ def import_key():
 
         return jsonify({
             'success': True,
-            'message': message
+            'message': message,
+            'key_preview': key_preview
         })
     except Exception as e:
         return jsonify({
