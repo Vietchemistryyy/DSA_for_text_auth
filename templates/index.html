@@ -856,13 +856,18 @@
                     showAlert('signFileAlert', data.message, 'success');
 
                     const resultDiv = document.getElementById('signFileResult');
+                    
+                    // Store signature content globally to avoid escaping issues
+                    window.currentSignatureContent = data.signature_content;
+                    window.currentSignatureFilename = data.signature_file;
+                    
                     resultDiv.innerHTML = `
                         <div class="result-box" style="border-color: #28a745;">
                             <h4 style="color: #28a745;">Đã ký file thành công!</h4>
                             <p><strong>File gốc:</strong> ${data.filename}</p>
                             <p><strong>File chữ ký:</strong> ${data.signature_file}</p>
                             <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
-                            <button class="btn btn-success" style="margin-top: 15px;" onclick="downloadSignature('${data.signature_content}', '${data.signature_file}')">
+                            <button class="btn btn-success" style="margin-top: 15px;" onclick="downloadCurrentSignature()">
                                 Download File Chữ Ký (.sig)
                             </button>
                             <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian ký: ${new Date().toLocaleString('vi-VN')}</em></p>
@@ -1094,6 +1099,14 @@
             a.download = filename;
             a.click();
             URL.revokeObjectURL(url);
+        }
+        
+        function downloadCurrentSignature() {
+            if (window.currentSignatureContent && window.currentSignatureFilename) {
+                downloadSignature(window.currentSignatureContent, window.currentSignatureFilename);
+            } else {
+                alert('Không tìm thấy file chữ ký!');
+            }
         }
 
         function updateFileName(inputId, displayId) {
