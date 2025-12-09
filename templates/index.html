@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -24,36 +24,87 @@
         }
 
         .header {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 40px 30px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .header h1 {
-            color: #667eea;
-            font-size: 2.5em;
+            color: white;
+            font-size: 2.8em;
             margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
         }
 
-        .header p {
-            color: #666;
-            font-size: 1.1em;
+        .header h3 {
+            color: rgba(255,255,255,0.95);
+            font-size: 1.2em;
+            font-weight: 400;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .footer p {
+            margin: 0;
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .footer strong {
+            color: #ffd700;
+            font-weight: 700;
+            font-size: 20px;
         }
 
         .key-status {
             background: white;
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 25px;
             margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 2px solid rgba(102, 126, 234, 0.1);
         }
 
         .key-status h3 {
             color: #667eea;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
         }
 
         .key-info {
@@ -63,9 +114,18 @@
         }
 
         .key-item {
-            padding: 15px;
+            padding: 18px;
             border-radius: 10px;
             background: #f8f9fa;
+            font-size: 16px;
+        }
+        
+        .key-item strong {
+            font-size: 17px;
+        }
+        
+        .key-item > div {
+            font-size: 14px !important;
         }
 
         .key-item.has-key {
@@ -80,8 +140,14 @@
 
         .key-actions {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             margin-top: 15px;
+        }
+        
+        .key-actions .btn {
+            flex: 1 1 auto;
+            min-width: 180px;
         }
 
         .tabs {
@@ -92,12 +158,12 @@
 
         .tab-button {
             flex: 1;
-            padding: 15px;
+            padding: 16px;
             background: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
             transition: all 0.3s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -111,14 +177,23 @@
         .tab-button.active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .tab-content {
             display: none;
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 2px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .tab-content h2 {
+            font-size: 26px;
+            margin-bottom: 25px;
+            color: #667eea;
+            font-weight: 600;
         }
 
         .tab-content.active {
@@ -140,14 +215,15 @@
             margin-bottom: 8px;
             color: #333;
             font-weight: 600;
+            font-size: 16px;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 16px;
             transition: border-color 0.3s;
         }
 
@@ -159,13 +235,14 @@
         textarea.form-control {
             min-height: 120px;
             resize: vertical;
+            line-height: 1.5;
         }
 
         .btn {
-            padding: 12px 30px;
+            padding: 14px 32px;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -174,29 +251,39 @@
             gap: 8px;
         }
 
-        .btn:hover {
+        .btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .btn-success {
-            background: #28a745;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
         }
 
         .btn-danger {
-            background: #dc3545;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
         }
 
         .btn-secondary {
-            background: #6c757d;
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
         }
 
         .btn-block {
@@ -204,10 +291,11 @@
         }
 
         .alert {
-            padding: 15px 20px;
+            padding: 16px 22px;
             border-radius: 8px;
             margin-bottom: 20px;
             display: none;
+            font-size: 16px;
         }
 
         .alert.show {
@@ -233,18 +321,27 @@
         }
 
         .result-box {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
             margin-top: 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
+            font-size: 16px;
             word-break: break-all;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
 
         .result-box h4 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: #667eea;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .result-box p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
         }
 
         .file-input-wrapper {
@@ -277,6 +374,7 @@
             margin-left: 15px;
             color: #666;
             font-style: italic;
+            font-size: 16px;
         }
 
         .loading {
@@ -304,9 +402,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        .icon {
-            font-size: 20px;
-        }
+
 
         @media (max-width: 768px) {
             .key-info {
@@ -322,7 +418,19 @@
             }
 
             .header h1 {
-                font-size: 1.8em;
+                font-size: 2em;
+            }
+            
+            .header h3 {
+                font-size: 1em;
+            }
+            
+            .footer p {
+                font-size: 14px;
+            }
+            
+            .footer strong {
+                font-size: 16px;
             }
         }
     </style>
@@ -341,23 +449,31 @@
             <div class="key-info">
                 <div class="key-item no-key" id="privateKeyStatus">
                     <strong>Private Key:</strong> <span id="privateKeyText">Chưa có</span>
+                    <div style="font-size: 12px; color: #666; margin-top: 5px;">Dùng để ký văn bản/file</div>
                 </div>
                 <div class="key-item no-key" id="publicKeyStatus">
                     <strong>Public Key:</strong> <span id="publicKeyText">Chưa có</span>
+                    <div style="font-size: 12px; color: #666; margin-top: 5px;">Dùng để xác thực chữ ký</div>
                 </div>
             </div>
+            <div id="keyRoleWarning" style="display: none; margin-top: 15px; padding: 12px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; color: #856404;">
+                <strong>Lưu ý:</strong> Bạn chỉ có Public Key. Bạn có thể xác thực chữ ký nhưng không thể ký văn bản/file.
+            </div>
             <div class="key-actions">
-                <button class="btn btn-primary" onclick="generateKeys()">
-                    <span class="icon"></span> Tạo Khóa Mới
+                <button class="btn btn-primary" onclick="generateKeys()" title="Tạo cặp khóa mới (Private + Public)">
+                    Tạo Khóa Mới
                 </button>
-                <button class="btn btn-success" onclick="exportKey('public')">
-                    <span class="icon"></span> Export Public Key
+                <button class="btn btn-success" id="exportPublicBtn" onclick="exportKey('public')" disabled title="Chia sẻ cho người khác để họ xác thực chữ ký của bạn">
+                    Export Public Key
                 </button>
-                <button class="btn btn-secondary" onclick="document.getElementById('importKeyFile').click()">
-                    <span class="icon"></span> Import Key
+                <button class="btn btn-success" id="exportPrivateBtn" onclick="exportKey('private')" style="background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%); box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);" disabled title="Sao lưu để ký trên thiết bị khác (BẢO MẬT!)">
+                    Export Private Key
                 </button>
-                <button class="btn btn-danger" onclick="clearKeys()">
-                    <span class="icon">️</span> Xóa Khóa
+                <button class="btn btn-secondary" onclick="document.getElementById('importKeyFile').click()" title="Import Public Key (xác thực) hoặc Private Key (ký)">
+                    Import Key
+                </button>
+                <button class="btn btn-danger" id="clearKeysBtn" onclick="clearKeys()" disabled title="Xóa tất cả khóa khỏi session">
+                    Xóa Khóa
                 </button>
             </div>
             <input type="file" id="importKeyFile" style="display:none" accept=".json" onchange="importKey(this)">
@@ -390,7 +506,7 @@
             </div>
 
             <button class="btn btn-primary btn-block" onclick="signMessage()">
-                <span class="icon"></span> Ký Văn bản
+                Ký Văn bản
             </button>
 
             <div class="loading" id="signMessageLoading">
@@ -427,7 +543,7 @@
             </div>
 
             <button class="btn btn-success btn-block" onclick="verifyMessage()">
-                <span class="icon"></span> Xác thực
+                Xác thực
             </button>
 
             <div class="loading" id="verifyMessageLoading">
@@ -455,7 +571,7 @@
             </div>
 
             <button class="btn btn-primary btn-block" onclick="signFile()">
-                <span class="icon"></span> Ký File
+                Ký File
             </button>
 
             <div class="loading" id="signFileLoading">
@@ -494,7 +610,7 @@
             </div>
 
             <button class="btn btn-success btn-block" onclick="verifyFile()">
-                <span class="icon">🔍</span> Xác thực File
+                Xác thực File
             </button>
 
             <div class="loading" id="verifyFileLoading">
@@ -504,6 +620,11 @@
 
             <div id="verifyFileResult"></div>
         </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2025 DSA Digital Signature System | <strong>Nhóm 4</strong> - An ninh mạng</p>
     </div>
 
     <script>
@@ -550,9 +671,48 @@
                         publicKeyStatus.classList.add('no-key');
                         publicKeyText.textContent = 'Chưa có';
                     }
+                    
+                    // Update button states
+                    updateButtonStates(status);
                 }
             } catch (error) {
                 console.error('Error updating key status:', error);
+            }
+        }
+        
+        // Update button states based on key availability
+        function updateButtonStates(status) {
+            const exportPublicBtn = document.getElementById('exportPublicBtn');
+            const exportPrivateBtn = document.getElementById('exportPrivateBtn');
+            const clearKeysBtn = document.getElementById('clearKeysBtn');
+            const keyRoleWarning = document.getElementById('keyRoleWarning');
+            
+            // Enable/disable export public key button
+            if (status.has_public) {
+                exportPublicBtn.disabled = false;
+            } else {
+                exportPublicBtn.disabled = true;
+            }
+            
+            // Enable/disable export private key button
+            if (status.has_private) {
+                exportPrivateBtn.disabled = false;
+            } else {
+                exportPrivateBtn.disabled = true;
+            }
+            
+            // Enable/disable clear keys button (if has any key)
+            if (status.has_private || status.has_public) {
+                clearKeysBtn.disabled = false;
+            } else {
+                clearKeysBtn.disabled = true;
+            }
+            
+            // Show warning if only has public key (can't sign)
+            if (status.has_public && !status.has_private) {
+                keyRoleWarning.style.display = 'block';
+            } else {
+                keyRoleWarning.style.display = 'none';
             }
         }
 
@@ -642,10 +802,15 @@
                     showAlert('verifyMessageAlert', data.message, type);
 
                     const resultDiv = document.getElementById('verifyResult');
+                    const statusColor = data.valid ? '#28a745' : '#dc3545';
+                    
                     resultDiv.innerHTML = `
-                        <div class="result-box">
-                            <h4>${data.valid ? ' Kết quả: HỢP LỆ' : ' Kết quả: KHÔNG HỢP LỆ'}</h4>
-                            <p>${data.valid ? 'Văn bản chưa bị thay đổi và chữ ký đúng.' : 'Văn bản có thể đã bị thay đổi hoặc chữ ký sai.'}</p>
+                        <div class="result-box" style="border-color: ${statusColor};">
+                            <h4 style="color: ${statusColor};">Kết quả: ${data.valid ? 'HỢP LỆ' : 'KHÔNG HỢP LỆ'}</h4>
+                            <p style="margin-bottom: 10px;">${data.valid ? 'Văn bản chưa bị thay đổi và chữ ký đúng.' : 'Văn bản có thể đã bị thay đổi hoặc chữ ký sai.'}</p>
+                            <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
+                            <p><strong>Public Key đã sử dụng:</strong> ${publicKey.substring(0, 20)}...</p>
+                            <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian xác thực: ${new Date().toLocaleString('vi-VN')}</em></p>
                         </div>
                     `;
                 } else {
@@ -663,6 +828,13 @@
 
             if (!fileInput.files.length) {
                 showAlert('signFileAlert', 'Vui lòng chọn file!', 'error');
+                return;
+            }
+
+            // Kiểm tra kích thước file (giới hạn 10MB)
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (fileInput.files[0].size > maxSize) {
+                showAlert('signFileAlert', 'File quá lớn! Giới hạn 10MB', 'error');
                 return;
             }
 
@@ -685,10 +857,16 @@
 
                     const resultDiv = document.getElementById('signFileResult');
                     resultDiv.innerHTML = `
-                        <div class="result-box">
-                            <h4> Đã ký file thành công!</h4>
-                            <p><strong>File:</strong> ${data.filename}</p>
-                            <p><strong>Chữ ký:</strong> ${data.signature_file}</p>
+                        <div class="result-box" style="border-color: #28a745;">
+                            <h4 style="color: #28a745;">Đã ký file thành công!</h4>
+                            <p><strong>File gốc:</strong> ${data.filename}</p>
+                            <p><strong>File chữ ký:</strong> ${data.signature_file}</p>
+                            <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
+                            <button class="btn btn-success" style="margin-top: 15px;" onclick="downloadSignature('${data.signature_content}', '${data.signature_file}')">
+                                Download File Chữ Ký (.sig)
+                            </button>
+                            <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian ký: ${new Date().toLocaleString('vi-VN')}</em></p>
+                            <p style="margin-top: 5px; font-size: 14px; color: #28a745;"><strong>Lưu ý:</strong> Download file chữ ký để có thể xác thực sau này</p>
                         </div>
                     `;
                 } else {
@@ -707,6 +885,20 @@
 
             if (!fileInput.files.length || !sigInput.files.length) {
                 showAlert('verifyFileAlert', 'Vui lòng chọn cả file và chữ ký!', 'error');
+                return;
+            }
+
+            // Kiểm tra kích thước file (giới hạn 10MB)
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (fileInput.files[0].size > maxSize) {
+                showAlert('verifyFileAlert', 'File quá lớn! Giới hạn 10MB', 'error');
+                return;
+            }
+
+            // Kiểm tra file signature phải là .sig hoặc .json
+            const sigFileName = sigInput.files[0].name;
+            if (!sigFileName.endsWith('.sig') && !sigFileName.endsWith('.json')) {
+                showAlert('verifyFileAlert', 'File chữ ký phải có đuôi .sig hoặc .json!', 'error');
                 return;
             }
 
@@ -730,10 +922,19 @@
                     showAlert('verifyFileAlert', data.message, type);
 
                     const resultDiv = document.getElementById('verifyFileResult');
+                    const publicKeyInfo = data.public_key_used ? 
+                        `<p><strong>Public Key sử dụng:</strong> ${data.public_key_used}</p>` : 
+                        '<p><strong>Cảnh báo:</strong> Không tìm thấy public key trong file chữ ký</p>';
+                    
+                    const statusColor = data.valid ? '#28a745' : '#dc3545';
+                    
                     resultDiv.innerHTML = `
-                        <div class="result-box">
-                            <h4>${data.valid ? ' File HỢP LỆ' : ' File KHÔNG HỢP LỆ'}</h4>
-                            <p>${data.valid ? 'File chưa bị thay đổi.' : 'File có thể đã bị thay đổi.'}</p>
+                        <div class="result-box" style="border-color: ${statusColor};">
+                            <h4 style="color: ${statusColor};">Kết quả: ${data.valid ? 'HỢP LỆ' : 'KHÔNG HỢP LỆ'}</h4>
+                            <p style="margin-bottom: 10px;">${data.valid ? 'File chưa bị thay đổi và chữ ký đúng.' : 'File có thể đã bị thay đổi hoặc chữ ký không hợp lệ.'}</p>
+                            <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
+                            ${publicKeyInfo}
+                            <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian xác thực: ${new Date().toLocaleString('vi-VN')}</em></p>
                         </div>
                     `;
                 } else {
@@ -747,6 +948,13 @@
 
         // Export key
         async function exportKey(type) {
+            // Check if button is disabled
+            const btn = type === 'public' ? document.getElementById('exportPublicBtn') : document.getElementById('exportPrivateBtn');
+            if (btn.disabled) {
+                showAlert('signMessageAlert', `Chưa có ${type === 'public' ? 'public' : 'private'} key để export!`, 'error');
+                return;
+            }
+            
             try {
                 const response = await fetch('/api/export-keys', {
                     method: 'POST',
@@ -788,7 +996,14 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    showAlert('signMessageAlert', data.message, 'success');
+                    let message = data.message;
+                    // Add extra info based on key type
+                    if (data.message.includes('public key')) {
+                        message += ' (Chỉ có thể xác thực, không thể ký)';
+                    } else if (data.message.includes('private key')) {
+                        message += ' (Có thể ký và xác thực)';
+                    }
+                    showAlert('signMessageAlert', message, 'success');
                     await updateKeyStatus();
                 } else {
                     showAlert('signMessageAlert', data.error, 'error');
@@ -802,6 +1017,13 @@
 
         // Clear keys
         async function clearKeys() {
+            // Check if button is disabled
+            const btn = document.getElementById('clearKeysBtn');
+            if (btn.disabled) {
+                showAlert('signMessageAlert', 'Không có khóa nào để xóa!', 'error');
+                return;
+            }
+            
             if (!confirm('Bạn có chắc muốn xóa tất cả khóa?')) return;
 
             try {
@@ -844,11 +1066,13 @@
         function displaySignature(signature) {
             const resultDiv = document.getElementById('signatureResult');
             resultDiv.innerHTML = `
-                <div class="result-box">
-                    <h4>Chữ ký đã tạo:</h4>
-                    <p><strong>r:</strong> 0x${signature.r}</p>
-                    <p><strong>s:</strong> 0x${signature.s}</p>
-                    <button class="btn btn-secondary" onclick="copySignature('0x${signature.r}', '0x${signature.s}')">
+                <div class="result-box" style="border-color: #28a745;">
+                    <h4 style="color: #28a745;">Chữ ký đã tạo thành công!</h4>
+                    <p><strong>Signature (r):</strong> 0x${signature.r}</p>
+                    <p><strong>Signature (s):</strong> 0x${signature.s}</p>
+                    <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
+                    <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian tạo: ${new Date().toLocaleString('vi-VN')}</em></p>
+                    <button class="btn btn-secondary" style="margin-top: 15px;" onclick="copySignature('0x${signature.r}', '0x${signature.s}')">
                         Copy Chữ ký
                     </button>
                 </div>
@@ -860,14 +1084,34 @@
             navigator.clipboard.writeText(text);
             alert('Đã copy chữ ký!');
         }
+        
+        function downloadSignature(content, filename) {
+            // Tạo blob từ nội dung signature
+            const blob = new Blob([content], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
 
         function updateFileName(inputId, displayId) {
             const input = document.getElementById(inputId);
             const display = document.getElementById(displayId);
             if (input.files.length) {
-                display.textContent = input.files[0].name;
+                const file = input.files[0];
+                const fileSize = (file.size / 1024).toFixed(2); // KB
+                const sizeText = fileSize > 1024 ? 
+                    `${(fileSize / 1024).toFixed(2)} MB` : 
+                    `${fileSize} KB`;
+                display.textContent = `${file.name} (${sizeText})`;
+                display.style.color = '#28a745';
+                display.style.fontWeight = '600';
             } else {
                 display.textContent = 'Chưa chọn file';
+                display.style.color = '#666';
+                display.style.fontWeight = 'normal';
             }
         }
 
