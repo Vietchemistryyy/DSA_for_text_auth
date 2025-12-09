@@ -121,8 +121,10 @@ class DSASignature:
                 'r': format_hex(signature[0], prefix=False),
                 's': format_hex(signature[1], prefix=False)
             },
+            # Lưu thuật toán hash và public key để verify không phụ thuộc session
             'algorithm': hash_algorithm,
-            'original_file': input_filepath
+            'original_file': input_filepath,
+            'public_key': format_hex(self.key_manager.get_public_key(), prefix=False)
         }
 
         Path(output_filepath).parent.mkdir(parents=True, exist_ok=True)
@@ -136,32 +138,22 @@ class DSASignature:
 
     def verify_file(self, input_filepath: str, signature_filepath: str,
                     public_key: int = None) -> bool:
-        """
-        Xác thực chữ ký của file
-
-        Args:
-            input_filepath: Đường dẫn file văn bản
-            signature_filepath: Đường dẫn file chữ ký
-            public_key: Public key (dùng key trong manager nếu None)
-
-        Returns:
-            bool: True nếu chữ ký hợp lệ
-        """
-        # Đọc văn bản
         with open(input_filepath, 'r', encoding='utf-8') as f:
             message = f.read()
 
-        # Đọc chữ ký
         with open(signature_filepath, 'r') as f:
             signature_data = json.load(f)
-
         r = int(signature_data['signature']['r'], 16)
         s = int(signature_data['signature']['s'], 16)
         signature = (r, s)
-
         hash_algorithm = signature_data.get('algorithm', 'sha256')
 
-        # Xác thực
+        # Ưu tiên dùng public key lưu trong file chữ ký nếu không được truyền vào
+        if public_key is None:
+            public_key_hex: Optional[str] = signature_data.get('public_key')
+            if public_key_hex:
+                public_key = int(public_key_hex, 16)
+
         return self.verify_message(message, signature, public_key, hash_algorithm)
 
     def create_signature_package(self, message: str, output_filepath: str,
