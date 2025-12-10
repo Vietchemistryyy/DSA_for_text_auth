@@ -126,15 +126,22 @@ def sign_message():
 
 @app.route('/api/verify-message', methods=['POST'])
 def verify_message():
-    """API xác thực chữ ký"""
+    """API xác thực chữ ký - BẮT BUỘC phải có public key trong session"""
     try:
+        # Kiểm tra xem đã có public key chưa
+        km = get_key_manager()
+        if not km.has_public_key():
+            return jsonify({
+                'success': False,
+                'error': 'Chưa có public key! Vui lòng import public key trước khi xác thực.'
+            }), 400
+
         data = request.json
         message = data.get('message')
         signature_r = data.get('signature_r')
         signature_s = data.get('signature_s')
-        public_key_hex = data.get('public_key')
 
-        if not all([message, signature_r, signature_s, public_key_hex]):
+        if not all([message, signature_r, signature_s]):
             return jsonify({
                 'success': False,
                 'error': 'Thiếu thông tin!'
@@ -143,15 +150,19 @@ def verify_message():
         # Convert hex to int
         r = int(signature_r.replace('0x', ''), 16)
         s = int(signature_s.replace('0x', ''), 16)
-        public_key = int(public_key_hex.replace('0x', ''), 16)
 
-        sig = DSASignature()
+        # Lấy public key từ session (BẮT BUỘC)
+        public_key = km.get_public_key()
+        public_key_info = format_hex(public_key)[:20] + '...'
+
+        sig = DSASignature(km)
         is_valid = sig.verify_message(message, (r, s), public_key)
 
         return jsonify({
             'success': True,
             'valid': is_valid,
-            'message': 'Chữ ký hợp lệ!' if is_valid else 'Chữ ký không hợp lệ!'
+            'message': 'Chữ ký hợp lệ!' if is_valid else 'Chữ ký không hợp lệ!',
+            'public_key_used': public_key_info
         })
     except Exception as e:
         return jsonify({
@@ -215,11 +226,19 @@ def sign_file():
 
 @app.route('/api/verify-file', methods=['POST'])
 def verify_file():
-    """API xác thực file"""
+    """API xác thực file - BẮT BUỘC phải có public key trong session"""
     temp_file = None
     temp_sig = None
     
     try:
+        # Kiểm tra xem đã có public key chưa
+        km = get_key_manager()
+        if not km.has_public_key():
+            return jsonify({
+                'success': False,
+                'error': 'Chưa có public key! Vui lòng import public key trước khi xác thực.'
+            }), 400
+
         if 'file' not in request.files or 'signature' not in request.files:
             return jsonify({
                 'success': False,
@@ -237,19 +256,13 @@ def verify_file():
         file.save(temp_file)
         sig_file.save(temp_sig)
 
-        # Đọc public key từ file signature
-        with open(temp_sig, 'r') as f:
-            sig_data = json.load(f)
+        # Lấy public key từ session (BẮT BUỘC)
+        public_key = km.get_public_key()
+        public_key_info = format_hex(public_key)[:20] + '...'
         
-        public_key_hex = sig_data.get('public_key')
-        public_key_info = None
-        
-        if public_key_hex:
-            public_key_info = f"0x{public_key_hex[:16]}..."
-        
-        # Xác thực
-        sig = DSASignature()
-        is_valid = sig.verify_file(str(temp_file), str(temp_sig))
+        # Xác thực với public key từ session
+        sig = DSASignature(km)
+        is_valid = sig.verify_file(str(temp_file), str(temp_sig), public_key=public_key)
 
         return jsonify({
             'success': True,
@@ -404,12 +417,18 @@ def get_key_status():
 def clear_keys():
     """API xóa khóa"""
     try:
-        km = get_key_manager()
-        km.clear_keys()
+        session_id = session.get('session_id')
+        
+        # Xóa KeyManager khỏi dictionary
+        if session_id and session_id in key_managers:
+            del key_managers[session_id]
+        
+        # Xóa session ID để tạo session mới
+        session.pop('session_id', None)
 
         return jsonify({
             'success': True,
-            'message': 'Đã xóa tất cả khóa!'
+            'message': 'Đã xóa tất cả khóa và reset session!'
         })
     except Exception as e:
         return jsonify({
