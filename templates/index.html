@@ -522,6 +522,10 @@
             <h2> Xác thực Chữ ký Văn bản</h2>
             <div class="alert" id="verifyMessageAlert"></div>
 
+            <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 12px; margin-bottom: 20px; color: #856404;">
+                <strong>Lưu ý:</strong> Bạn phải import Public Key trước khi xác thực chữ ký.
+            </div>
+
             <div class="form-group">
                 <label>Văn bản gốc:</label>
                 <textarea class="form-control" id="messageToVerify" placeholder="Nhập văn bản gốc..."></textarea>
@@ -535,11 +539,6 @@
             <div class="form-group">
                 <label>Chữ ký (s):</label>
                 <input type="text" class="form-control" id="signatureS" placeholder="0x...">
-            </div>
-
-            <div class="form-group">
-                <label>Public Key:</label>
-                <input type="text" class="form-control" id="publicKeyForVerify" placeholder="0x...">
             </div>
 
             <button class="btn btn-success btn-block" onclick="verifyMessage()">
@@ -586,6 +585,10 @@
         <div class="tab-content" id="verify-file">
             <h2>Xác thực File</h2>
             <div class="alert" id="verifyFileAlert"></div>
+
+            <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 12px; margin-bottom: 20px; color: #856404;">
+                <strong>Lưu ý:</strong> Bạn phải import Public Key trước khi xác thực file.
+            </div>
 
             <div class="form-group">
                 <label>File gốc:</label>
@@ -773,9 +776,8 @@
             const message = document.getElementById('messageToVerify').value;
             const signatureR = document.getElementById('signatureR').value;
             const signatureS = document.getElementById('signatureS').value;
-            const publicKey = document.getElementById('publicKeyForVerify').value;
 
-            if (!message || !signatureR || !signatureS || !publicKey) {
+            if (!message || !signatureR || !signatureS) {
                 showAlert('verifyMessageAlert', 'Vui lòng nhập đầy đủ thông tin!', 'error');
                 return;
             }
@@ -789,8 +791,7 @@
                     body: JSON.stringify({
                         message,
                         signature_r: signatureR,
-                        signature_s: signatureS,
-                        public_key: publicKey
+                        signature_s: signatureS
                     })
                 });
                 const data = await response.json();
@@ -809,7 +810,7 @@
                             <h4 style="color: ${statusColor};">Kết quả: ${data.valid ? 'HỢP LỆ' : 'KHÔNG HỢP LỆ'}</h4>
                             <p style="margin-bottom: 10px;">${data.valid ? 'Văn bản chưa bị thay đổi và chữ ký đúng.' : 'Văn bản có thể đã bị thay đổi hoặc chữ ký sai.'}</p>
                             <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
-                            <p><strong>Public Key đã sử dụng:</strong> ${publicKey.substring(0, 20)}...</p>
+                            <p><strong>Public Key đã sử dụng:</strong> ${data.public_key_used}</p>
                             <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian xác thực: ${new Date().toLocaleString('vi-VN')}</em></p>
                         </div>
                     `;
