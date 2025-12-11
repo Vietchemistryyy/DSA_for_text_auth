@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
             min-height: 100vh;
             padding: 20px;
@@ -28,12 +29,12 @@
             border-radius: 20px;
             padding: 40px 30px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             text-align: center;
             position: relative;
             overflow: hidden;
         }
-        
+
         .header::before {
             content: '';
             position: absolute;
@@ -41,13 +42,18 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
             animation: rotate 20s linear infinite;
         }
-        
+
         @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .header h1 {
@@ -55,36 +61,36 @@
             font-size: 2.8em;
             margin-bottom: 10px;
             font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             position: relative;
             z-index: 1;
         }
 
         .header h3 {
-            color: rgba(255,255,255,0.95);
+            color: rgba(255, 255, 255, 0.95);
             font-size: 1.2em;
             font-weight: 400;
             margin: 0;
             position: relative;
             z-index: 1;
         }
-        
+
         .footer {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 20px;
             padding: 25px;
             margin-top: 40px;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
-        
+
         .footer p {
             margin: 0;
             color: white;
             font-size: 18px;
             font-weight: 500;
         }
-        
+
         .footer strong {
             color: #ffd700;
             font-weight: 700;
@@ -96,7 +102,7 @@
             border-radius: 20px;
             padding: 25px;
             margin-bottom: 30px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             border: 2px solid rgba(102, 126, 234, 0.1);
         }
 
@@ -119,12 +125,12 @@
             background: #f8f9fa;
             font-size: 16px;
         }
-        
+
         .key-item strong {
             font-size: 17px;
         }
-        
-        .key-item > div {
+
+        .key-item>div {
             font-size: 14px !important;
         }
 
@@ -144,7 +150,7 @@
             gap: 10px;
             margin-top: 15px;
         }
-        
+
         .key-actions .btn {
             flex: 1 1 auto;
             min-width: 180px;
@@ -166,12 +172,12 @@
             font-size: 17px;
             font-weight: 600;
             transition: all 0.3s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .tab-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .tab-button.active {
@@ -185,10 +191,10 @@
             background: white;
             border-radius: 20px;
             padding: 35px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             border: 2px solid rgba(102, 126, 234, 0.1);
         }
-        
+
         .tab-content h2 {
             font-size: 26px;
             margin-bottom: 25px;
@@ -202,8 +208,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .form-group {
@@ -232,6 +245,22 @@
             border-color: #667eea;
         }
 
+        .form-control.error {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
         textarea.form-control {
             min-height: 120px;
             resize: vertical;
@@ -253,9 +282,9 @@
 
         .btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        
+
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -304,8 +333,15 @@
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .alert-success {
@@ -328,7 +364,7 @@
             font-size: 16px;
             word-break: break-all;
             border: 2px solid rgba(102, 126, 234, 0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
 
         .result-box h4 {
@@ -337,7 +373,7 @@
             font-size: 20px;
             font-weight: 600;
         }
-        
+
         .result-box p {
             font-size: 16px;
             line-height: 1.6;
@@ -398,11 +434,27 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
 
+
+        /* Responsive styles */
+        @media (max-width: 1024px) {
+            .tab-content>div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            .result-box>div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
 
         @media (max-width: 768px) {
             .key-info {
@@ -420,21 +472,48 @@
             .header h1 {
                 font-size: 2em;
             }
-            
+
             .header h3 {
                 font-size: 1em;
             }
-            
+
             .footer p {
                 font-size: 14px;
             }
-            
+
             .footer strong {
                 font-size: 16px;
             }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            .result-box {
+                padding: 15px;
+            }
+
+            .result-box code {
+                font-size: 11px !important;
+            }
+        }
+
+        /* Ensure no overflow */
+        .form-control,
+        .result-box,
+        .result-box code,
+        .result-box pre {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .result-box {
+            overflow-x: auto;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -443,185 +522,493 @@
             <h3>Hệ thống Chữ ký số an toàn với thuật toán DSA</h3>
         </div>
 
-        <!-- Key Status -->
-        <div class="key-status" id="keyStatus">
-            <h3> Trạng thái Khóa</h3>
-            <div class="key-info">
-                <div class="key-item no-key" id="privateKeyStatus">
-                    <strong>Private Key:</strong> <span id="privateKeyText">Chưa có</span>
-                    <div style="font-size: 12px; color: #666; margin-top: 5px;">Dùng để ký văn bản/file</div>
-                </div>
-                <div class="key-item no-key" id="publicKeyStatus">
-                    <strong>Public Key:</strong> <span id="publicKeyText">Chưa có</span>
-                    <div style="font-size: 12px; color: #666; margin-top: 5px;">Dùng để xác thực chữ ký</div>
-                </div>
-            </div>
-            <div id="keyRoleWarning" style="display: none; margin-top: 15px; padding: 12px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; color: #856404;">
-                <strong>Lưu ý:</strong> Bạn chỉ có Public Key. Bạn có thể xác thực chữ ký nhưng không thể ký văn bản/file.
-            </div>
-            <div class="key-actions">
-                <button class="btn btn-primary" onclick="generateKeys()" title="Tạo cặp khóa mới (Private + Public)">
-                    Tạo Khóa Mới
-                </button>
-                <button class="btn btn-success" id="exportPublicBtn" onclick="exportKey('public')" disabled title="Chia sẻ cho người khác để họ xác thực chữ ký của bạn">
-                    Export Public Key
-                </button>
-                <button class="btn btn-success" id="exportPrivateBtn" onclick="exportKey('private')" style="background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%); box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);" disabled title="Sao lưu để ký trên thiết bị khác (BẢO MẬT!)">
-                    Export Private Key
-                </button>
-                <button class="btn btn-secondary" onclick="document.getElementById('importKeyFile').click()" title="Import Public Key (xác thực) hoặc Private Key (ký)">
-                    Import Key
-                </button>
-                <button class="btn btn-danger" id="clearKeysBtn" onclick="clearKeys()" disabled title="Xóa tất cả khóa khỏi session">
-                    Xóa Khóa
-                </button>
-            </div>
-            <input type="file" id="importKeyFile" style="display:none" accept=".json" onchange="importKey(this)">
-        </div>
-
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab-button active" onclick="switchTab('sign-message')">
-                Ký Văn bản
-            </button>
-            <button class="tab-button" onclick="switchTab('verify-message')">
-                Xác thực Văn bản
+            <button class="tab-button active" onclick="switchTab('demo-algorithm')">
+                Demo Thuật toán
             </button>
             <button class="tab-button" onclick="switchTab('sign-file')">
-                Ký File
-            </button>
-            <button class="tab-button" onclick="switchTab('verify-file')">
-                Xác thực File
+                Ký File với Khóa Tự động
             </button>
         </div>
 
-        <!-- Tab: Sign Message -->
-        <div class="tab-content active" id="sign-message">
-            <h2>Ký Văn bản</h2>
-            <div class="alert" id="signMessageAlert"></div>
+        <!-- Tab: Demo Algorithm -->
+        <div class="tab-content active" id="demo-algorithm">
+            <h2>Demo Thuật toán DSA</h2>
 
-            <div class="form-group">
-                <label>Văn bản cần ký:</label>
-                <textarea class="form-control" id="messageToSign" placeholder="Nhập văn bản cần ký..."></textarea>
+            <div
+                style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #2196f3; border-radius: 12px; padding: 20px; margin-bottom: 25px;">
+                <h4 style="color: #1976d2; margin-bottom: 15px; font-size: 20px; font-weight: 600;">📖 Hướng dẫn sử dụng
+                    Demo Thuật toán</h4>
+                <div style="color: #0d47a1; line-height: 1.9; font-size: 16px;">
+                    <p style="margin: 0 0 12px 0;"><strong>Mục đích:</strong> Demo chi tiết từng bước tính toán của
+                        thuật toán DSA với tham số tùy chỉnh (số nhỏ để dễ hiểu).</p>
+
+                    <p style="margin: 0 0 8px 0;"><strong>Hướng dẫn từng bước:</strong></p>
+                    <ol style="margin: 0 0 12px 0; padding-left: 25px;">
+                        <li style="margin-bottom: 8px;"><strong>Bước 1 - Tải tham số mẫu:</strong> Nhấn nút "Tải Tham số
+                            Đơn giản" ở phần Ký (bên trái) để hệ thống tự động điền các tham số DSA hợp lệ (p, q, g, x,
+                            k).</li>
+                        <li style="margin-bottom: 8px;"><strong>Bước 2 - Ký văn bản/file:</strong> Chọn loại nội dung
+                            (Văn bản hoặc File), nhập nội dung cần ký, sau đó nhấn "Ký". Hệ thống sẽ hiển thị chi tiết
+                            các bước tính: Public key (y), Hash H(m), Chữ ký (r, s).</li>
+                        <li style="margin-bottom: 8px;"><strong>Bước 3 - Xác thực chữ ký:</strong> Sao chép các giá trị
+                            từ kết quả ký sang phần Xác thực (bên phải):
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li>Tham số DSA: p, q, g</li>
+                                <li>Public key: y (từ bước 1 bên trái)</li>
+                                <li>Chữ ký: r, s (từ kết quả ký)</li>
+                                <li>Nhập lại cùng văn bản/file đã ký</li>
+                            </ul>
+                            Sau đó nhấn "Xác thực" để xem các bước tính w, u1, u2, v và kết quả kiểm tra v == r.
+                        </li>
+                        <li style="margin-bottom: 8px;"><strong>Bước 4 - Thử nghiệm lỗi:</strong> Thay đổi văn bản, chữ
+                            ký (r, s), hoặc public key (y) để quan sát xác thực thất bại và xem thông báo lỗi chi tiết.
+                        </li>
+                    </ol>
+
+                    <p
+                        style="margin: 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; border-left: 4px solid #2196f3;">
+                        <strong>💡 Lưu ý:</strong> Sử dụng số nguyên nhỏ (< 1000) để dễ dàng kiểm tra tính toán thủ
+                            công. Nếu nhập sai tham số, hệ thống sẽ hiện lỗi cụ thể ở từng trường.</p>
+                </div>
             </div>
 
-            <button class="btn btn-primary btn-block" onclick="signMessage()">
-                Ký Văn bản
-            </button>
+            <!-- BỐ TRÍ NGANG: KÝ BÊN TRÁI - XÁC THỰC BÊN PHẢI -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
 
-            <div class="loading" id="signMessageLoading">
-                <div class="spinner"></div>
-                <p>Đang ký...</p>
+                <!-- PHẦN KÝ (BÊN TRÁI) -->
+                <div
+                    style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 3px solid #4caf50; border-radius: 12px; padding: 20px;">
+                    <h3
+                        style="color: #2e7d32; margin-bottom: 20px; font-size: 20px; text-align: center; font-weight: 700;">
+                        KÝ VĂN BẢN</h3>
+
+                    <div class="alert" id="demoSignAlert"></div>
+
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #2e7d32; font-weight: 600;">Tham số p:</label>
+                            <input type="text" class="form-control" id="demoP"
+                                placeholder="Nhập số nguyên tố p, ví dụ: 23"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="demoPError"></div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #2e7d32; font-weight: 600;">Tham số q:</label>
+                            <input type="text" class="form-control" id="demoQ"
+                                placeholder="Nhập số nguyên tố q, ví dụ: 11"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="demoQError"></div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #2e7d32; font-weight: 600;">Tham số g:</label>
+                            <input type="text" class="form-control" id="demoG" placeholder="Nhập generator g, ví dụ: 2"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="demoGError"></div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #2e7d32; font-weight: 600;">Private key x:</label>
+                            <input type="text" class="form-control" id="demoX" placeholder="Nhập khóa riêng x, ví dụ: 6"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="demoXError"></div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #2e7d32; font-weight: 600;">Tham số k (tùy chọn):</label>
+                            <input type="text" class="form-control" id="demoK"
+                                placeholder="Để trống để hệ thống tự sinh ngẫu nhiên"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="demoKError"></div>
+                        </div>
+
+                        <button class="btn btn-secondary" onclick="loadSimpleParams()" style="width: 100%;">
+                            Tải Tham số Đơn giản
+                        </button>
+
+                        <div style="border-top: 2px dashed #2e7d32; margin: 10px 0;"></div>
+
+                        <!-- Chọn giữa văn bản hoặc file -->
+                        <div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                            <label style="color: #2e7d32; font-weight: 600; margin-bottom: 8px; display: block;">Chọn
+                                loại nội dung:</label>
+                            <div style="display: flex; gap: 10px;">
+                                <label style="flex: 1; cursor: pointer;">
+                                    <input type="radio" name="demoSignType" value="text" checked
+                                        onchange="toggleDemoSignInput()"> Văn bản
+                                </label>
+                                <label style="flex: 1; cursor: pointer;">
+                                    <input type="radio" name="demoSignType" value="file"
+                                        onchange="toggleDemoSignInput()"> File
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Input văn bản -->
+                        <div id="demoTextInput" class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #2e7d32; font-weight: 600;">Văn bản cần ký:</label>
+                            <textarea class="form-control" id="demoMessage"
+                                placeholder="Nhập nội dung văn bản cần ký..." style="min-height: 100px;"></textarea>
+                            <div class="error-message" id="demoMessageError"></div>
+                        </div>
+
+                        <!-- Input file -->
+                        <div id="demoFileInput" class="form-group" style="margin-bottom: 0; display: none;">
+                            <label style="color: #2e7d32; font-weight: 600;">File cần ký:</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="demoFile"
+                                    onchange="updateFileName('demoFile', 'demoFileName'); previewFileContent('demoFile', 'demoFilePreview', 'demoFileContent')">
+                                <label for="demoFile" class="file-input-label">
+                                    Chọn File
+                                </label>
+                                <span class="file-name" id="demoFileName">Chưa chọn file</span>
+                            </div>
+                            <div id="demoFilePreview"
+                                style="background: #f8f9fa; border-radius: 8px; padding: 10px; margin-top: 10px; display: none; max-height: 150px; overflow-y: auto;">
+                                <strong style="color: #2e7d32; font-size: 13px;">Nội dung:</strong>
+                                <pre id="demoFileContent"
+                                    style="margin: 5px 0 0 0; font-size: 12px; white-space: pre-wrap; word-wrap: break-word; font-family: 'Inter', sans-serif;"></pre>
+                            </div>
+                            <div class="error-message" id="demoFileError"></div>
+                        </div>
+
+                        <button class="btn btn-primary btn-block" onclick="demoSign()">
+                            Ký
+                        </button>
+                    </div>
+
+                    <div class="loading" id="demoLoading">
+                        <div class="spinner"></div>
+                        <p>Đang tính toán...</p>
+                    </div>
+
+                    <div id="demoResult"></div>
+                </div>
+
+                <!-- PHẦN XÁC THỰC (BÊN PHẢI) -->
+                <div
+                    style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 3px solid #2196f3; border-radius: 12px; padding: 20px;">
+                    <h3
+                        style="color: #1565c0; margin-bottom: 20px; font-size: 20px; text-align: center; font-weight: 700;">
+                        XÁC THỰC CHỮ KÝ</h3>
+
+                    <div class="alert" id="demoVerifyAlert"></div>
+
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #1565c0; font-weight: 600;">Tham số p:</label>
+                            <input type="text" class="form-control" id="verifyP"
+                                placeholder="Sao chép giá trị p từ phần ký"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="verifyPError"></div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #1565c0; font-weight: 600;">Tham số q:</label>
+                            <input type="text" class="form-control" id="verifyQ"
+                                placeholder="Sao chép giá trị q từ phần ký"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="verifyQError"></div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #1565c0; font-weight: 600;">Tham số g:</label>
+                            <input type="text" class="form-control" id="verifyG"
+                                placeholder="Sao chép giá trị g từ phần ký"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="verifyGError"></div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #1565c0; font-weight: 600;">Public key y:</label>
+                            <input type="text" class="form-control" id="verifyY"
+                                placeholder="Lấy giá trị y từ kết quả ký bên trái"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="verifyYError"></div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #1565c0; font-weight: 600;">Chữ ký r:</label>
+                            <input type="text" class="form-control" id="verifyR"
+                                placeholder="Lấy giá trị r từ kết quả ký bên trái"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="verifyRError"></div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #1565c0; font-weight: 600;">Chữ ký s:</label>
+                            <input type="text" class="form-control" id="verifyS"
+                                placeholder="Lấy giá trị s từ kết quả ký bên trái"
+                                style="font-family: monospace; font-size: 14px;">
+                            <div class="error-message" id="verifySError"></div>
+                        </div>
+
+                        <div style="border-top: 2px dashed #1565c0; margin: 10px 0;"></div>
+
+                        <!-- Chọn giữa văn bản hoặc file -->
+                        <div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                            <label style="color: #1565c0; font-weight: 600; margin-bottom: 8px; display: block;">Chọn
+                                loại nội dung:</label>
+                            <div style="display: flex; gap: 10px;">
+                                <label style="flex: 1; cursor: pointer;">
+                                    <input type="radio" name="demoVerifyType" value="text" checked
+                                        onchange="toggleDemoVerifyInput()"> Văn bản
+                                </label>
+                                <label style="flex: 1; cursor: pointer;">
+                                    <input type="radio" name="demoVerifyType" value="file"
+                                        onchange="toggleDemoVerifyInput()"> File
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Input văn bản -->
+                        <div id="demoVerifyTextInput" class="form-group" style="margin-bottom: 0;">
+                            <label style="color: #1565c0; font-weight: 600;">Văn bản cần xác thực:</label>
+                            <textarea class="form-control" id="verifyMessage"
+                                placeholder="Sao chép nội dung văn bản từ phần ký..."
+                                style="min-height: 100px;"></textarea>
+                            <div class="error-message" id="verifyMessageError"></div>
+                        </div>
+
+                        <!-- Input file -->
+                        <div id="demoVerifyFileInput" class="form-group" style="margin-bottom: 0; display: none;">
+                            <label style="color: #1565c0; font-weight: 600;">File cần xác thực:</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="verifyFile"
+                                    onchange="updateFileName('verifyFile', 'verifyFileName'); previewFileContent('verifyFile', 'verifyFilePreview', 'verifyFileContent')">
+                                <label for="verifyFile" class="file-input-label">
+                                    Chọn File
+                                </label>
+                                <span class="file-name" id="verifyFileName">Chưa chọn file</span>
+                            </div>
+                            <div id="verifyFilePreview"
+                                style="background: #f8f9fa; border-radius: 8px; padding: 10px; margin-top: 10px; display: none; max-height: 150px; overflow-y: auto;">
+                                <strong style="color: #1565c0; font-size: 13px;">Nội dung:</strong>
+                                <pre id="verifyFileContent"
+                                    style="margin: 5px 0 0 0; font-size: 12px; white-space: pre-wrap; word-wrap: break-word; font-family: 'Inter', sans-serif;"></pre>
+                            </div>
+                            <div class="error-message" id="verifyFileError"></div>
+                        </div>
+
+                        <button class="btn btn-success btn-block" onclick="demoVerify()">
+                            Xác thực
+                        </button>
+                    </div>
+
+                    <div class="loading" id="demoVerifyLoading">
+                        <div class="spinner"></div>
+                        <p>Đang xác thực...</p>
+                    </div>
+
+                    <div id="demoVerifyResult"></div>
+                </div>
             </div>
-
-            <div id="signatureResult"></div>
         </div>
 
-        <!-- Tab: Verify Message -->
-        <div class="tab-content" id="verify-message">
-            <h2> Xác thực Chữ ký Văn bản</h2>
-            <div class="alert" id="verifyMessageAlert"></div>
-
-            <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 12px; margin-bottom: 20px; color: #856404;">
-                <strong>Lưu ý:</strong> Bạn phải import Public Key trước khi xác thực chữ ký.
-            </div>
-
-            <div class="form-group">
-                <label>Văn bản gốc:</label>
-                <textarea class="form-control" id="messageToVerify" placeholder="Nhập văn bản gốc..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Chữ ký (r):</label>
-                <input type="text" class="form-control" id="signatureR" placeholder="0x...">
-            </div>
-
-            <div class="form-group">
-                <label>Chữ ký (s):</label>
-                <input type="text" class="form-control" id="signatureS" placeholder="0x...">
-            </div>
-
-            <button class="btn btn-success btn-block" onclick="verifyMessage()">
-                Xác thực
-            </button>
-
-            <div class="loading" id="verifyMessageLoading">
-                <div class="spinner"></div>
-                <p>Đang xác thực...</p>
-            </div>
-
-            <div id="verifyResult"></div>
-        </div>
-
-        <!-- Tab: Sign File -->
+        <!-- Tab: Sign & Verify File with Generated Keys -->
         <div class="tab-content" id="sign-file">
-            <h2>Ký File</h2>
-            <div class="alert" id="signFileAlert"></div>
+            <h2>Ký & Xác thực với Khóa Sinh Tự động</h2>
 
-            <div class="form-group">
-                <label>Chọn file cần ký:</label>
-                <div class="file-input-wrapper">
-                    <input type="file" id="fileToSign" onchange="updateFileName('fileToSign', 'fileToSignName')">
-                    <label for="fileToSign" class="file-input-label">
-                        Chọn File
-                    </label>
-                    <span class="file-name" id="fileToSignName">Chưa chọn file</span>
+            <!-- Key Status -->
+            <div class="key-status" id="keyStatus">
+                <h3>Trạng thái Khóa</h3>
+                <div class="key-info">
+                    <div class="key-item no-key" id="privateKeyStatus">
+                        <strong>Private Key:</strong> <span id="privateKeyText">Chưa có</span>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">Dùng để ký văn bản/file</div>
+                    </div>
+                    <div class="key-item no-key" id="publicKeyStatus">
+                        <strong>Public Key:</strong> <span id="publicKeyText">Chưa có</span>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">Dùng để xác thực chữ ký</div>
+                    </div>
+                </div>
+                <div id="keyRoleWarning"
+                    style="display: none; margin-top: 15px; padding: 12px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; color: #856404;">
+                    <strong>Lưu ý:</strong> Bạn chỉ có Public Key. Bạn có thể xác thực chữ ký nhưng không thể ký văn
+                    bản/file.
+                </div>
+                <div class="key-actions">
+                    <button class="btn btn-primary" onclick="generateKeys()"
+                        title="Tạo cặp khóa mới (Private + Public)">
+                        Tạo Khóa Mới
+                    </button>
+                    <button class="btn btn-success" id="exportPublicBtn" onclick="exportKey('public')" disabled
+                        title="Chia sẻ cho người khác để họ xác thực chữ ký của bạn">
+                        Export Public Key
+                    </button>
+                    <button class="btn btn-success" id="exportPrivateBtn" onclick="exportKey('private')"
+                        style="background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%); box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);"
+                        disabled title="Sao lưu để ký trên thiết bị khác (BẢO MẬT!)">
+                        Export Private Key
+                    </button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('importKeyFile').click()"
+                        title="Import Public Key (xác thực) hoặc Private Key (ký)">
+                        Import Key
+                    </button>
+                    <button class="btn btn-danger" id="clearKeysBtn" onclick="clearKeys()" disabled
+                        title="Xóa tất cả khóa khỏi session">
+                        Xóa Khóa
+                    </button>
+                </div>
+                <input type="file" id="importKeyFile" style="display:none" accept=".json" onchange="importKey(this)">
+            </div>
+
+            <div
+                style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #2196f3; border-radius: 12px; padding: 20px; margin-bottom: 25px;">
+                <h4 style="color: #1976d2; margin-bottom: 15px; font-size: 20px; font-weight: 600;">📘 Hướng dẫn sử dụng
+                    Ký
+                    & Xác thực File</h4>
+                <div style="color: #0d47a1; line-height: 1.9; font-size: 16px;">
+                    <p style="margin: 0 0 12px 0;"><strong>Mục đích:</strong> Ký và xác thực file thực tế với khóa DSA
+                        được sinh tự động (tham số lớn, bảo mật cao cho ứng dụng thực tế).</p>
+
+                    <p style="margin: 0 0 8px 0;"><strong>Hướng dẫn từng bước:</strong></p>
+                    <ol style="margin: 0 0 12px 0; padding-left: 25px;">
+                        <li style="margin-bottom: 8px;"><strong>Bước 1 - Tạo hoặc Import khóa:</strong>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li><strong>Tạo khóa mới:</strong> Nhấn "Tạo Khóa Mới" để hệ thống tự động sinh cặp khóa
+                                    Private Key và Public Key với tham số bảo mật cao.</li>
+                                <li><strong>Import khóa:</strong> Hoặc nhấn "Import Key" để sử dụng khóa có sẵn từ file
+                                    JSON (Private Key để ký, Public Key để xác thực).</li>
+                            </ul>
+                        </li>
+                        <li style="margin-bottom: 8px;"><strong>Bước 2 - Ký file:</strong> Trong phần "KÝ FILE" (bên
+                            trái):
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li>Chọn file cần ký (ví dụ: tài liệu, hợp đồng, code)</li>
+                                <li>Nhấn "Ký File" - hệ thống sẽ tạo file chữ ký (.sig)</li>
+                                <li>Tải file chữ ký về máy (file .sig) để gửi kèm file gốc</li>
+                            </ul>
+                        </li>
+                        <li style="margin-bottom: 8px;"><strong>Bước 3 - Xác thực file:</strong> Trong phần "XÁC THỰC
+                            FILE" (bên phải):
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li>Upload file gốc cần kiểm tra</li>
+                                <li>Upload file chữ ký (.sig) tương ứng</li>
+                                <li>Nhấn "Xác thực File" để kiểm tra tính toàn vẹn</li>
+                                <li>Kết quả sẽ hiển thị: HỢP LỆ (file nguyên vẹn) hoặc KHÔNG HỢP LỆ (có thông báo lỗi cụ
+                                    thể)</li>
+                            </ul>
+                        </li>
+                        <li style="margin-bottom: 8px;"><strong>Bước 4 - Export/Chia sẻ khóa:</strong>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li><strong>Export Public Key:</strong> Để gửi cho người khác xác thực chữ ký của bạn
+                                    (an toàn chia sẻ)</li>
+                                <li><strong>Export Private Key:</strong> Để sao lưu hoặc ký trên thiết bị khác (TUYỆT
+                                    ĐỐI BẢO MẬT!)</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                    <p
+                        style="margin: 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; border-left: 4px solid #2196f3;">
+                        <strong>🔒 Quan trọng:</strong> Private Key dùng để KÝ (phải giữ bí mật tuyệt đối). Public Key
+                        dùng để XÁC THỰC (có thể chia sẻ công khai). Không bao giờ chia sẻ Private Key với người khác!
+                    </p>
                 </div>
             </div>
 
-            <button class="btn btn-primary btn-block" onclick="signFile()">
-                Ký File
-            </button>
+            <!-- BỐ TRÍ NGANG: KÝ FILE BÊN TRÁI - XÁC THỰC FILE BÊN PHẢI -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
 
-            <div class="loading" id="signFileLoading">
-                <div class="spinner"></div>
-                <p>Đang ký file...</p>
-            </div>
+                <!-- PHẦN KÝ FILE (BÊN TRÁI) -->
+                <div
+                    style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 3px solid #4caf50; border-radius: 12px; padding: 20px;">
+                    <h3
+                        style="color: #2e7d32; margin-bottom: 20px; font-size: 20px; text-align: center; font-weight: 700;">
+                        KÝ FILE</h3>
 
-            <div id="signFileResult"></div>
-        </div>
+                    <div class="alert" id="signFileAlert"></div>
 
-        <!-- Tab: Verify File -->
-        <div class="tab-content" id="verify-file">
-            <h2>Xác thực File</h2>
-            <div class="alert" id="verifyFileAlert"></div>
+                    <div
+                        style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 12px; margin-bottom: 20px; color: #856404; font-size: 16px;">
+                        <strong>Lưu ý:</strong> Cần có Private Key để ký file
+                    </div>
 
-            <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 12px; margin-bottom: 20px; color: #856404;">
-                <strong>Lưu ý:</strong> Bạn phải import Public Key trước khi xác thực file.
-            </div>
+                    <div class="form-group">
+                        <label style="color: #2e7d32; font-weight: 600;">Chọn file cần ký:</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="fileToSign"
+                                onchange="updateFileName('fileToSign', 'fileToSignName'); previewFileContent('fileToSign', 'fileSignPreview', 'fileSignContent')">
+                            <label for="fileToSign" class="file-input-label">
+                                Chọn File
+                            </label>
+                            <span class="file-name" id="fileToSignName">Chưa chọn file</span>
+                        </div>
+                    </div>
 
-            <div class="form-group">
-                <label>File gốc:</label>
-                <div class="file-input-wrapper">
-                    <input type="file" id="fileToVerify" onchange="updateFileName('fileToVerify', 'fileToVerifyName')">
-                    <label for="fileToVerify" class="file-input-label">
-                        Chọn File
-                    </label>
-                    <span class="file-name" id="fileToVerifyName">Chưa chọn file</span>
+                    <div id="fileSignPreview"
+                        style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 15px; display: none; max-height: 200px; overflow-y: auto;">
+                        <strong style="color: #2e7d32;">Nội dung file:</strong>
+                        <pre id="fileSignContent"
+                            style="margin: 10px 0 0 0; font-size: 14px; white-space: pre-wrap; word-wrap: break-word; font-family: 'Inter', sans-serif;"></pre>
+                    </div>
+
+                    <button class="btn btn-primary btn-block" onclick="signFile()">
+                        Ký File
+                    </button>
+
+                    <div class="loading" id="signFileLoading">
+                        <div class="spinner"></div>
+                        <p>Đang ký file...</p>
+                    </div>
+
+                    <div id="signFileResult"></div>
+                </div>
+
+                <!-- PHẦN XÁC THỰC FILE (BÊN PHẢI) -->
+                <div
+                    style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 3px solid #2196f3; border-radius: 12px; padding: 20px;">
+                    <h3
+                        style="color: #1565c0; margin-bottom: 20px; font-size: 20px; text-align: center; font-weight: 700;">
+                        XÁC THỰC FILE</h3>
+
+                    <div class="alert" id="verifyFileAlert"></div>
+
+                    <div
+                        style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 12px; margin-bottom: 20px; color: #856404; font-size: 16px;">
+                        <strong>Lưu ý:</strong> Cần có Public Key để xác thực file
+                    </div>
+
+                    <div class="form-group">
+                        <label style="color: #1565c0; font-weight: 600;">File gốc:</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="fileToVerify"
+                                onchange="updateFileName('fileToVerify', 'fileToVerifyName')">
+                            <label for="fileToVerify" class="file-input-label">
+                                Chọn File
+                            </label>
+                            <span class="file-name" id="fileToVerifyName">Chưa chọn file</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="color: #1565c0; font-weight: 600;">File chữ ký (.sig):</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="signatureFile" accept=".sig,.json"
+                                onchange="updateFileName('signatureFile', 'signatureFileName')">
+                            <label for="signatureFile" class="file-input-label">
+                                Chọn File Chữ ký
+                            </label>
+                            <span class="file-name" id="signatureFileName">Chưa chọn file</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success btn-block" onclick="verifyFile()">
+                        Xác thực File
+                    </button>
+
+                    <div class="loading" id="verifyFileLoading">
+                        <div class="spinner"></div>
+                        <p>Đang xác thực...</p>
+                    </div>
+
+                    <div id="verifyFileResult"></div>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label>File chữ ký (.sig):</label>
-                <div class="file-input-wrapper">
-                    <input type="file" id="signatureFile" accept=".sig,.json" onchange="updateFileName('signatureFile', 'signatureFileName')">
-                    <label for="signatureFile" class="file-input-label">
-                        Chọn File Chữ ký
-                    </label>
-                    <span class="file-name" id="signatureFileName">Chưa chọn file</span>
-                </div>
-            </div>
-
-            <button class="btn btn-success btn-block" onclick="verifyFile()">
-                Xác thực File
-            </button>
-
-            <div class="loading" id="verifyFileLoading">
-                <div class="spinner"></div>
-                <p>Đang xác thực...</p>
-            </div>
-
-            <div id="verifyFileResult"></div>
         </div>
     </div>
 
@@ -674,7 +1061,7 @@
                         publicKeyStatus.classList.add('no-key');
                         publicKeyText.textContent = 'Chưa có';
                     }
-                    
+
                     // Update button states
                     updateButtonStates(status);
                 }
@@ -682,35 +1069,35 @@
                 console.error('Error updating key status:', error);
             }
         }
-        
+
         // Update button states based on key availability
         function updateButtonStates(status) {
             const exportPublicBtn = document.getElementById('exportPublicBtn');
             const exportPrivateBtn = document.getElementById('exportPrivateBtn');
             const clearKeysBtn = document.getElementById('clearKeysBtn');
             const keyRoleWarning = document.getElementById('keyRoleWarning');
-            
+
             // Enable/disable export public key button
             if (status.has_public) {
                 exportPublicBtn.disabled = false;
             } else {
                 exportPublicBtn.disabled = true;
             }
-            
+
             // Enable/disable export private key button
             if (status.has_private) {
                 exportPrivateBtn.disabled = false;
             } else {
                 exportPrivateBtn.disabled = true;
             }
-            
+
             // Enable/disable clear keys button (if has any key)
             if (status.has_private || status.has_public) {
                 clearKeysBtn.disabled = false;
             } else {
                 clearKeysBtn.disabled = true;
             }
-            
+
             // Show warning if only has public key (can't sign)
             if (status.has_public && !status.has_private) {
                 keyRoleWarning.style.display = 'block';
@@ -728,100 +1115,36 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    showAlert('signMessageAlert', data.message, 'success');
+                    // Hiển thị alert ở tab hiện tại
+                    const activeTab = document.querySelector('.tab-content.active');
+                    const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                    if (alertDiv) {
+                        showAlert(alertDiv.id, data.message, 'success');
+                    } else {
+                        alert(data.message); // Fallback
+                    }
                     await updateKeyStatus();
                 } else {
-                    showAlert('signMessageAlert', data.error, 'error');
+                    const activeTab = document.querySelector('.tab-content.active');
+                    const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                    if (alertDiv) {
+                        showAlert(alertDiv.id, data.error, 'error');
+                    } else {
+                        alert(data.error); // Fallback
+                    }
                 }
             } catch (error) {
-                showAlert('signMessageAlert', 'Lỗi: ' + error.message, 'error');
-            }
-        }
-
-        // Sign message
-        async function signMessage() {
-            const message = document.getElementById('messageToSign').value;
-
-            if (!message.trim()) {
-                showAlert('signMessageAlert', 'Vui lòng nhập văn bản!', 'error');
-                return;
-            }
-
-            showLoading('signMessageLoading', true);
-
-            try {
-                const response = await fetch('/api/sign-message', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({message})
-                });
-                const data = await response.json();
-
-                showLoading('signMessageLoading', false);
-
-                if (data.success) {
-                    showAlert('signMessageAlert', data.message, 'success');
-                    displaySignature(data.signature);
+                const activeTab = document.querySelector('.tab-content.active');
+                const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                if (alertDiv) {
+                    showAlert(alertDiv.id, 'Lỗi: ' + error.message, 'error');
                 } else {
-                    showAlert('signMessageAlert', data.error, 'error');
+                    alert('Lỗi: ' + error.message); // Fallback
                 }
-            } catch (error) {
-                showLoading('signMessageLoading', false);
-                showAlert('signMessageAlert', 'Lỗi: ' + error.message, 'error');
             }
         }
 
-        // Verify message
-        async function verifyMessage() {
-            const message = document.getElementById('messageToVerify').value;
-            const signatureR = document.getElementById('signatureR').value;
-            const signatureS = document.getElementById('signatureS').value;
 
-            if (!message || !signatureR || !signatureS) {
-                showAlert('verifyMessageAlert', 'Vui lòng nhập đầy đủ thông tin!', 'error');
-                return;
-            }
-
-            showLoading('verifyMessageLoading', true);
-
-            try {
-                const response = await fetch('/api/verify-message', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        message,
-                        signature_r: signatureR,
-                        signature_s: signatureS
-                    })
-                });
-                const data = await response.json();
-
-                showLoading('verifyMessageLoading', false);
-
-                if (data.success) {
-                    const type = data.valid ? 'success' : 'error';
-                    showAlert('verifyMessageAlert', data.message, type);
-
-                    const resultDiv = document.getElementById('verifyResult');
-                    const statusColor = data.valid ? '#28a745' : '#dc3545';
-                    
-                    resultDiv.innerHTML = `
-                        <div class="result-box" style="border-color: ${statusColor};">
-                            <h4 style="color: ${statusColor};">Kết quả: ${data.valid ? 'HỢP LỆ' : 'KHÔNG HỢP LỆ'}</h4>
-                            <p style="margin-bottom: 10px;">${data.valid ? 'Văn bản chưa bị thay đổi và chữ ký đúng.' : 'Văn bản có thể đã bị thay đổi hoặc chữ ký sai.'}</p>
-                            <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
-                            <p><strong>Public Key đã sử dụng:</strong> ${data.public_key_used}</p>
-                            <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian xác thực: ${new Date().toLocaleString('vi-VN')}</em></p>
-                        </div>
-                    `;
-                } else {
-                    showAlert('verifyMessageAlert', data.error, 'error');
-                }
-            } catch (error) {
-                showLoading('verifyMessageLoading', false);
-                showAlert('verifyMessageAlert', 'Lỗi: ' + error.message, 'error');
-            }
-        }
 
         // Sign file
         async function signFile() {
@@ -857,16 +1180,32 @@
                     showAlert('signFileAlert', data.message, 'success');
 
                     const resultDiv = document.getElementById('signFileResult');
-                    
+
                     // Store signature content globally to avoid escaping issues
                     window.currentSignatureContent = data.signature_content;
                     window.currentSignatureFilename = data.signature_file;
-                    
+
+                    // Parse signature to display r and s
+                    let sigDisplay = '';
+                    try {
+                        const sigData = JSON.parse(data.signature_content);
+                        sigDisplay = `
+                            <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-top: 15px;">
+                                <strong style="color: #667eea;">Chữ ký:</strong>
+                                <p style="margin: 8px 0;"><strong>r:</strong> <code style="font-size: 14px; word-break: break-all;">0x${sigData.signature.r}</code></p>
+                                <p style="margin: 8px 0;"><strong>s:</strong> <code style="font-size: 14px; word-break: break-all;">0x${sigData.signature.s}</code></p>
+                            </div>
+                        `;
+                    } catch (e) {
+                        sigDisplay = '';
+                    }
+
                     resultDiv.innerHTML = `
                         <div class="result-box" style="border-color: #28a745;">
                             <h4 style="color: #28a745;">Đã ký file thành công!</h4>
                             <p><strong>File gốc:</strong> ${data.filename}</p>
                             <p><strong>File chữ ký:</strong> ${data.signature_file}</p>
+                            ${sigDisplay}
                             <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
                             <button class="btn btn-success" style="margin-top: 15px;" onclick="downloadCurrentSignature()">
                                 Download File Chữ Ký (.sig)
@@ -928,16 +1267,68 @@
                     showAlert('verifyFileAlert', data.message, type);
 
                     const resultDiv = document.getElementById('verifyFileResult');
-                    const publicKeyInfo = data.public_key_used ? 
-                        `<p><strong>Public Key sử dụng:</strong> ${data.public_key_used}</p>` : 
+                    const publicKeyInfo = data.public_key_used ?
+                        `<p><strong>Public Key sử dụng:</strong> ${data.public_key_used}</p>` :
                         '<p><strong>Cảnh báo:</strong> Không tìm thấy public key trong file chữ ký</p>';
-                    
+
                     const statusColor = data.valid ? '#28a745' : '#dc3545';
-                    
+
+                    // Xác định tiêu đề lỗi cụ thể dựa trên error_type
+                    let errorTitle = 'Nguyên nhân:';
+                    let errorBgColor = '#fff3cd';
+                    let errorBorderColor = '#ffc107';
+                    let errorTextColor = '#856404';
+
+                    if (!data.valid && data.error_type) {
+                        switch (data.error_type) {
+                            case 'PUBLIC_KEY_MISMATCH':
+                                errorTitle = 'LỖI: PUBLIC KEY KHÔNG KHỚP';
+                                errorBgColor = '#f8d7da';
+                                errorBorderColor = '#dc3545';
+                                errorTextColor = '#721c24';
+                                break;
+                            case 'FILE_MODIFIED':
+                                errorTitle = 'LỖI: FILE ĐÃ BỊ THAY ĐỔI';
+                                errorBgColor = '#f8d7da';
+                                errorBorderColor = '#dc3545';
+                                errorTextColor = '#721c24';
+                                break;
+                            case 'INVALID_SIGNATURE_R':
+                            case 'INVALID_SIGNATURE_S':
+                                errorTitle = 'LỖI: CHỮ KÝ KHÔNG HỢP LỆ';
+                                errorBgColor = '#f8d7da';
+                                errorBorderColor = '#dc3545';
+                                errorTextColor = '#721c24';
+                                break;
+                            case 'INVALID_PUBLIC_KEY':
+                                errorTitle = 'LỖI: PUBLIC KEY KHÔNG HỢP LỆ';
+                                errorBgColor = '#f8d7da';
+                                errorBorderColor = '#dc3545';
+                                errorTextColor = '#721c24';
+                                break;
+                            case 'VERIFICATION_FAILED':
+                            case 'UNKNOWN':
+                            default:
+                                errorTitle = 'XÁC THỰC THẤT BẠI';
+                                break;
+                        }
+                    }
+
+                    // Error hints section với styling cải tiến
+                    const errorHintsHtml = (!data.valid && data.error_hints && data.error_hints.length > 0) ? `
+                        <div style="margin-top: 15px; background: ${errorBgColor}; border: 2px solid ${errorBorderColor}; border-radius: 8px; padding: 16px; word-break: break-word;">
+                            <strong style="color: ${errorTextColor}; font-size: 18px; display: block; margin-bottom: 12px;">${errorTitle}</strong>
+                            <div style="color: ${errorTextColor}; font-size: 16px; line-height: 1.8; word-break: break-word;">
+                                ${data.error_hints.map(hint => `<div style="margin-bottom: 8px;">• ${hint}</div>`).join('')}
+                            </div>
+                        </div>
+                    ` : '';
+
                     resultDiv.innerHTML = `
                         <div class="result-box" style="border-color: ${statusColor};">
-                            <h4 style="color: ${statusColor};">Kết quả: ${data.valid ? 'HỢP LỆ' : 'KHÔNG HỢP LỆ'}</h4>
-                            <p style="margin-bottom: 10px;">${data.valid ? 'File chưa bị thay đổi và chữ ký đúng.' : 'File có thể đã bị thay đổi hoặc chữ ký không hợp lệ.'}</p>
+                            <h4 style="color: ${statusColor};">Kết quả: ${data.valid ? '✅ HỢP LỆ' : '❌ KHÔNG HỢP LỆ'}</h4>
+                            <p style="margin-bottom: 10px; font-size: 16px;">${data.valid ? 'File chưa bị thay đổi và chữ ký đúng.' : 'Xác thực thất bại - Xem chi tiết bên dưới.'}</p>
+                            ${errorHintsHtml}
                             <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
                             ${publicKeyInfo}
                             <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian xác thực: ${new Date().toLocaleString('vi-VN')}</em></p>
@@ -957,33 +1348,51 @@
             // Check if button is disabled
             const btn = type === 'public' ? document.getElementById('exportPublicBtn') : document.getElementById('exportPrivateBtn');
             if (btn.disabled) {
-                showAlert('signMessageAlert', `Chưa có ${type === 'public' ? 'public' : 'private'} key để export!`, 'error');
+                alert(`Chưa có ${type === 'public' ? 'public' : 'private'} key để export!`);
                 return;
             }
-            
+
             try {
                 const response = await fetch('/api/export-keys', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({type})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type })
                 });
                 const data = await response.json();
 
                 if (data.success) {
                     // Download file
-                    const blob = new Blob([data.data], {type: 'application/json'});
+                    const blob = new Blob([data.data], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = `${type}_key.json`;
                     a.click();
 
-                    showAlert('signMessageAlert', data.message, 'success');
+                    const activeTab = document.querySelector('.tab-content.active');
+                    const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                    if (alertDiv) {
+                        showAlert(alertDiv.id, data.message, 'success');
+                    } else {
+                        alert(data.message);
+                    }
                 } else {
-                    showAlert('signMessageAlert', data.error, 'error');
+                    const activeTab = document.querySelector('.tab-content.active');
+                    const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                    if (alertDiv) {
+                        showAlert(alertDiv.id, data.error, 'error');
+                    } else {
+                        alert(data.error);
+                    }
                 }
             } catch (error) {
-                showAlert('signMessageAlert', 'Lỗi: ' + error.message, 'error');
+                const activeTab = document.querySelector('.tab-content.active');
+                const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                if (alertDiv) {
+                    showAlert(alertDiv.id, 'Lỗi: ' + error.message, 'error');
+                } else {
+                    alert('Lỗi: ' + error.message);
+                }
             }
         }
 
@@ -1009,13 +1418,32 @@
                     } else if (data.message.includes('private key')) {
                         message += ' (Có thể ký và xác thực)';
                     }
-                    showAlert('signMessageAlert', message, 'success');
+
+                    const activeTab = document.querySelector('.tab-content.active');
+                    const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                    if (alertDiv) {
+                        showAlert(alertDiv.id, message, 'success');
+                    } else {
+                        alert(message);
+                    }
                     await updateKeyStatus();
                 } else {
-                    showAlert('signMessageAlert', data.error, 'error');
+                    const activeTab = document.querySelector('.tab-content.active');
+                    const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                    if (alertDiv) {
+                        showAlert(alertDiv.id, data.error, 'error');
+                    } else {
+                        alert(data.error);
+                    }
                 }
             } catch (error) {
-                showAlert('signMessageAlert', 'Lỗi: ' + error.message, 'error');
+                const activeTab = document.querySelector('.tab-content.active');
+                const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                if (alertDiv) {
+                    showAlert(alertDiv.id, 'Lỗi: ' + error.message, 'error');
+                } else {
+                    alert('Lỗi: ' + error.message);
+                }
             }
 
             input.value = '';
@@ -1026,10 +1454,10 @@
             // Check if button is disabled
             const btn = document.getElementById('clearKeysBtn');
             if (btn.disabled) {
-                showAlert('signMessageAlert', 'Không có khóa nào để xóa!', 'error');
+                alert('Không có khóa nào để xóa!');
                 return;
             }
-            
+
             if (!confirm('Bạn có chắc muốn xóa tất cả khóa?')) return;
 
             try {
@@ -1039,13 +1467,31 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    showAlert('signMessageAlert', data.message, 'success');
+                    const activeTab = document.querySelector('.tab-content.active');
+                    const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                    if (alertDiv) {
+                        showAlert(alertDiv.id, data.message, 'success');
+                    } else {
+                        alert(data.message);
+                    }
                     await updateKeyStatus();
                 } else {
-                    showAlert('signMessageAlert', data.error, 'error');
+                    const activeTab = document.querySelector('.tab-content.active');
+                    const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                    if (alertDiv) {
+                        showAlert(alertDiv.id, data.error, 'error');
+                    } else {
+                        alert(data.error);
+                    }
                 }
             } catch (error) {
-                showAlert('signMessageAlert', 'Lỗi: ' + error.message, 'error');
+                const activeTab = document.querySelector('.tab-content.active');
+                const alertDiv = activeTab ? activeTab.querySelector('.alert') : null;
+                if (alertDiv) {
+                    showAlert(alertDiv.id, 'Lỗi: ' + error.message, 'error');
+                } else {
+                    alert('Lỗi: ' + error.message);
+                }
             }
         }
 
@@ -1055,9 +1501,10 @@
             alert.className = `alert alert-${type} show`;
             alert.textContent = message;
 
+            // Tăng thời gian hiển thị lên 15 giây
             setTimeout(() => {
                 alert.classList.remove('show');
-            }, 5000);
+            }, 15000);
         }
 
         function showLoading(elementId, show) {
@@ -1069,31 +1516,11 @@
             }
         }
 
-        function displaySignature(signature) {
-            const resultDiv = document.getElementById('signatureResult');
-            resultDiv.innerHTML = `
-                <div class="result-box" style="border-color: #28a745;">
-                    <h4 style="color: #28a745;">Chữ ký đã tạo thành công!</h4>
-                    <p><strong>Signature (r):</strong> 0x${signature.r}</p>
-                    <p><strong>Signature (s):</strong> 0x${signature.s}</p>
-                    <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
-                    <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian tạo: ${new Date().toLocaleString('vi-VN')}</em></p>
-                    <button class="btn btn-secondary" style="margin-top: 15px;" onclick="copySignature('0x${signature.r}', '0x${signature.s}')">
-                        Copy Chữ ký
-                    </button>
-                </div>
-            `;
-        }
 
-        function copySignature(r, s) {
-            const text = `r: ${r}\ns: ${s}`;
-            navigator.clipboard.writeText(text);
-            alert('Đã copy chữ ký!');
-        }
-        
+
         function downloadSignature(content, filename) {
             // Tạo blob từ nội dung signature
-            const blob = new Blob([content], {type: 'application/json'});
+            const blob = new Blob([content], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -1101,7 +1528,7 @@
             a.click();
             URL.revokeObjectURL(url);
         }
-        
+
         function downloadCurrentSignature() {
             if (window.currentSignatureContent && window.currentSignatureFilename) {
                 downloadSignature(window.currentSignatureContent, window.currentSignatureFilename);
@@ -1110,14 +1537,20 @@
             }
         }
 
+        // Helper function to show alert in correct section
+        function showDemoAlert(section, message, type) {
+            const alertId = section === 'sign' ? 'demoSignAlert' : 'demoVerifyAlert';
+            showAlert(alertId, message, type);
+        }
+
         function updateFileName(inputId, displayId) {
             const input = document.getElementById(inputId);
             const display = document.getElementById(displayId);
             if (input.files.length) {
                 const file = input.files[0];
                 const fileSize = (file.size / 1024).toFixed(2); // KB
-                const sizeText = fileSize > 1024 ? 
-                    `${(fileSize / 1024).toFixed(2)} MB` : 
+                const sizeText = fileSize > 1024 ?
+                    `${(fileSize / 1024).toFixed(2)} MB` :
                     `${fileSize} KB`;
                 display.textContent = `${file.name} (${sizeText})`;
                 display.style.color = '#28a745';
@@ -1129,8 +1562,756 @@
             }
         }
 
+        function previewFileContent(inputId, previewId, contentId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            const content = document.getElementById(contentId);
+
+            if (input.files.length) {
+                const file = input.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const text = e.target.result;
+                    const previewText = text.length > 300 ? text.substring(0, 300) + '...' : text;
+                    content.textContent = previewText;
+                    preview.style.display = 'block';
+                };
+
+                reader.onerror = function () {
+                    content.textContent = 'Không thể đọc file';
+                    preview.style.display = 'block';
+                };
+
+                reader.readAsText(file);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        // Error handling functions
+        function clearFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            if (field) {
+                field.classList.remove('error');
+            }
+            if (errorDiv) {
+                errorDiv.classList.remove('show');
+                errorDiv.textContent = '';
+            }
+        }
+
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            if (field) {
+                field.classList.add('error');
+            }
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function clearAllDemoErrors() {
+            clearFieldError('demoP');
+            clearFieldError('demoQ');
+            clearFieldError('demoG');
+            clearFieldError('demoX');
+            clearFieldError('demoK');
+            clearFieldError('demoMessage');
+            clearFieldError('demoFile');
+        }
+
+        // Add input listeners to clear errors on typing
+        document.addEventListener('DOMContentLoaded', function () {
+            ['demoP', 'demoQ', 'demoG', 'demoX', 'demoK', 'demoMessage'].forEach(id => {
+                const field = document.getElementById(id);
+                if (field) {
+                    field.addEventListener('input', function () {
+                        clearFieldError(id);
+                    });
+                }
+            });
+        });
+
+        // Demo Algorithm Functions
+        function loadSimpleParams() {
+            // Danh sách các tổ hợp tham số DSA hợp lệ (tất cả < 1000)
+            const paramSets = [
+                { p: 23, q: 11, g: 2, desc: 'p=23, q=11' },
+                { p: 47, q: 23, g: 2, desc: 'p=47, q=23' },
+                { p: 59, q: 29, g: 2, desc: 'p=59, q=29' },
+                { p: 71, q: 5, g: 3, desc: 'p=71, q=5' },
+                { p: 71, q: 7, g: 2, desc: 'p=71, q=7' },
+                { p: 83, q: 41, g: 2, desc: 'p=83, q=41' },
+                { p: 107, q: 53, g: 2, desc: 'p=107, q=53' },
+                { p: 131, q: 13, g: 2, desc: 'p=131, q=13' },
+                { p: 139, q: 23, g: 2, desc: 'p=139, q=23' },
+                { p: 167, q: 83, g: 2, desc: 'p=167, q=83' },
+                { p: 179, q: 89, g: 2, desc: 'p=179, q=89' },
+                { p: 191, q: 19, g: 2, desc: 'p=191, q=19' },
+                { p: 227, q: 113, g: 2, desc: 'p=227, q=113' },
+                { p: 239, q: 7, g: 3, desc: 'p=239, q=7' },
+                { p: 263, q: 131, g: 2, desc: 'p=263, q=131' },
+                { p: 283, q: 47, g: 2, desc: 'p=283, q=47' },
+                { p: 347, q: 173, g: 2, desc: 'p=347, q=173' },
+                { p: 359, q: 179, g: 2, desc: 'p=359, q=179' },
+                { p: 383, q: 191, g: 2, desc: 'p=383, q=191' },
+                { p: 419, q: 11, g: 2, desc: 'p=419, q=11' },
+                { p: 431, q: 43, g: 2, desc: 'p=431, q=43' },
+                { p: 467, q: 233, g: 2, desc: 'p=467, q=233' },
+                { p: 479, q: 239, g: 2, desc: 'p=479, q=239' },
+                { p: 491, q: 7, g: 2, desc: 'p=491, q=7' },
+                { p: 503, q: 251, g: 2, desc: 'p=503, q=251' },
+                { p: 563, q: 281, g: 2, desc: 'p=563, q=281' },
+                { p: 587, q: 293, g: 2, desc: 'p=587, q=293' },
+                { p: 599, q: 13, g: 2, desc: 'p=599, q=13' },
+                { p: 647, q: 17, g: 2, desc: 'p=647, q=17' },
+                { p: 659, q: 7, g: 2, desc: 'p=659, q=7' },
+                { p: 719, q: 359, g: 2, desc: 'p=719, q=359' },
+                { p: 743, q: 53, g: 2, desc: 'p=743, q=53' },
+                { p: 787, q: 393, g: 2, desc: 'p=787, q=393' },
+                { p: 839, q: 419, g: 2, desc: 'p=839, q=419' },
+                { p: 863, q: 431, g: 2, desc: 'p=863, q=431' },
+                { p: 887, q: 443, g: 2, desc: 'p=887, q=443' },
+                { p: 911, q: 7, g: 3, desc: 'p=911, q=7' },
+                { p: 947, q: 11, g: 2, desc: 'p=947, q=11' },
+                { p: 971, q: 97, g: 2, desc: 'p=971, q=97' }
+            ];
+
+            // Random chọn một tổ hợp
+            const randomSet = paramSets[Math.floor(Math.random() * paramSets.length)];
+
+            // Random x và k trong khoảng hợp lệ
+            const x = Math.floor(Math.random() * (randomSet.q - 2)) + 2; // 2 đến q-1
+            const k = Math.floor(Math.random() * (randomSet.q - 2)) + 2; // 2 đến q-1
+
+            document.getElementById('demoP').value = randomSet.p.toString();
+            document.getElementById('demoQ').value = randomSet.q.toString();
+            document.getElementById('demoG').value = randomSet.g.toString();
+            document.getElementById('demoX').value = x.toString();
+            document.getElementById('demoK').value = k.toString();
+
+            showDemoAlert('sign', `Đã tải tham số: ${randomSet.desc}, x=${x}, k=${k}`, 'success');
+        }
+
+        // Toggle between text and file input for signing
+        function toggleDemoSignInput() {
+            const type = document.querySelector('input[name="demoSignType"]:checked').value;
+            const textInput = document.getElementById('demoTextInput');
+            const fileInput = document.getElementById('demoFileInput');
+
+            if (type === 'text') {
+                textInput.style.display = 'block';
+                fileInput.style.display = 'none';
+            } else {
+                textInput.style.display = 'none';
+                fileInput.style.display = 'block';
+            }
+        }
+
+        // Toggle between text and file input for verification
+        function toggleDemoVerifyInput() {
+            const type = document.querySelector('input[name="demoVerifyType"]:checked').value;
+            const textInput = document.getElementById('demoVerifyTextInput');
+            const fileInput = document.getElementById('demoVerifyFileInput');
+
+            if (type === 'text') {
+                textInput.style.display = 'block';
+                fileInput.style.display = 'none';
+            } else {
+                textInput.style.display = 'none';
+                fileInput.style.display = 'block';
+            }
+        }
+
+        // Unified demo sign function (text or file)
+        async function demoSign() {
+            const type = document.querySelector('input[name="demoSignType"]:checked').value;
+            if (type === 'text') {
+                await demoSignMessage();
+            } else {
+                await demoSignFile();
+            }
+        }
+
+        // Unified demo verify function (text or file)
+        async function demoVerify() {
+            const type = document.querySelector('input[name="demoVerifyType"]:checked').value;
+            if (type === 'text') {
+                await demoVerifyMessage();
+            } else {
+                await demoVerifyFile();
+            }
+        }
+
+        async function demoSignMessage() {
+            clearAllDemoErrors();
+
+            const p = document.getElementById('demoP').value.trim();
+            const q = document.getElementById('demoQ').value.trim();
+            const g = document.getElementById('demoG').value.trim();
+            const x = document.getElementById('demoX').value.trim();
+            const k = document.getElementById('demoK').value.trim();
+            const message = document.getElementById('demoMessage').value; // KHÔNG trim message!
+
+            let hasError = false;
+
+            // Validate từng trường
+            if (!p) {
+                showFieldError('demoP', 'Thiếu tham số p. Vui lòng nhập số nguyên.');
+                hasError = true;
+            }
+            if (!q) {
+                showFieldError('demoQ', 'Thiếu tham số q. Vui lòng nhập số nguyên.');
+                hasError = true;
+            }
+            if (!g) {
+                showFieldError('demoG', 'Thiếu tham số g. Vui lòng nhập số nguyên.');
+                hasError = true;
+            }
+            if (!x) {
+                showFieldError('demoX', 'Thiếu private key x. Vui lòng nhập số nguyên.');
+                hasError = true;
+            }
+            if (!message) {
+                showFieldError('demoMessage', 'Thiếu văn bản. Vui lòng nhập văn bản cần ký.');
+                hasError = true;
+            }
+
+            if (hasError) {
+                return;
+            }
+
+            showLoading('demoLoading', true);
+
+            try {
+                const response = await fetch('/api/demo-sign', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ p, q, g, x, k, message })
+                });
+                const data = await response.json();
+
+                showLoading('demoLoading', false);
+
+                if (data.success) {
+                    showDemoAlert('sign', data.message, 'success');
+                    displayDemoResult(data.result, message, 'text');
+                } else {
+                    // Parse error message to show on specific fields
+                    const errorMsg = data.error;
+
+                    if (errorMsg.includes('Thiếu tham số:')) {
+                        // Extract missing params
+                        const match = errorMsg.match(/Thiếu tham số: (.+?)\./);
+                        if (match) {
+                            const missing = match[1].split(', ');
+                            missing.forEach(param => {
+                                if (param === 'p') showFieldError('demoP', 'Thiếu tham số p');
+                                if (param === 'q') showFieldError('demoQ', 'Thiếu tham số q');
+                                if (param === 'g') showFieldError('demoG', 'Thiếu tham số g');
+                                if (param === 'x') showFieldError('demoX', 'Thiếu private key x');
+                                if (param === 'message') showFieldError('demoMessage', 'Thiếu văn bản');
+                            });
+                        }
+                    } else if (errorMsg.includes('Private key x')) {
+                        showFieldError('demoX', errorMsg);
+                    } else if (errorMsg.includes('k phải')) {
+                        showFieldError('demoK', errorMsg);
+                    } else if (errorMsg.includes('Tham số DSA không hợp lệ')) {
+                        showFieldError('demoP', 'Tham số p, q, g không hợp lệ');
+                        showFieldError('demoQ', 'Tham số p, q, g không hợp lệ');
+                        showFieldError('demoG', 'Tham số p, q, g không hợp lệ');
+                    } else {
+                        showDemoAlert('sign', errorMsg, 'error');
+                    }
+                }
+            } catch (error) {
+                showLoading('demoLoading', false);
+                showDemoAlert('sign', 'Lỗi kết nối: ' + error.message, 'error');
+            }
+        }
+
+        async function demoSignFile() {
+            clearAllDemoErrors();
+
+            const p = document.getElementById('demoP').value.trim();
+            const q = document.getElementById('demoQ').value.trim();
+            const g = document.getElementById('demoG').value.trim();
+            const x = document.getElementById('demoX').value.trim();
+            const k = document.getElementById('demoK').value.trim();
+            const fileInput = document.getElementById('demoFile');
+
+            let hasError = false;
+
+            // Validate từng trường
+            if (!p) {
+                showFieldError('demoP', 'Thiếu tham số p. Vui lòng nhập số nguyên.');
+                hasError = true;
+            }
+            if (!q) {
+                showFieldError('demoQ', 'Thiếu tham số q. Vui lòng nhập số nguyên.');
+                hasError = true;
+            }
+            if (!g) {
+                showFieldError('demoG', 'Thiếu tham số g. Vui lòng nhập số nguyên.');
+                hasError = true;
+            }
+            if (!x) {
+                showFieldError('demoX', 'Thiếu private key x. Vui lòng nhập số nguyên.');
+                hasError = true;
+            }
+
+            if (!fileInput.files.length) {
+                showFieldError('demoFile', 'Chưa chọn file. Vui lòng chọn file cần ký.');
+                hasError = true;
+            } else {
+                // Kiểm tra kích thước file (giới hạn 5MB cho demo)
+                const maxSize = 5 * 1024 * 1024;
+                if (fileInput.files[0].size > maxSize) {
+                    showFieldError('demoFile', 'File quá lớn! Giới hạn 5MB cho demo.');
+                    hasError = true;
+                }
+            }
+
+            if (hasError) {
+                return;
+            }
+
+            showLoading('demoLoading', true);
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('p', p);
+            formData.append('q', q);
+            formData.append('g', g);
+            formData.append('x', x);
+            if (k) formData.append('k', k);
+
+            try {
+                const response = await fetch('/api/demo-sign-file', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                showLoading('demoLoading', false);
+
+                if (data.success) {
+                    showDemoAlert('sign', data.message, 'success');
+                    displayDemoResult(data.result, data.file_content, 'file', data.filename);
+                } else {
+                    // Parse error message to show on specific fields
+                    const errorMsg = data.error;
+
+                    if (errorMsg.includes('Thiếu tham số:')) {
+                        const match = errorMsg.match(/Thiếu tham số: (.+?)\./);
+                        if (match) {
+                            const missing = match[1].split(', ');
+                            missing.forEach(param => {
+                                if (param === 'p') showFieldError('demoP', 'Thiếu tham số p');
+                                if (param === 'q') showFieldError('demoQ', 'Thiếu tham số q');
+                                if (param === 'g') showFieldError('demoG', 'Thiếu tham số g');
+                                if (param === 'x') showFieldError('demoX', 'Thiếu private key x');
+                            });
+                        }
+                    } else if (errorMsg.includes('Private key x')) {
+                        showFieldError('demoX', errorMsg);
+                    } else if (errorMsg.includes('k phải')) {
+                        showFieldError('demoK', errorMsg);
+                    } else if (errorMsg.includes('Tham số DSA không hợp lệ')) {
+                        showFieldError('demoP', 'Tham số p, q, g không hợp lệ');
+                        showFieldError('demoQ', 'Tham số p, q, g không hợp lệ');
+                        showFieldError('demoG', 'Tham số p, q, g không hợp lệ');
+                    } else {
+                        showDemoAlert('sign', errorMsg, 'error');
+                    }
+                }
+            } catch (error) {
+                showLoading('demoLoading', false);
+                showDemoAlert('sign', 'Lỗi kết nối: ' + error.message, 'error');
+            }
+        }
+
+        function displayDemoResult(result, content, type, filename = '') {
+            const resultDiv = document.getElementById('demoResult');
+
+            const contentPreview = content.length > 50 ? content.substring(0, 50) + '...' : content;
+            const typeLabel = type === 'file' ? `File: ${filename}` : 'Văn bản';
+
+            const r = result;
+
+            resultDiv.innerHTML = `
+                <div class="result-box" style="border: 3px solid #28a745; background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);">
+                    <h4 style="color: #28a745; margin-bottom: 20px; font-size: 22px;">Kết quả Ký (SIGNING)</h4>
+                    
+                    <!-- Tham số đầu vào -->
+                    <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #2196f3; border-radius: 8px; padding: 18px; margin-bottom: 15px;">
+                        <h5 style="color: #1976d2; margin-bottom: 12px; font-size: 20px; font-weight: 600;">Tham số đầu vào:</h5>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; font-size: 17px;">
+                            <div><strong>p:</strong> ${r.params.p}</div>
+                            <div><strong>q:</strong> ${r.params.q}</div>
+                            <div><strong>g:</strong> ${r.params.g}</div>
+                            <div><strong>x:</strong> ${r.params.x}</div>
+                            <div><strong>k:</strong> ${r.params.k}</div>
+                        </div>
+                        <div style="margin-top: 12px; font-size: 17px;"><strong>Message:</strong> "${contentPreview}"</div>
+                    </div>
+
+                    <!-- BƯỚC KÝ -->
+                    <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border: 2px solid #ffc107; border-radius: 8px; padding: 18px; margin-bottom: 15px;">
+                        <h5 style="color: #856404; margin-bottom: 15px; font-size: 20px; font-weight: 600;">BƯỚC KÝ (SIGNING)</h5>
+                        
+                        <div style="background: white; border-radius: 6px; padding: 14px; margin-bottom: 12px;">
+                            <strong style="color: #856404; font-size: 17px;">Bước 1: Tính Public Key (y)</strong>
+                            <div style="margin-top: 10px; font-family: monospace; font-size: 16px; color: #333; line-height: 1.6;">
+                                ${r.step1.formula}
+                            </div>
+                            <div style="margin-top: 8px; color: #28a745; font-weight: 600; font-size: 17px;">→ y = ${r.step1.y}</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 6px; padding: 14px; margin-bottom: 12px;">
+                            <strong style="color: #856404; font-size: 17px;">Bước 2: Hash Message</strong>
+                            <div style="margin-top: 10px; font-family: monospace; font-size: 16px; color: #333; line-height: 1.6;">
+                                ${r.step2.formula}
+                            </div>
+                            <div style="margin-top: 8px; color: #28a745; font-weight: 600; font-size: 17px;">→ H(m) = ${r.step2.hash}</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 6px; padding: 14px; margin-bottom: 12px;">
+                            <strong style="color: #856404; font-size: 17px;">Bước 3: Tính r</strong>
+                            <div style="margin-top: 10px; font-family: monospace; font-size: 15px; color: #333; line-height: 1.6;">
+                                ${r.step3.formula}
+                            </div>
+                            <div style="margin-top: 8px; color: #28a745; font-weight: 600; font-size: 17px;">→ r = ${r.step3.r}</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 6px; padding: 14px;">
+                            <strong style="color: #856404; font-size: 17px;">Bước 4: Tính s</strong>
+                            <div style="margin-top: 10px; font-family: monospace; font-size: 15px; color: #333; line-height: 1.6;">
+                                k⁻¹ = ${r.step4.k_inv}<br>
+                                x × r = ${r.params.x} × ${r.step3.r} = ${r.step4.x_r}<br>
+                                H(m) + x×r = ${r.step2.hash} + ${r.step4.x_r} = ${r.step4.h_plus_xr}<br>
+                                ${r.step4.formula}
+                            </div>
+                            <div style="margin-top: 8px; color: #28a745; font-weight: 600; font-size: 17px;">→ s = ${r.step4.s}</div>
+                        </div>
+                    </div>
+
+                    <!-- CHỮ KÝ -->
+                    <div style="background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%); border: 3px solid #17a2b8; border-radius: 8px; padding: 18px;">
+                        <h5 style="color: #0c5460; margin-bottom: 12px; font-size: 22px; font-weight: 600;">CHỮ KÝ SỐ DSA</h5>
+                        <div style="font-size: 19px; font-weight: 600; color: #0c5460;">
+                            Signature = (r, s) = (${r.signature.r}, ${r.signature.s})
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Demo Verify Message
+        async function demoVerifyMessage() {
+            // Clear errors for all verify fields
+            ['verifyP', 'verifyQ', 'verifyG', 'verifyY', 'verifyR', 'verifyS', 'verifyMessage'].forEach(id => {
+                clearFieldError(id);
+            });
+
+            const p = document.getElementById('verifyP').value.trim();
+            const q = document.getElementById('verifyQ').value.trim();
+            const g = document.getElementById('verifyG').value.trim();
+            const y = document.getElementById('verifyY').value.trim();
+            const r = document.getElementById('verifyR').value.trim();
+            const s = document.getElementById('verifyS').value.trim();
+            const message = document.getElementById('verifyMessage').value; // KHÔNG trim message!
+
+            let hasError = false;
+
+            // Validate từng trường với thông báo cụ thể
+            if (!p) {
+                showFieldError('verifyP', 'Thiếu tham số p. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!q) {
+                showFieldError('verifyQ', 'Thiếu tham số q. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!g) {
+                showFieldError('verifyG', 'Thiếu tham số g. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!y) {
+                showFieldError('verifyY', 'Thiếu public key y. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!r) {
+                showFieldError('verifyR', 'Thiếu chữ ký r. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!s) {
+                showFieldError('verifyS', 'Thiếu chữ ký s. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!message) {
+                showFieldError('verifyMessage', 'Thiếu văn bản. Vui lòng nhập văn bản cần xác thực.');
+                hasError = true;
+            }
+
+            if (hasError) {
+                return;
+            }
+
+            showLoading('demoVerifyLoading', true);
+
+            try {
+                const response = await fetch('/api/demo-verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ p, q, g, y, r, s, message })
+                });
+                const data = await response.json();
+
+                showLoading('demoVerifyLoading', false);
+
+                if (data.success) {
+                    displayDemoVerifyResult(data.result, message);
+                } else {
+                    // Parse error message to show on specific fields
+                    const errorMsg = data.error;
+
+                    if (errorMsg.includes('Thiếu tham số:')) {
+                        const match = errorMsg.match(/Thiếu tham số: (.+?)\./);
+                        if (match) {
+                            const missing = match[1].split(', ');
+                            missing.forEach(param => {
+                                if (param === 'p') showFieldError('verifyP', 'Thiếu tham số p');
+                                if (param === 'q') showFieldError('verifyQ', 'Thiếu tham số q');
+                                if (param === 'g') showFieldError('verifyG', 'Thiếu tham số g');
+                            });
+                        }
+                    } else if (errorMsg.includes('Public key y')) {
+                        showFieldError('verifyY', errorMsg);
+                    } else if (errorMsg.includes('Chữ ký r')) {
+                        showFieldError('verifyR', errorMsg);
+                    } else if (errorMsg.includes('Chữ ký s')) {
+                        showFieldError('verifyS', errorMsg);
+                    } else if (errorMsg.includes('parse')) {
+                        // Lỗi parse - có thể do nhập sai format
+                        showDemoAlert('verify', errorMsg + ' Vui lòng kiểm tra lại các giá trị đã nhập.', 'error');
+                    } else {
+                        showDemoAlert('verify', errorMsg, 'error');
+                    }
+                }
+            } catch (error) {
+                showLoading('demoVerifyLoading', false);
+                showDemoAlert('verify', 'Lỗi kết nối: ' + error.message, 'error');
+            }
+        }
+
+        // Demo Verify File
+        async function demoVerifyFile() {
+            // Clear errors for all verify fields
+            ['verifyP', 'verifyQ', 'verifyG', 'verifyY', 'verifyR', 'verifyS', 'verifyFile'].forEach(id => {
+                clearFieldError(id);
+            });
+
+            const p = document.getElementById('verifyP').value.trim();
+            const q = document.getElementById('verifyQ').value.trim();
+            const g = document.getElementById('verifyG').value.trim();
+            const y = document.getElementById('verifyY').value.trim();
+            const r = document.getElementById('verifyR').value.trim();
+            const s = document.getElementById('verifyS').value.trim();
+            const fileInput = document.getElementById('verifyFile');
+
+            let hasError = false;
+
+            // Validate từng trường với thông báo cụ thể
+            if (!p) {
+                showFieldError('verifyP', 'Thiếu tham số p. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!q) {
+                showFieldError('verifyQ', 'Thiếu tham số q. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!g) {
+                showFieldError('verifyG', 'Thiếu tham số g. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!y) {
+                showFieldError('verifyY', 'Thiếu public key y. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!r) {
+                showFieldError('verifyR', 'Thiếu chữ ký r. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!s) {
+                showFieldError('verifyS', 'Thiếu chữ ký s. Vui lòng sao chép từ kết quả ký.');
+                hasError = true;
+            }
+            if (!fileInput.files.length) {
+                showFieldError('verifyFile', 'Chưa chọn file. Vui lòng chọn file cần xác thực.');
+                hasError = true;
+            } else {
+                // Kiểm tra kích thước file (giới hạn 5MB cho demo)
+                const maxSize = 5 * 1024 * 1024;
+                if (fileInput.files[0].size > maxSize) {
+                    showDemoAlert('verify', 'File quá lớn! Giới hạn 5MB cho demo.', 'error');
+                    hasError = true;
+                }
+            }
+
+            if (hasError) {
+                return;
+            }
+
+            showLoading('demoVerifyLoading', true);
+
+            // Read file content
+            const file = fileInput.files[0];
+            const message = await file.text();
+
+            try {
+                const response = await fetch('/api/demo-verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ p, q, g, y, r, s, message })
+                });
+                const data = await response.json();
+
+                showLoading('demoVerifyLoading', false);
+
+                if (data.success) {
+                    displayDemoVerifyResult(data.result, message);
+                } else {
+                    // Parse error message to show on specific fields
+                    const errorMsg = data.error;
+
+                    if (errorMsg.includes('Thiếu tham số')) {
+                        showDemoAlert('verify', errorMsg, 'error');
+                    } else if (errorMsg.includes('Public key y')) {
+                        showFieldError('verifyY', errorMsg);
+                    } else if (errorMsg.includes('Chữ ký r')) {
+                        showFieldError('verifyR', errorMsg);
+                    } else if (errorMsg.includes('Chữ ký s')) {
+                        showFieldError('verifyS', errorMsg);
+                    } else if (errorMsg.includes('parse')) {
+                        showDemoAlert('verify', errorMsg + ' Vui lòng kiểm tra lại các giá trị đã nhập.', 'error');
+                    } else {
+                        showDemoAlert('verify', errorMsg, 'error');
+                    }
+                }
+            } catch (error) {
+                showLoading('demoVerifyLoading', false);
+                showDemoAlert('verify', 'Lỗi kết nối: ' + error.message, 'error');
+            }
+        }
+
+        function displayDemoVerifyResult(result, message) {
+            const resultDiv = document.getElementById('demoVerifyResult');
+            const r = result;
+
+            const contentPreview = message.length > 50 ? message.substring(0, 50) + '...' : message;
+
+            resultDiv.innerHTML = `
+                <div class="result-box" style="border: 3px solid ${r.is_valid ? '#28a745' : '#dc3545'}; background: linear-gradient(135deg, ${r.is_valid ? '#d4edda' : '#f8d7da'} 0%, ${r.is_valid ? '#c3e6cb' : '#f5c6cb'} 100%);">
+                    <h4 style="color: ${r.is_valid ? '#28a745' : '#dc3545'}; margin-bottom: 20px; font-size: 22px;">Kết quả Xác thực (VERIFICATION)</h4>
+                    
+                    <!-- Tham số đầu vào -->
+                    <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #2196f3; border-radius: 8px; padding: 18px; margin-bottom: 15px;">
+                        <h5 style="color: #1976d2; margin-bottom: 12px; font-size: 20px; font-weight: 600;">Tham số đầu vào:</h5>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; font-size: 17px;">
+                            <div><strong>p:</strong> ${r.params.p}</div>
+                            <div><strong>q:</strong> ${r.params.q}</div>
+                            <div><strong>g:</strong> ${r.params.g}</div>
+                            <div><strong>y:</strong> ${r.params.y}</div>
+                            <div><strong>r:</strong> ${r.signature.r}</div>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 17px;"><strong>s:</strong> ${r.signature.s}</div>
+                        <div style="margin-top: 12px; font-size: 17px;"><strong>Message:</strong> "${contentPreview}"</div>
+                    </div>
+
+                    <!-- BƯỚC XÁC THỰC -->
+                    <div style="background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); border: 2px solid #dc3545; border-radius: 8px; padding: 18px; margin-bottom: 15px;">
+                        <h5 style="color: #721c24; margin-bottom: 15px; font-size: 20px; font-weight: 600;">BƯỚC XÁC THỰC (VERIFICATION)</h5>
+                        
+                        <div style="background: white; border-radius: 6px; padding: 14px; margin-bottom: 12px;">
+                            <strong style="color: #721c24; font-size: 17px;">Bước 1: Hash Message</strong>
+                            <div style="margin-top: 10px; font-family: monospace; font-size: 16px; color: #333; line-height: 1.6;">
+                                ${r.step1.formula}
+                            </div>
+                            <div style="margin-top: 8px; color: #dc3545; font-weight: 600; font-size: 17px;">→ H(m) = ${r.step1.hash}</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 6px; padding: 14px; margin-bottom: 12px;">
+                            <strong style="color: #721c24; font-size: 17px;">Bước 2: Tính w</strong>
+                            <div style="margin-top: 10px; font-family: monospace; font-size: 16px; color: #333; line-height: 1.6;">
+                                ${r.step2.formula}
+                            </div>
+                            <div style="margin-top: 8px; color: #dc3545; font-weight: 600; font-size: 17px;">→ w = ${r.step2.w}</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 6px; padding: 14px; margin-bottom: 12px;">
+                            <strong style="color: #721c24; font-size: 17px;">Bước 3: Tính u1</strong>
+                            <div style="margin-top: 10px; font-family: monospace; font-size: 16px; color: #333; line-height: 1.6;">
+                                ${r.step3.formula}
+                            </div>
+                            <div style="margin-top: 8px; color: #dc3545; font-weight: 600; font-size: 17px;">→ u1 = ${r.step3.u1}</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 6px; padding: 14px; margin-bottom: 12px;">
+                            <strong style="color: #721c24; font-size: 17px;">Bước 4: Tính u2</strong>
+                            <div style="margin-top: 10px; font-family: monospace; font-size: 16px; color: #333; line-height: 1.6;">
+                                ${r.step4.formula}
+                            </div>
+                            <div style="margin-top: 8px; color: #dc3545; font-weight: 600; font-size: 17px;">→ u2 = ${r.step4.u2}</div>
+                        </div>
+
+                        <div style="background: white; border-radius: 6px; padding: 14px;">
+                            <strong style="color: #721c24; font-size: 17px;">Bước 5: Tính v</strong>
+                            <div style="margin-top: 10px; font-family: monospace; font-size: 15px; color: #333; line-height: 1.6;">
+                                g^u1 mod p = ${r.params.g}^${r.step3.u1} mod ${r.params.p} = ${r.step5.g_u1}<br>
+                                y^u2 mod p = ${r.params.y}^${r.step4.u2} mod ${r.params.p} = ${r.step5.y_u2}<br>
+                                (g^u1 × y^u2) mod p = (${r.step5.g_u1} × ${r.step5.y_u2}) mod ${r.params.p} = ${r.step5.g_u1_y_u2}<br>
+                                v = ${r.step5.g_u1_y_u2} mod ${r.params.q} = ${r.step5.v}
+                            </div>
+                            <div style="margin-top: 8px; color: #dc3545; font-weight: 600; font-size: 17px;">→ v = ${r.step5.v}</div>
+                        </div>
+                    </div>
+
+                    <!-- KẾT QUẢ -->
+                    <div style="background: ${r.is_valid ? '#d4edda' : '#f8d7da'}; border: 3px solid ${r.is_valid ? '#28a745' : '#dc3545'}; border-radius: 8px; padding: 18px;">
+                        <h5 style="color: ${r.is_valid ? '#155724' : '#721c24'}; margin-bottom: 12px; font-size: 20px; font-weight: 600;">Bước 6: Kiểm tra v == r</h5>
+                        <div style="font-family: monospace; font-size: 17px; color: #333; line-height: 1.6;">
+                            v = ${r.step5.v}<br>
+                            r = ${r.signature.r}<br>
+                            ${r.step5.v} ${r.is_valid ? '==' : '!='} ${r.signature.r}
+                        </div>
+                        <div style="margin-top: 15px; font-size: 22px; font-weight: 700; color: ${r.is_valid ? '#28a745' : '#dc3545'};">
+                            ${r.is_valid ? 'CHỮ KÝ HỢP LỆ' : 'CHỮ KÝ KHÔNG HỢP LỆ'}
+                        </div>
+                        <p style="margin-top: 10px; font-size: 17px; color: ${r.is_valid ? '#155724' : '#721c24'}; line-height: 1.5;">
+                            ${r.is_valid ? 'Văn bản chưa bị thay đổi và chữ ký hợp lệ.' : 'Xác thực thất bại!'}
+                        </p>
+                        ${!r.is_valid && r.error_hints && r.error_hints.length > 0 ? `
+                            <div style="margin-top: 15px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 6px; padding: 12px;">
+                                <strong style="color: #856404; font-size: 16px;">Nguyên nhân có thể:</strong>
+                                <ul style="margin: 8px 0 0 20px; padding: 0; color: #856404; font-size: 15px; line-height: 1.8;">
+                                    ${r.error_hints.map(hint => `<li>${hint}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
         // Load key status on page load
         updateKeyStatus();
     </script>
 </body>
+
 </html>
