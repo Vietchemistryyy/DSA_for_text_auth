@@ -260,18 +260,118 @@ def verify_file():
         public_key = km.get_public_key()
         public_key_info = format_hex(public_key)[:20] + '...'
         
+        # Đọc signature file để lấy thông tin
+        try:
+            with open(temp_sig, 'r') as f:
+                sig_data = json.load(f)
+            
+            sig_r = int(sig_data['signature']['r'], 16)
+            sig_s = int(sig_data['signature']['s'], 16)
+        except (KeyError, ValueError) as e:
+            print(f"ERROR parsing signature file: {e}")
+            return jsonify({
+                'success': False,
+                'error': f'File chữ ký không hợp lệ! Định dạng sai hoặc thiếu thông tin.'
+            }), 400
+        
+        # Lấy tham số DSA
+        dsa_params = km.dsa.get_params()
+        p, q, g = dsa_params['p'], dsa_params['q'], dsa_params['g']
+        
         # Xác thực với public key từ session
         sig = DSASignature(km)
         is_valid = sig.verify_file(str(temp_file), str(temp_sig), public_key=public_key)
+        
+        # Phân tích lỗi chi tiết - xác định nguyên nhân CỤ THỂ
+        error_hints = []
+        error_type = None  # Loại lỗi chính
+        
+        if not is_valid:
+            from src.utils import mod_inverse
+            
+            # 1. Kiểm tra chữ ký r có hợp lệ không
+            if sig_r <= 0 or sig_r >= q:
+                error_hints.append(f'❌ Chữ ký r = {sig_r} không hợp lệ (yêu cầu: 0 < r < q = {q})')
+                error_type = 'INVALID_SIGNATURE_R'
+            
+            # 2. Kiểm tra chữ ký s có hợp lệ không
+            if sig_s <= 0 or sig_s >= q:
+                error_hints.append(f'❌ Chữ ký s = {sig_s} không hợp lệ (yêu cầu: 0 < s < q = {q})')
+                error_type = 'INVALID_SIGNATURE_S'
+            
+            # 3. Kiểm tra public key có hợp lệ không
+            if public_key <= 0 or public_key >= p:
+                error_hints.append(f'❌ Public key y không hợp lệ (yêu cầu: 0 < y < p)')
+                error_type = 'INVALID_PUBLIC_KEY'
+            
+            # 4. Nếu các tham số hợp lệ về mặt toán học, thực hiện xác thực thủ công để tìm nguyên nhân
+            if not error_hints:
+                try:
+                    # Đọc và hash file hiện tại
+                    with open(temp_file, 'rb') as f:
+                        file_content = f.read()
+                    
+                    import hashlib
+                    current_hash = int(hashlib.sha256(file_content).hexdigest(), 16)
+                    
+                    # Tính các giá trị xác thực
+                    w = mod_inverse(sig_s, q)
+                    u1 = (current_hash * w) % q
+                    u2 = (sig_r * w) % q
+                    g_u1 = pow(g, u1, p)
+                    y_u2 = pow(public_key, u2, p)
+                    v = ((g_u1 * y_u2) % p) % q
+                    
+                    # So sánh v và r
+                    if v != sig_r:
+                        # Kiểm tra xem có phải do public key sai không
+                        # Nếu file signature có chứa public key gốc, so sánh
+                        if 'public_key' in sig_data:
+                            try:
+                                original_pubkey = int(sig_data['public_key'], 16)
+                                if original_pubkey != public_key:
+                                    error_hints.append('Public key bạn đang dùng không khớp với public key của người ký.')
+                                    error_hints.append('Bạn cần import đúng public key của người đã ký file này.')
+                                    error_type = 'PUBLIC_KEY_MISMATCH'
+                                else:
+                                    # Public key khớp nhưng vẫn fail → file bị thay đổi
+                                    error_hints.append('File hiện tại khác với file gốc khi được ký.')
+                                    error_hints.append('Hash hiện tại không khớp với hash khi ký.')
+                                    error_hints.append('File có thể đã bị chỉnh sửa hoặc bị hỏng trong quá trình truyền tải.')
+                                    error_type = 'FILE_MODIFIED'
+                            except:
+                                error_hints.append('❌ KHÔNG THỂ XÁC ĐỊNH NGUYÊN NHÂN CHÍNH XÁC')
+                                error_hints.append('   Có thể do: File bị thay đổi HOẶC Public key không đúng.')
+                                error_type = 'UNKNOWN'
+                        else:
+                            # Không có public key trong signature để so sánh
+                            error_hints.append('❌ XÁC THỰC THẤT BẠI - v ≠ r')
+                            error_hints.append(f'   • Giá trị tính được v = {v}')
+                            error_hints.append(f'   • Giá trị chữ ký r = {sig_r}')
+                            error_hints.append('   Nguyên nhân có thể:')
+                            error_hints.append('   1. File đã bị thay đổi sau khi ký')
+                            error_hints.append('   2. Public key không đúng (không phải của người ký)')
+                            error_hints.append('   3. File chữ ký không khớp với file này')
+                            error_type = 'VERIFICATION_FAILED'
+                except Exception as calc_error:
+                    print(f"Error during manual verification: {calc_error}")
+                    error_hints.append('❌ Lỗi trong quá trình xác thực')
+                    error_hints.append(f'   Chi tiết: {str(calc_error)}')
+                    error_type = 'CALCULATION_ERROR'
 
         return jsonify({
             'success': True,
             'valid': is_valid,
             'message': 'File hợp lệ!' if is_valid else 'File không hợp lệ!',
-            'public_key_used': public_key_info
+            'public_key_used': public_key_info,
+            'error_hints': error_hints,
+            'error_type': error_type
         })
         
     except Exception as e:
+        import traceback
+        print(f"ERROR in verify_file: {str(e)}")
+        print(traceback.format_exc())
         return jsonify({
             'success': False,
             'error': f'Lỗi xác thực: {str(e)}'
@@ -434,6 +534,529 @@ def clear_keys():
         return jsonify({
             'success': False,
             'error': str(e)
+        }), 500
+
+
+@app.route('/api/demo-sign', methods=['POST'])
+def demo_sign():
+    """API demo ký với tham số thủ công - CHỈ ĐỂ DEMO, KHÔNG VALIDATE CHẶT"""
+    try:
+        data = request.json
+        print(f"DEBUG: Received data: {data}")
+        
+        # Lấy tham số từ request - cho phép nhập số thập phân hoặc hex
+        def parse_number(value):
+            if not value:
+                return None
+            value = str(value).strip()
+            
+            # Nếu có prefix 0x thì chắc chắn là hex
+            if value.startswith('0x') or value.startswith('0X'):
+                return int(value, 16)
+            
+            # Thử parse decimal trước (ưu tiên)
+            try:
+                return int(value, 10)
+            except:
+                # Nếu không phải decimal, thử hex
+                try:
+                    return int(value, 16)
+                except:
+                    raise ValueError(f"Không thể parse giá trị: {value}")
+        
+        p = parse_number(data.get('p'))
+        q = parse_number(data.get('q'))
+        g = parse_number(data.get('g'))
+        x = parse_number(data.get('x'))
+        k = parse_number(data.get('k'))
+        message = data.get('message', '')
+        
+        print(f"DEBUG: Parsed values - p={p}, q={q}, g={g}, x={x}, k={k}, message={message[:20] if message else 'empty'}")
+        
+        # Kiểm tra tham số cơ bản
+        missing_params = []
+        if p is None:
+            missing_params.append('p')
+        if q is None:
+            missing_params.append('q')
+        if g is None:
+            missing_params.append('g')
+        if x is None:
+            missing_params.append('x')
+        if not message:
+            missing_params.append('message')
+        
+        if missing_params:
+            error_msg = f'Thiếu tham số: {", ".join(missing_params)}. Vui lòng nhập đầy đủ.'
+            print(f"DEBUG: Missing params error: {error_msg}")
+            return jsonify({
+                'success': False,
+                'error': error_msg
+            }), 400
+        
+        # DEMO MODE - Chỉ kiểm tra cơ bản, không validate chặt
+        if x <= 0 or x >= q:
+            error_msg = f'Private key x phải nằm trong khoảng (1, {q-1}). Bạn nhập x={x}, q={q}'
+            print(f"DEBUG: x validation error: {error_msg}")
+            return jsonify({
+                'success': False,
+                'error': error_msg
+            }), 400
+        
+        # Tính public key
+        y = pow(g, x, p)
+        
+        # Hash message
+        from src.utils import hash_message
+        message_hash = hash_message(message, 'sha256')
+        
+        # Nếu không có k, tạo ngẫu nhiên
+        if not k:
+            k = secrets.randbelow(q - 1) + 1
+        else:
+            if k <= 0 or k >= q:
+                return jsonify({
+                    'success': False,
+                    'error': f'k phải nằm trong khoảng (1, {q-1}). Bạn nhập k={k}, q={q}'
+                }), 400
+        
+        # BƯỚC KÝ
+        # Tính r = (g^k mod p) mod q
+        g_k_mod_p = pow(g, k, p)
+        r = g_k_mod_p % q
+        
+        if r == 0:
+            return jsonify({
+                'success': False,
+                'error': f'r = 0 (g^k mod p = {g_k_mod_p}), vui lòng chọn k khác!'
+            }), 400
+        
+        # Tính s = k^(-1) * (H(m) + x*r) mod q
+        from src.utils import mod_inverse
+        k_inv = mod_inverse(k, q)
+        x_r = (x * r) % q
+        h_plus_xr = (message_hash + x_r) % q
+        s = (k_inv * h_plus_xr) % q
+        
+        if s == 0:
+            return jsonify({
+                'success': False,
+                'error': 's = 0, vui lòng chọn k khác!'
+            }), 400
+        
+        # BƯỚC XÁC THỰC (để demo)
+        # w = s^(-1) mod q
+        w = mod_inverse(s, q)
+        
+        # u1 = H(m) * w mod q
+        u1 = (message_hash * w) % q
+        
+        # u2 = r * w mod q
+        u2 = (r * w) % q
+        
+        # v = ((g^u1 * y^u2) mod p) mod q
+        g_u1 = pow(g, u1, p)
+        y_u2 = pow(y, u2, p)
+        g_u1_y_u2 = (g_u1 * y_u2) % p
+        v = g_u1_y_u2 % q
+        
+        # Kiểm tra v == r
+        is_valid = (v == r)
+        
+        # Trả về TẤT CẢ các giá trị tính toán
+        return jsonify({
+            'success': True,
+            'message': 'Đã ký thành công!',
+            'result': {
+                # Tham số đầu vào
+                'params': {
+                    'p': str(p),
+                    'q': str(q),
+                    'g': str(g),
+                    'x': str(x),
+                    'k': str(k)
+                },
+                # Bước 1: Tính public key
+                'step1': {
+                    'y': str(y),
+                    'formula': f'y = g^x mod p = {g}^{x} mod {p} = {y}'
+                },
+                # Bước 2: Hash message
+                'step2': {
+                    'message': message,
+                    'hash': str(message_hash),
+                    'formula': f'H(m) = SHA256("{message[:30]}...") = {message_hash}'
+                },
+                # Bước 3: Ký - Tính r
+                'step3': {
+                    'g_k_mod_p': str(g_k_mod_p),
+                    'r': str(r),
+                    'formula': f'r = (g^k mod p) mod q = ({g}^{k} mod {p}) mod {q} = {g_k_mod_p} mod {q} = {r}'
+                },
+                # Bước 4: Ký - Tính s
+                'step4': {
+                    'k_inv': str(k_inv),
+                    'x_r': str(x_r),
+                    'h_plus_xr': str(h_plus_xr),
+                    's': str(s),
+                    'formula': f's = k^(-1) * (H(m) + x*r) mod q = {k_inv} * ({message_hash} + {x}*{r}) mod {q} = {k_inv} * {h_plus_xr} mod {q} = {s}'
+                },
+                # Chữ ký
+                'signature': {
+                    'r': str(r),
+                    's': str(s)
+                },
+                # Bước xác thực
+                'verify': {
+                    'w': str(w),
+                    'w_formula': f'w = s^(-1) mod q = {s}^(-1) mod {q} = {w}',
+                    'u1': str(u1),
+                    'u1_formula': f'u1 = H(m) * w mod q = {message_hash} * {w} mod {q} = {u1}',
+                    'u2': str(u2),
+                    'u2_formula': f'u2 = r * w mod q = {r} * {w} mod {q} = {u2}',
+                    'g_u1': str(g_u1),
+                    'y_u2': str(y_u2),
+                    'g_u1_y_u2': str(g_u1_y_u2),
+                    'v': str(v),
+                    'v_formula': f'v = ((g^u1 * y^u2) mod p) mod q = (({g}^{u1} * {y}^{u2}) mod {p}) mod {q} = ({g_u1} * {y_u2}) mod {p} mod {q} = {g_u1_y_u2} mod {q} = {v}',
+                    'is_valid': is_valid,
+                    'check': f'v == r? {v} == {r}? {is_valid}'
+                }
+            }
+        })
+        
+    except ValueError as e:
+        return jsonify({
+            'success': False,
+            'error': f'Lỗi giá trị: {str(e)}'
+        }), 400
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Lỗi: {str(e)}'
+        }), 500
+
+
+@app.route('/api/demo-sign-file', methods=['POST'])
+def demo_sign_file():
+    """API demo ký file với tham số thủ công"""
+    try:
+        # Hàm parse số (ưu tiên decimal)
+        def parse_number(value):
+            if not value:
+                return None
+            value = str(value).strip()
+            if value.startswith('0x') or value.startswith('0X'):
+                return int(value, 16)
+            try:
+                return int(value, 10)
+            except:
+                try:
+                    return int(value, 16)
+                except:
+                    raise ValueError(f"Không thể parse giá trị: {value}")
+        
+        # Lấy tham số từ form
+        p = parse_number(request.form.get('p'))
+        q = parse_number(request.form.get('q'))
+        g = parse_number(request.form.get('g'))
+        x = parse_number(request.form.get('x'))
+        k = parse_number(request.form.get('k'))
+        
+        # Lấy file
+        if 'file' not in request.files:
+            return jsonify({
+                'success': False,
+                'error': 'Thiếu file! Vui lòng chọn file cần ký.'
+            }), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({
+                'success': False,
+                'error': 'Chưa chọn file! Vui lòng chọn file cần ký.'
+            }), 400
+        
+        # Đọc nội dung file
+        content = file.read().decode('utf-8')
+        
+        # Kiểm tra từng tham số cụ thể
+        missing_params = []
+        if not p:
+            missing_params.append('p')
+        if not q:
+            missing_params.append('q')
+        if not g:
+            missing_params.append('g')
+        if not x:
+            missing_params.append('x')
+        
+        if missing_params:
+            return jsonify({
+                'success': False,
+                'error': f'Thiếu tham số: {", ".join(missing_params)}. Vui lòng nhập đầy đủ.'
+            }), 400
+        
+        # DEMO MODE - Chỉ kiểm tra cơ bản
+        if x <= 0 or x >= q:
+            return jsonify({
+                'success': False,
+                'error': f'Private key x phải nằm trong khoảng (1, {q-1}). Bạn nhập x={x}, q={q}'
+            }), 400
+        
+        # Tính public key
+        y = pow(g, x, p)
+        
+        # Hash message
+        from src.utils import hash_message, mod_inverse
+        message_hash = hash_message(content, 'sha256')
+        
+        # Nếu không có k, tạo ngẫu nhiên
+        if not k:
+            k = secrets.randbelow(q - 1) + 1
+        else:
+            if k <= 0 or k >= q:
+                return jsonify({
+                    'success': False,
+                    'error': f'k phải nằm trong khoảng (1, {q-1}). Bạn nhập k={k}, q={q}'
+                }), 400
+        
+        # BƯỚC KÝ
+        g_k_mod_p = pow(g, k, p)
+        r = g_k_mod_p % q
+        
+        if r == 0:
+            return jsonify({
+                'success': False,
+                'error': f'r = 0 (g^k mod p = {g_k_mod_p}), vui lòng chọn k khác!'
+            }), 400
+        
+        k_inv = mod_inverse(k, q)
+        x_r = (x * r) % q
+        h_plus_xr = (message_hash + x_r) % q
+        s = (k_inv * h_plus_xr) % q
+        
+        if s == 0:
+            return jsonify({
+                'success': False,
+                'error': 's = 0, vui lòng chọn k khác!'
+            }), 400
+        
+        # BƯỚC XÁC THỰC
+        w = mod_inverse(s, q)
+        u1 = (message_hash * w) % q
+        u2 = (r * w) % q
+        g_u1 = pow(g, u1, p)
+        y_u2 = pow(y, u2, p)
+        g_u1_y_u2 = (g_u1 * y_u2) % p
+        v = g_u1_y_u2 % q
+        is_valid = (v == r)
+        
+        # Trả về TẤT CẢ các giá trị
+        return jsonify({
+            'success': True,
+            'message': 'Đã ký file thành công!',
+            'filename': file.filename,
+            'file_content': content[:200] + ('...' if len(content) > 200 else ''),
+            'result': {
+                'params': {
+                    'p': str(p),
+                    'q': str(q),
+                    'g': str(g),
+                    'x': str(x),
+                    'k': str(k)
+                },
+                'step1': {
+                    'y': str(y),
+                    'formula': f'y = g^x mod p = {g}^{x} mod {p} = {y}'
+                },
+                'step2': {
+                    'message': content[:50] + ('...' if len(content) > 50 else ''),
+                    'hash': str(message_hash),
+                    'formula': f'H(m) = SHA256(file_content) = {message_hash}'
+                },
+                'step3': {
+                    'g_k_mod_p': str(g_k_mod_p),
+                    'r': str(r),
+                    'formula': f'r = (g^k mod p) mod q = ({g}^{k} mod {p}) mod {q} = {g_k_mod_p} mod {q} = {r}'
+                },
+                'step4': {
+                    'k_inv': str(k_inv),
+                    'x_r': str(x_r),
+                    'h_plus_xr': str(h_plus_xr),
+                    's': str(s),
+                    'formula': f's = k^(-1) * (H(m) + x*r) mod q = {k_inv} * ({message_hash} + {x}*{r}) mod {q} = {k_inv} * {h_plus_xr} mod {q} = {s}'
+                },
+                'signature': {
+                    'r': str(r),
+                    's': str(s)
+                },
+                'verify': {
+                    'w': str(w),
+                    'w_formula': f'w = s^(-1) mod q = {s}^(-1) mod {q} = {w}',
+                    'u1': str(u1),
+                    'u1_formula': f'u1 = H(m) * w mod q = {message_hash} * {w} mod {q} = {u1}',
+                    'u2': str(u2),
+                    'u2_formula': f'u2 = r * w mod q = {r} * {w} mod {q} = {u2}',
+                    'g_u1': str(g_u1),
+                    'y_u2': str(y_u2),
+                    'g_u1_y_u2': str(g_u1_y_u2),
+                    'v': str(v),
+                    'v_formula': f'v = ((g^u1 * y^u2) mod p) mod q = (({g}^{u1} * {y}^{u2}) mod {p}) mod {q} = ({g_u1} * {y_u2}) mod {p} mod {q} = {g_u1_y_u2} mod {q} = {v}',
+                    'is_valid': is_valid,
+                    'check': f'v == r? {v} == {r}? {is_valid}'
+                }
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Lỗi: {str(e)}'
+        }), 500
+
+
+@app.route('/api/demo-verify', methods=['POST'])
+def demo_verify():
+    """API demo xác thực với tham số thủ công"""
+    try:
+        data = request.json
+        
+        # Parse số
+        def parse_number(value):
+            if not value:
+                return None
+            value = str(value).strip()
+            if value.startswith('0x') or value.startswith('0X'):
+                return int(value, 16)
+            try:
+                return int(value, 10)
+            except:
+                try:
+                    return int(value, 16)
+                except:
+                    raise ValueError(f"Không thể parse giá trị: {value}")
+        
+        p = parse_number(data.get('p'))
+        q = parse_number(data.get('q'))
+        g = parse_number(data.get('g'))
+        y = parse_number(data.get('y'))
+        r = parse_number(data.get('r'))
+        s = parse_number(data.get('s'))
+        message = data.get('message', '')
+        
+        # Kiểm tra từng tham số cụ thể
+        missing_params = []
+        if p is None:
+            missing_params.append('p')
+        if q is None:
+            missing_params.append('q')
+        if g is None:
+            missing_params.append('g')
+        if y is None:
+            missing_params.append('y')
+        if r is None:
+            missing_params.append('r')
+        if s is None:
+            missing_params.append('s')
+        if not message:
+            missing_params.append('message')
+        
+        if missing_params:
+            error_msg = f'Thiếu tham số: {", ".join(missing_params)}. Vui lòng nhập đầy đủ.'
+            return jsonify({
+                'success': False,
+                'error': error_msg
+            }), 400
+        
+        # Hash message
+        from src.utils import hash_message, mod_inverse
+        message_hash = hash_message(message, 'sha256')
+        
+        # BƯỚC XÁC THỰC
+        # Bước 1: Hash message
+        # Bước 2: w = s^(-1) mod q
+        w = mod_inverse(s, q)
+        
+        # Bước 3: u1 = H(m) * w mod q
+        u1 = (message_hash * w) % q
+        
+        # Bước 4: u2 = r * w mod q
+        u2 = (r * w) % q
+        
+        # Bước 5: v = ((g^u1 * y^u2) mod p) mod q
+        g_u1 = pow(g, u1, p)
+        y_u2 = pow(y, u2, p)
+        g_u1_y_u2 = (g_u1 * y_u2) % p
+        v = g_u1_y_u2 % q
+        
+        # Kiểm tra v == r
+        is_valid = (v == r)
+        
+        # Phân tích lỗi chi tiết
+        error_hints = []
+        if not is_valid:
+            # Kiểm tra signature có hợp lệ về mặt toán học không
+            if r <= 0 or r >= q:
+                error_hints.append('Chữ ký r không hợp lệ (phải: 0 < r < q)')
+            if s <= 0 or s >= q:
+                error_hints.append('Chữ ký s không hợp lệ (phải: 0 < s < q)')
+            
+            # Kiểm tra public key
+            if y <= 0 or y >= p:
+                error_hints.append('Public key y không hợp lệ (phải: 0 < y < p)')
+            
+            # Nếu các tham số đều hợp lệ về mặt toán học
+            if not error_hints:
+                error_hints.append('Có thể: Văn bản đã bị thay đổi')
+                error_hints.append('Hoặc: Chữ ký (r, s) không khớp với văn bản này')
+                error_hints.append('Hoặc: Public key y không đúng')
+                error_hints.append('Hoặc: Tham số DSA (p, q, g) không đúng')
+        
+        return jsonify({
+            'success': True,
+            'result': {
+                'params': {
+                    'p': str(p),
+                    'q': str(q),
+                    'g': str(g),
+                    'y': str(y)
+                },
+                'signature': {
+                    'r': str(r),
+                    's': str(s)
+                },
+                'step1': {
+                    'hash': str(message_hash),
+                    'formula': f'H(m) = SHA256("{message[:30]}...") = {message_hash}'
+                },
+                'step2': {
+                    'w': str(w),
+                    'formula': f'w = s^(-1) mod q = {s}^(-1) mod {q} = {w}'
+                },
+                'step3': {
+                    'u1': str(u1),
+                    'formula': f'u1 = H(m) * w mod q = {message_hash} * {w} mod {q} = {u1}'
+                },
+                'step4': {
+                    'u2': str(u2),
+                    'formula': f'u2 = r * w mod q = {r} * {w} mod {q} = {u2}'
+                },
+                'step5': {
+                    'g_u1': str(g_u1),
+                    'y_u2': str(y_u2),
+                    'g_u1_y_u2': str(g_u1_y_u2),
+                    'v': str(v)
+                },
+                'is_valid': is_valid,
+                'error_hints': error_hints
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Lỗi: {str(e)}'
         }), 500
 
 
