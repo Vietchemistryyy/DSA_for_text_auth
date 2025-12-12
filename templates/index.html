@@ -20,8 +20,62 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
+        }
+
+        /* Collapsible guide section */
+        .guide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .guide-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .guide-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .guide-content {
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .guide-content.collapsed {
+            max-height: 0;
+        }
+
+        /* Two column layout for form inputs */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-grid .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-grid .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .header {
@@ -525,10 +579,10 @@
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('demo-algorithm')">
-                Demo Thuật toán
+                Demo thuật toán DSA
             </button>
             <button class="tab-button" onclick="switchTab('sign-file')">
-                Ký File với Khóa Tự động
+                Chữ ký số DSA với khóa tự động
             </button>
         </div>
 
@@ -537,40 +591,28 @@
             <h2>Demo Thuật toán DSA</h2>
 
             <div
-                style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #2196f3; border-radius: 12px; padding: 20px; margin-bottom: 25px;">
-                <h4 style="color: #1976d2; margin-bottom: 15px; font-size: 20px; font-weight: 600;">📖 Hướng dẫn sử dụng
-                    Demo Thuật toán</h4>
-                <div style="color: #0d47a1; line-height: 1.9; font-size: 16px;">
-                    <p style="margin: 0 0 12px 0;"><strong>Mục đích:</strong> Demo chi tiết từng bước tính toán của
-                        thuật toán DSA với tham số tùy chỉnh (số nhỏ để dễ hiểu).</p>
-
-                    <p style="margin: 0 0 8px 0;"><strong>Hướng dẫn từng bước:</strong></p>
-                    <ol style="margin: 0 0 12px 0; padding-left: 25px;">
-                        <li style="margin-bottom: 8px;"><strong>Bước 1 - Tải tham số mẫu:</strong> Nhấn nút "Tải Tham số
-                            Đơn giản" ở phần Ký (bên trái) để hệ thống tự động điền các tham số DSA hợp lệ (p, q, g, x,
-                            k).</li>
-                        <li style="margin-bottom: 8px;"><strong>Bước 2 - Ký văn bản/file:</strong> Chọn loại nội dung
-                            (Văn bản hoặc File), nhập nội dung cần ký, sau đó nhấn "Ký". Hệ thống sẽ hiển thị chi tiết
-                            các bước tính: Public key (y), Hash H(m), Chữ ký (r, s).</li>
-                        <li style="margin-bottom: 8px;"><strong>Bước 3 - Xác thực chữ ký:</strong> Sao chép các giá trị
-                            từ kết quả ký sang phần Xác thực (bên phải):
-                            <ul style="margin: 5px 0; padding-left: 20px;">
-                                <li>Tham số DSA: p, q, g</li>
-                                <li>Public key: y (từ bước 1 bên trái)</li>
-                                <li>Chữ ký: r, s (từ kết quả ký)</li>
-                                <li>Nhập lại cùng văn bản/file đã ký</li>
-                            </ul>
-                            Sau đó nhấn "Xác thực" để xem các bước tính w, u1, u2, v và kết quả kiểm tra v == r.
-                        </li>
-                        <li style="margin-bottom: 8px;"><strong>Bước 4 - Thử nghiệm lỗi:</strong> Thay đổi văn bản, chữ
-                            ký (r, s), hoặc public key (y) để quan sát xác thực thất bại và xem thông báo lỗi chi tiết.
-                        </li>
+                style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #2196f3; border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+                <div class="guide-header" onclick="toggleGuide('demoGuide', 'demoGuideIcon')">
+                    <h4 style="color: #1976d2; margin: 0; font-size: 20px; font-weight: 600;">📖 Hướng dẫn sử dụng Demo
+                        Thuật toán</h4>
+                    <button class="guide-toggle" id="demoGuideIcon">▼</button>
+                </div>
+                <div class="guide-content collapsed" id="demoGuide"
+                    style="color: #0d47a1; line-height: 1.8; font-size: 16px; margin-top: 12px;">
+                    <p style="margin: 0 0 10px 0;"><strong>Mục đích:</strong> Demo chi tiết từng bước tính toán của
+                        thuật toán DSA với tham số tùy chỉnh.</p>
+                    <ol style="margin: 0 0 10px 0; padding-left: 25px;">
+                        <li style="margin-bottom: 6px;"><strong>Bước 1:</strong> Nhấn "Tải tham số đơn giản" để tự động
+                            điền các tham số DSA hợp lệ.</li>
+                        <li style="margin-bottom: 6px;"><strong>Bước 2:</strong> Chọn loại nội dung (Văn bản/File), nhập
+                            nội dung cần ký, nhấn "Ký".</li>
+                        <li style="margin-bottom: 6px;"><strong>Bước 3:</strong> Sao chép các giá trị (p, q, g, y, r, s)
+                            sang phần Xác thực bên phải và nhấn "Xác thực".</li>
+                        <li><strong>Bước 4:</strong> Thử thay đổi các giá trị để kiểm tra xác thực thất bại.</li>
                     </ol>
-
                     <p
-                        style="margin: 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; border-left: 4px solid #2196f3;">
-                        <strong>💡 Lưu ý:</strong> Sử dụng số nguyên nhỏ (< 1000) để dễ dàng kiểm tra tính toán thủ
-                            công. Nếu nhập sai tham số, hệ thống sẽ hiện lỗi cụ thể ở từng trường.</p>
+                        style="margin: 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; font-size: 15px;">
+                        💡 Sử dụng số nguyên nhỏ (< 1000) để dễ kiểm tra tính toán thủ công.</p>
                 </div>
             </div>
 
@@ -586,38 +628,36 @@
 
                     <div class="alert" id="demoSignAlert"></div>
 
-                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
-                        <div class="form-group" style="margin-bottom: 0;">
+                    <div class="form-grid" style="margin-bottom: 15px;">
+                        <div class="form-group">
                             <label style="color: #2e7d32; font-weight: 600;">Tham số p:</label>
-                            <input type="text" class="form-control" id="demoP"
-                                placeholder="Nhập số nguyên tố p, ví dụ: 23"
+                            <input type="text" class="form-control" id="demoP" placeholder="VD: 23"
                                 style="font-family: monospace; font-size: 14px;">
                             <div class="error-message" id="demoPError"></div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group">
                             <label style="color: #2e7d32; font-weight: 600;">Tham số q:</label>
-                            <input type="text" class="form-control" id="demoQ"
-                                placeholder="Nhập số nguyên tố q, ví dụ: 11"
+                            <input type="text" class="form-control" id="demoQ" placeholder="VD: 11"
                                 style="font-family: monospace; font-size: 14px;">
                             <div class="error-message" id="demoQError"></div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group">
                             <label style="color: #2e7d32; font-weight: 600;">Tham số g:</label>
-                            <input type="text" class="form-control" id="demoG" placeholder="Nhập generator g, ví dụ: 2"
+                            <input type="text" class="form-control" id="demoG" placeholder="VD: 2"
                                 style="font-family: monospace; font-size: 14px;">
                             <div class="error-message" id="demoGError"></div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group">
                             <label style="color: #2e7d32; font-weight: 600;">Private key x:</label>
-                            <input type="text" class="form-control" id="demoX" placeholder="Nhập khóa riêng x, ví dụ: 6"
+                            <input type="text" class="form-control" id="demoX" placeholder="VD: 6"
                                 style="font-family: monospace; font-size: 14px;">
                             <div class="error-message" id="demoXError"></div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group full-width">
                             <label style="color: #2e7d32; font-weight: 600;">Tham số k (tùy chọn):</label>
                             <input type="text" class="form-control" id="demoK"
                                 placeholder="Để trống để hệ thống tự sinh ngẫu nhiên"
@@ -625,15 +665,15 @@
                             <div class="error-message" id="demoKError"></div>
                         </div>
 
-                        <button class="btn btn-secondary" onclick="loadSimpleParams()" style="width: 100%;">
+                        <button class="btn btn-secondary full-width" onclick="loadSimpleParams()" style="width: 100%;">
                             Tải Tham số Đơn giản
                         </button>
 
-                        <div style="border-top: 2px dashed #2e7d32; margin: 10px 0;"></div>
+                        <div class="full-width" style="border-top: 2px dashed #2e7d32; margin: 5px 0;"></div>
 
                         <!-- Chọn giữa văn bản hoặc file -->
-                        <div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px;">
-                            <label style="color: #2e7d32; font-weight: 600; margin-bottom: 8px; display: block;">Chọn
+                        <div class="full-width" style="background: white; border-radius: 8px; padding: 10px;">
+                            <label style="color: #2e7d32; font-weight: 600; margin-bottom: 6px; display: block;">Chọn
                                 loại nội dung:</label>
                             <div style="display: flex; gap: 10px;">
                                 <label style="flex: 1; cursor: pointer;">
@@ -648,15 +688,15 @@
                         </div>
 
                         <!-- Input văn bản -->
-                        <div id="demoTextInput" class="form-group" style="margin-bottom: 0;">
+                        <div id="demoTextInput" class="form-group full-width">
                             <label style="color: #2e7d32; font-weight: 600;">Văn bản cần ký:</label>
                             <textarea class="form-control" id="demoMessage"
-                                placeholder="Nhập nội dung văn bản cần ký..." style="min-height: 100px;"></textarea>
+                                placeholder="Nhập nội dung văn bản cần ký..." style="min-height: 80px;"></textarea>
                             <div class="error-message" id="demoMessageError"></div>
                         </div>
 
                         <!-- Input file -->
-                        <div id="demoFileInput" class="form-group" style="margin-bottom: 0; display: none;">
+                        <div id="demoFileInput" class="form-group full-width" style="display: none;">
                             <label style="color: #2e7d32; font-weight: 600;">File cần ký:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="demoFile"
@@ -667,7 +707,7 @@
                                 <span class="file-name" id="demoFileName">Chưa chọn file</span>
                             </div>
                             <div id="demoFilePreview"
-                                style="background: #f8f9fa; border-radius: 8px; padding: 10px; margin-top: 10px; display: none; max-height: 150px; overflow-y: auto;">
+                                style="background: #f8f9fa; border-radius: 8px; padding: 10px; margin-top: 10px; display: none; max-height: 100px; overflow-y: auto;">
                                 <strong style="color: #2e7d32; font-size: 13px;">Nội dung:</strong>
                                 <pre id="demoFileContent"
                                     style="margin: 5px 0 0 0; font-size: 12px; white-space: pre-wrap; word-wrap: break-word; font-family: 'Inter', sans-serif;"></pre>
@@ -675,7 +715,7 @@
                             <div class="error-message" id="demoFileError"></div>
                         </div>
 
-                        <button class="btn btn-primary btn-block" onclick="demoSign()">
+                        <button class="btn btn-primary btn-block full-width" onclick="demoSign()">
                             Ký
                         </button>
                     </div>
@@ -697,60 +737,54 @@
 
                     <div class="alert" id="demoVerifyAlert"></div>
 
-                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
-                        <div class="form-group" style="margin-bottom: 0;">
+                    <div class="form-grid" style="margin-bottom: 15px;">
+                        <div class="form-group">
                             <label style="color: #1565c0; font-weight: 600;">Tham số p:</label>
-                            <input type="text" class="form-control" id="verifyP"
-                                placeholder="Sao chép giá trị p từ phần ký"
+                            <input type="text" class="form-control" id="verifyP" placeholder="Sao chép p từ bên trái"
                                 style="font-family: monospace; font-size: 14px;">
                             <div class="error-message" id="verifyPError"></div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group">
                             <label style="color: #1565c0; font-weight: 600;">Tham số q:</label>
-                            <input type="text" class="form-control" id="verifyQ"
-                                placeholder="Sao chép giá trị q từ phần ký"
+                            <input type="text" class="form-control" id="verifyQ" placeholder="Sao chép q từ bên trái"
                                 style="font-family: monospace; font-size: 14px;">
                             <div class="error-message" id="verifyQError"></div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group">
                             <label style="color: #1565c0; font-weight: 600;">Tham số g:</label>
-                            <input type="text" class="form-control" id="verifyG"
-                                placeholder="Sao chép giá trị g từ phần ký"
+                            <input type="text" class="form-control" id="verifyG" placeholder="Sao chép g từ bên trái"
                                 style="font-family: monospace; font-size: 14px;">
                             <div class="error-message" id="verifyGError"></div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group">
                             <label style="color: #1565c0; font-weight: 600;">Public key y:</label>
-                            <input type="text" class="form-control" id="verifyY"
-                                placeholder="Lấy giá trị y từ kết quả ký bên trái"
+                            <input type="text" class="form-control" id="verifyY" placeholder="Lấy y từ kết quả ký"
                                 style="font-family: monospace; font-size: 14px;">
                             <div class="error-message" id="verifyYError"></div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group">
                             <label style="color: #1565c0; font-weight: 600;">Chữ ký r:</label>
-                            <input type="text" class="form-control" id="verifyR"
-                                placeholder="Lấy giá trị r từ kết quả ký bên trái"
+                            <input type="text" class="form-control" id="verifyR" placeholder="Lấy r từ kết quả ký"
                                 style="font-family: monospace; font-size: 14px;">
                             <div class="error-message" id="verifyRError"></div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group">
                             <label style="color: #1565c0; font-weight: 600;">Chữ ký s:</label>
-                            <input type="text" class="form-control" id="verifyS"
-                                placeholder="Lấy giá trị s từ kết quả ký bên trái"
+                            <input type="text" class="form-control" id="verifyS" placeholder="Lấy s từ kết quả ký"
                                 style="font-family: monospace; font-size: 14px;">
                             <div class="error-message" id="verifySError"></div>
                         </div>
 
-                        <div style="border-top: 2px dashed #1565c0; margin: 10px 0;"></div>
+                        <div class="full-width" style="border-top: 2px dashed #1565c0; margin: 5px 0;"></div>
 
                         <!-- Chọn giữa văn bản hoặc file -->
-                        <div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px;">
-                            <label style="color: #1565c0; font-weight: 600; margin-bottom: 8px; display: block;">Chọn
+                        <div class="full-width" style="background: white; border-radius: 8px; padding: 10px;">
+                            <label style="color: #1565c0; font-weight: 600; margin-bottom: 6px; display: block;">Chọn
                                 loại nội dung:</label>
                             <div style="display: flex; gap: 10px;">
                                 <label style="flex: 1; cursor: pointer;">
@@ -765,16 +799,16 @@
                         </div>
 
                         <!-- Input văn bản -->
-                        <div id="demoVerifyTextInput" class="form-group" style="margin-bottom: 0;">
+                        <div id="demoVerifyTextInput" class="form-group full-width">
                             <label style="color: #1565c0; font-weight: 600;">Văn bản cần xác thực:</label>
                             <textarea class="form-control" id="verifyMessage"
                                 placeholder="Sao chép nội dung văn bản từ phần ký..."
-                                style="min-height: 100px;"></textarea>
+                                style="min-height: 80px;"></textarea>
                             <div class="error-message" id="verifyMessageError"></div>
                         </div>
 
                         <!-- Input file -->
-                        <div id="demoVerifyFileInput" class="form-group" style="margin-bottom: 0; display: none;">
+                        <div id="demoVerifyFileInput" class="form-group full-width" style="display: none;">
                             <label style="color: #1565c0; font-weight: 600;">File cần xác thực:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="verifyFile"
@@ -785,7 +819,7 @@
                                 <span class="file-name" id="verifyFileName">Chưa chọn file</span>
                             </div>
                             <div id="verifyFilePreview"
-                                style="background: #f8f9fa; border-radius: 8px; padding: 10px; margin-top: 10px; display: none; max-height: 150px; overflow-y: auto;">
+                                style="background: #f8f9fa; border-radius: 8px; padding: 10px; margin-top: 10px; display: none; max-height: 100px; overflow-y: auto;">
                                 <strong style="color: #1565c0; font-size: 13px;">Nội dung:</strong>
                                 <pre id="verifyFileContent"
                                     style="margin: 5px 0 0 0; font-size: 12px; white-space: pre-wrap; word-wrap: break-word; font-family: 'Inter', sans-serif;"></pre>
@@ -793,7 +827,7 @@
                             <div class="error-message" id="verifyFileError"></div>
                         </div>
 
-                        <button class="btn btn-success btn-block" onclick="demoVerify()">
+                        <button class="btn btn-success btn-block full-width" onclick="demoVerify()">
                             Xác thực
                         </button>
                     </div>
@@ -857,57 +891,29 @@
             </div>
 
             <div
-                style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #2196f3; border-radius: 12px; padding: 20px; margin-bottom: 25px;">
-                <h4 style="color: #1976d2; margin-bottom: 15px; font-size: 20px; font-weight: 600;">📘 Hướng dẫn sử dụng
-                    Ký
-                    & Xác thực File</h4>
-                <div style="color: #0d47a1; line-height: 1.9; font-size: 16px;">
-                    <p style="margin: 0 0 12px 0;"><strong>Mục đích:</strong> Ký và xác thực file thực tế với khóa DSA
-                        được sinh tự động (tham số lớn, bảo mật cao cho ứng dụng thực tế).</p>
-
-                    <p style="margin: 0 0 8px 0;"><strong>Hướng dẫn từng bước:</strong></p>
-                    <ol style="margin: 0 0 12px 0; padding-left: 25px;">
-                        <li style="margin-bottom: 8px;"><strong>Bước 1 - Tạo hoặc Import khóa:</strong>
-                            <ul style="margin: 5px 0; padding-left: 20px;">
-                                <li><strong>Tạo khóa mới:</strong> Nhấn "Tạo Khóa Mới" để hệ thống tự động sinh cặp khóa
-                                    Private Key và Public Key với tham số bảo mật cao.</li>
-                                <li><strong>Import khóa:</strong> Hoặc nhấn "Import Key" để sử dụng khóa có sẵn từ file
-                                    JSON (Private Key để ký, Public Key để xác thực).</li>
-                            </ul>
-                        </li>
-                        <li style="margin-bottom: 8px;"><strong>Bước 2 - Ký file:</strong> Trong phần "KÝ FILE" (bên
-                            trái):
-                            <ul style="margin: 5px 0; padding-left: 20px;">
-                                <li>Chọn file cần ký (ví dụ: tài liệu, hợp đồng, code)</li>
-                                <li>Nhấn "Ký File" - hệ thống sẽ tạo file chữ ký (.sig)</li>
-                                <li>Tải file chữ ký về máy (file .sig) để gửi kèm file gốc</li>
-                            </ul>
-                        </li>
-                        <li style="margin-bottom: 8px;"><strong>Bước 3 - Xác thực file:</strong> Trong phần "XÁC THỰC
-                            FILE" (bên phải):
-                            <ul style="margin: 5px 0; padding-left: 20px;">
-                                <li>Upload file gốc cần kiểm tra</li>
-                                <li>Upload file chữ ký (.sig) tương ứng</li>
-                                <li>Nhấn "Xác thực File" để kiểm tra tính toàn vẹn</li>
-                                <li>Kết quả sẽ hiển thị: HỢP LỆ (file nguyên vẹn) hoặc KHÔNG HỢP LỆ (có thông báo lỗi cụ
-                                    thể)</li>
-                            </ul>
-                        </li>
-                        <li style="margin-bottom: 8px;"><strong>Bước 4 - Export/Chia sẻ khóa:</strong>
-                            <ul style="margin: 5px 0; padding-left: 20px;">
-                                <li><strong>Export Public Key:</strong> Để gửi cho người khác xác thực chữ ký của bạn
-                                    (an toàn chia sẻ)</li>
-                                <li><strong>Export Private Key:</strong> Để sao lưu hoặc ký trên thiết bị khác (TUYỆT
-                                    ĐỐI BẢO MẬT!)</li>
-                            </ul>
+                style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #2196f3; border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+                <div class="guide-header" onclick="toggleGuide('fileGuide', 'fileGuideIcon')">
+                    <h4 style="color: #1976d2; margin: 0; font-size: 20px; font-weight: 600;">📘 Hướng dẫn Ký & Xác thực
+                        File</h4>
+                    <button class="guide-toggle" id="fileGuideIcon">▼</button>
+                </div>
+                <div class="guide-content collapsed" id="fileGuide"
+                    style="color: #0d47a1; line-height: 1.8; font-size: 16px; margin-top: 12px;">
+                    <p style="margin: 0 0 10px 0;"><strong>Mục đích:</strong> Ký và xác thực file thực tế với khóa DSA
+                        tự động sinh (bảo mật cao).</p>
+                    <ol style="margin: 0 0 10px 0; padding-left: 25px;">
+                        <li style="margin-bottom: 6px;"><strong>Bước 1:</strong> Nhấn "Tạo Khóa Mới" hoặc "Import Key"
+                            để có cặp khóa.</li>
+                        <li style="margin-bottom: 6px;"><strong>Bước 2:</strong> Chọn file cần ký, nhấn "Ký File", tải
+                            file .sig về máy.</li>
+                        <li style="margin-bottom: 6px;"><strong>Bước 3:</strong> Upload file gốc + file .sig, nhấn "Xác
+                            thực File".</li>
+                        <li><strong>Bước 4:</strong> Export Public Key để chia sẻ, Private Key để sao lưu (BẢO MẬT!).
                         </li>
                     </ol>
-
                     <p
-                        style="margin: 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; border-left: 4px solid #2196f3;">
-                        <strong>🔒 Quan trọng:</strong> Private Key dùng để KÝ (phải giữ bí mật tuyệt đối). Public Key
-                        dùng để XÁC THỰC (có thể chia sẻ công khai). Không bao giờ chia sẻ Private Key với người khác!
-                    </p>
+                        style="margin: 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; font-size: 15px;">
+                        🔒 Private Key dùng để KÝ (giữ bí mật). Public Key dùng để XÁC THỰC (có thể chia sẻ).</p>
                 </div>
             </div>
 
@@ -923,9 +929,9 @@
 
                     <div class="alert" id="signFileAlert"></div>
 
-                    <div
+                    <div id="privateKeyNotice"
                         style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 12px; margin-bottom: 20px; color: #856404; font-size: 16px;">
-                        <strong>Lưu ý:</strong> Cần có Private Key để ký file
+                        <strong>Lưu ý:</strong> <span id="privateKeyNoticeText">Cần có Private Key để ký file</span>
                     </div>
 
                     <div class="form-group">
@@ -968,9 +974,9 @@
 
                     <div class="alert" id="verifyFileAlert"></div>
 
-                    <div
+                    <div id="publicKeyNotice"
                         style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 12px; margin-bottom: 20px; color: #856404; font-size: 16px;">
-                        <strong>Lưu ý:</strong> Cần có Public Key để xác thực file
+                        <strong>Lưu ý:</strong> <span id="publicKeyNoticeText">Cần có Public Key để xác thực file</span>
                     </div>
 
                     <div class="form-group">
@@ -1018,6 +1024,9 @@
     </div>
 
     <script>
+        // Lưu kết quả ký gần nhất để so sánh khi xác thực
+        let lastDemoSignResult = null;
+
         // Switch tabs
         function switchTab(tabId) {
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
@@ -1025,6 +1034,14 @@
 
             event.target.classList.add('active');
             document.getElementById(tabId).classList.add('active');
+        }
+
+        // Toggle guide sections
+        function toggleGuide(guideId, iconId) {
+            const guide = document.getElementById(guideId);
+            const icon = document.getElementById(iconId);
+            guide.classList.toggle('collapsed');
+            icon.textContent = guide.classList.contains('collapsed') ? '▼' : '▲';
         }
 
         // Update key status
@@ -1064,6 +1081,9 @@
 
                     // Update button states
                     updateButtonStates(status);
+
+                    // Update key notice colors
+                    updateKeyNotices(status);
                 }
             } catch (error) {
                 console.error('Error updating key status:', error);
@@ -1103,6 +1123,44 @@
                 keyRoleWarning.style.display = 'block';
             } else {
                 keyRoleWarning.style.display = 'none';
+            }
+        }
+
+        // Update key notices color based on key availability
+        function updateKeyNotices(status) {
+            const privateKeyNotice = document.getElementById('privateKeyNotice');
+            const privateKeyNoticeText = document.getElementById('privateKeyNoticeText');
+            const publicKeyNotice = document.getElementById('publicKeyNotice');
+            const publicKeyNoticeText = document.getElementById('publicKeyNoticeText');
+
+            // Update Private Key notice
+            if (privateKeyNotice && privateKeyNoticeText) {
+                if (status.has_private) {
+                    privateKeyNotice.style.background = '#d4edda';
+                    privateKeyNotice.style.borderColor = '#28a745';
+                    privateKeyNotice.style.color = '#155724';
+                    privateKeyNoticeText.textContent = 'Đã có Private Key - Sẵn sàng ký file!';
+                } else {
+                    privateKeyNotice.style.background = '#fff3cd';
+                    privateKeyNotice.style.borderColor = '#ffc107';
+                    privateKeyNotice.style.color = '#856404';
+                    privateKeyNoticeText.textContent = 'Cần có Private Key để ký file';
+                }
+            }
+
+            // Update Public Key notice
+            if (publicKeyNotice && publicKeyNoticeText) {
+                if (status.has_public) {
+                    publicKeyNotice.style.background = '#d4edda';
+                    publicKeyNotice.style.borderColor = '#28a745';
+                    publicKeyNotice.style.color = '#155724';
+                    publicKeyNoticeText.textContent = 'Đã có Public Key - Sẵn sàng xác thực!';
+                } else {
+                    publicKeyNotice.style.background = '#fff3cd';
+                    publicKeyNotice.style.borderColor = '#ffc107';
+                    publicKeyNotice.style.color = '#856404';
+                    publicKeyNoticeText.textContent = 'Cần có Public Key để xác thực file';
+                }
             }
         }
 
@@ -1800,6 +1858,18 @@
                 if (data.success) {
                     showDemoAlert('sign', data.message, 'success');
                     displayDemoResult(data.result, message, 'text');
+
+                    // Lưu kết quả ký để so sánh khi xác thực
+                    lastDemoSignResult = {
+                        p: data.result.params.p,
+                        q: data.result.params.q,
+                        g: data.result.params.g,
+                        y: data.result.step1.y,
+                        r: data.result.signature.r,
+                        s: data.result.signature.s,
+                        message: message
+                    };
+                    console.log('Saved sign result:', lastDemoSignResult);
                 } else {
                     // Parse error message to show on specific fields
                     const errorMsg = data.error;
@@ -2066,10 +2136,24 @@
             showLoading('demoVerifyLoading', true);
 
             try {
+                // Chuẩn bị payload với thông tin gốc nếu có
+                const payload = { p, q, g, y, r, s, message };
+
+                // Gửi thông tin gốc từ kết quả ký để so sánh chính xác
+                if (lastDemoSignResult) {
+                    payload.original_p = lastDemoSignResult.p;
+                    payload.original_q = lastDemoSignResult.q;
+                    payload.original_g = lastDemoSignResult.g;
+                    payload.original_y = lastDemoSignResult.y;
+                    payload.original_r = lastDemoSignResult.r;
+                    payload.original_s = lastDemoSignResult.s;
+                    payload.original_message = lastDemoSignResult.message;
+                }
+
                 const response = await fetch('/api/demo-verify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ p, q, g, y, r, s, message })
+                    body: JSON.stringify(payload)
                 });
                 const data = await response.json();
 
@@ -2297,11 +2381,13 @@
                             ${r.is_valid ? 'Văn bản chưa bị thay đổi và chữ ký hợp lệ.' : 'Xác thực thất bại!'}
                         </p>
                         ${!r.is_valid && r.error_hints && r.error_hints.length > 0 ? `
-                            <div style="margin-top: 15px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 6px; padding: 12px;">
-                                <strong style="color: #856404; font-size: 16px;">Nguyên nhân có thể:</strong>
-                                <ul style="margin: 8px 0 0 20px; padding: 0; color: #856404; font-size: 15px; line-height: 1.8;">
-                                    ${r.error_hints.map(hint => `<li>${hint}</li>`).join('')}
-                                </ul>
+                            <div style="margin-top: 15px; background: ${r.error_type && r.error_type !== 'UNKNOWN' ? '#f8d7da' : '#fff3cd'}; border: 2px solid ${r.error_type && r.error_type !== 'UNKNOWN' ? '#dc3545' : '#ffc107'}; border-radius: 6px; padding: 15px;">
+                                <strong style="color: ${r.error_type && r.error_type !== 'UNKNOWN' ? '#721c24' : '#856404'}; font-size: 17px;">
+                                    ${r.error_type && r.error_type !== 'UNKNOWN' ? 'Nguyên nhân lỗi đã xác định:' : 'Nguyên nhân có thể:'}
+                                </strong>
+                                <div style="margin: 8px 0 0 0; color: ${r.error_type && r.error_type !== 'UNKNOWN' ? '#721c24' : '#856404'}; font-size: 16px; line-height: 1.5;">
+                                    ${r.error_hints.map(hint => '<div style="margin-bottom: 4px;">' + hint + '</div>').join('')}
+                                </div>
                             </div>
                         ` : ''}
                     </div>
