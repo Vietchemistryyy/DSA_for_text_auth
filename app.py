@@ -922,6 +922,9 @@ def demo_verify():
     try:
         data = request.json
         
+        print(f"\n=== DEBUG DEMO-VERIFY ===")
+        print(f"Received data: {data}")
+        
         # Parse số
         def parse_number(value):
             if not value:
@@ -944,6 +947,9 @@ def demo_verify():
         r = parse_number(data.get('r'))
         s = parse_number(data.get('s'))
         message = data.get('message', '')
+        
+        print(f"Message received: '{message}'")
+        print(f"Message length: {len(message)}")
         
         # Kiểm tra từng tham số cụ thể
         missing_params = []
@@ -973,6 +979,8 @@ def demo_verify():
         from src.utils import hash_message, mod_inverse
         message_hash = hash_message(message, 'sha256')
         
+        print(f"Message hash: {message_hash}")
+        
         # BƯỚC XÁC THỰC
         # Bước 1: Hash message
         # Bước 2: w = s^(-1) mod q
@@ -993,25 +1001,123 @@ def demo_verify():
         # Kiểm tra v == r
         is_valid = (v == r)
         
-        # Phân tích lỗi chi tiết
+        print(f"Verification result: v={v}, r={r}, is_valid={is_valid}")
+        print(f"=== END DEBUG ===\n")
+        
+        # Phân tích lỗi chi tiết - XÁC ĐỊNH CHÍNH XÁC nguyên nhân
         error_hints = []
+        error_type = None
+        collision_warning = None
+        
+        # Kiểm tra collision với tham số nhỏ
+        original_message = data.get('original_message', '')
+        if is_valid and original_message and message != original_message:
+            # Message đã thay đổi nhưng xác thực vẫn hợp lệ -> COLLISION!
+            original_hash = hash_message(original_message, 'sha256')
+            original_u1 = (original_hash * w) % q
+            
+            print(f"COLLISION DETECTED!")
+            print(f"Original message: '{original_message}'")
+            print(f"Current message: '{message}'")
+            print(f"Original hash mod q = {original_hash % q}")
+            print(f"Current hash mod q = {message_hash % q}")
+            
+            # Đây là collision do tham số nhỏ
+            collision_warning = {
+                'detected': True,
+                'original_message': original_message,
+                'current_message': message
+            }
+            # Đánh dấu là không thực sự hợp lệ do collision
+            is_valid = False
+            error_type = 'MESSAGE_CHANGED'
+            error_hints.append('VĂN BẢN ĐÃ BỊ THAY ĐỔI!')
+            error_hints.append(f'Văn bản gốc: "{original_message}"')
+            error_hints.append(f'Văn bản hiện tại: "{message}"')
+            error_hints.append(f'Lưu ý: Do sử dụng tham số demo nhỏ (q={q}), kết quả toán học có thể trùng khớp dù văn bản khác nhau.')
+        
         if not is_valid:
             # Kiểm tra signature có hợp lệ về mặt toán học không
             if r <= 0 or r >= q:
-                error_hints.append('Chữ ký r không hợp lệ (phải: 0 < r < q)')
+                error_hints.append(f'❌ Chữ ký r = {r} không hợp lệ (yêu cầu: 0 < r < q = {q})')
+                error_type = 'INVALID_R'
             if s <= 0 or s >= q:
-                error_hints.append('Chữ ký s không hợp lệ (phải: 0 < s < q)')
+                error_hints.append(f'❌ Chữ ký s = {s} không hợp lệ (yêu cầu: 0 < s < q = {q})')
+                error_type = 'INVALID_S'
             
             # Kiểm tra public key
             if y <= 0 or y >= p:
-                error_hints.append('Public key y không hợp lệ (phải: 0 < y < p)')
+                error_hints.append(f'❌ Public key y = {y} không hợp lệ (yêu cầu: 0 < y < p = {p})')
+                error_type = 'INVALID_Y'
             
-            # Nếu các tham số đều hợp lệ về mặt toán học
+            # Lấy giá trị gốc từ phần ký (nếu có)
+            original_p = parse_number(data.get('original_p'))
+            original_q = parse_number(data.get('original_q'))
+            original_g = parse_number(data.get('original_g'))
+            original_y = parse_number(data.get('original_y'))
+            original_r = parse_number(data.get('original_r'))
+            original_s = parse_number(data.get('original_s'))
+            original_message = data.get('original_message', '')
+            
+            # Nếu có giá trị gốc, so sánh chính xác
             if not error_hints:
-                error_hints.append('Có thể: Văn bản đã bị thay đổi')
-                error_hints.append('Hoặc: Chữ ký (r, s) không khớp với văn bản này')
-                error_hints.append('Hoặc: Public key y không đúng')
-                error_hints.append('Hoặc: Tham số DSA (p, q, g) không đúng')
+                if original_p is not None or original_q is not None or original_g is not None:
+                    # Có thông tin gốc - so sánh chính xác
+                    changed_params = []
+                    
+                    if original_p is not None and p != original_p:
+                        changed_params.append(f'p: {original_p} → {p}')
+                        error_type = 'PARAM_P_CHANGED'
+                    if original_q is not None and q != original_q:
+                        changed_params.append(f'q: {original_q} → {q}')
+                        error_type = 'PARAM_Q_CHANGED'
+                    if original_g is not None and g != original_g:
+                        changed_params.append(f'g: {original_g} → {g}')
+                        error_type = 'PARAM_G_CHANGED'
+                    if original_y is not None and y != original_y:
+                        changed_params.append(f'y: {original_y} → {y}')
+                        error_type = 'PUBLIC_KEY_CHANGED'
+                    if original_r is not None and r != original_r:
+                        changed_params.append(f'r: {original_r} → {r}')
+                        error_type = 'SIGNATURE_R_CHANGED'
+                    if original_s is not None and s != original_s:
+                        changed_params.append(f's: {original_s} → {s}')
+                        error_type = 'SIGNATURE_S_CHANGED'
+                    if original_message and message != original_message:
+                        error_type = 'MESSAGE_CHANGED'
+                        if len(original_message) != len(message):
+                            error_hints.append(f'❌ VĂN BẢN ĐÃ BỊ THAY ĐỔI!')
+                            error_hints.append(f'   • Độ dài gốc: {len(original_message)} ký tự')
+                            error_hints.append(f'   • Độ dài hiện tại: {len(message)} ký tự')
+                        else:
+                            # Tìm vị trí khác biệt
+                            for i, (c1, c2) in enumerate(zip(original_message, message)):
+                                if c1 != c2:
+                                    error_hints.append(f'❌ VĂN BẢN ĐÃ BỊ THAY ĐỔI tại vị trí {i+1}!')
+                                    error_hints.append(f'   • Ký tự gốc: "{c1}"')
+                                    error_hints.append(f'   • Ký tự hiện tại: "{c2}"')
+                                    break
+                    
+                    if changed_params:
+                        error_hints.append('❌ GIÁ TRỊ ĐÃ BỊ THAY ĐỔI so với phần ký:')
+                        for param in changed_params:
+                            error_hints.append(f'   • {param}')
+                    
+                    if not error_hints:
+                        # Không tìm thấy thay đổi nhưng vẫn fail - lỗi logic
+                        error_hints.append('❌ XÁC THỰC THẤT BẠI - v ≠ r')
+                        error_hints.append(f'   Các tham số khớp với phần ký nhưng kết quả sai.')
+                        error_hints.append(f'   Có thể có lỗi trong quá trình tính toán.')
+                        error_type = 'CALCULATION_ERROR'
+                else:
+                    # Không có thông tin gốc - liệt kê các nguyên nhân có thể
+                    error_hints.append('❌ XÁC THỰC THẤT BẠI - v ≠ r')
+                    error_hints.append('   Nguyên nhân có thể (không xác định được chính xác vì thiếu dữ liệu gốc):')
+                    error_hints.append('   1. Văn bản đã bị thay đổi sau khi ký')
+                    error_hints.append('   2. Chữ ký (r, s) không khớp với văn bản')  
+                    error_hints.append('   3. Public key y không đúng')
+                    error_hints.append('   4. Tham số DSA (p, q, g) không đúng')
+                    error_type = 'UNKNOWN'
         
         return jsonify({
             'success': True,
@@ -1049,7 +1155,9 @@ def demo_verify():
                     'v': str(v)
                 },
                 'is_valid': is_valid,
-                'error_hints': error_hints
+                'error_hints': error_hints,
+                'error_type': error_type,
+                'collision_warning': collision_warning
             }
         })
         
