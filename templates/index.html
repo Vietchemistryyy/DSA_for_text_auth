@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            background: #f5f5f5;
             min-height: 100vh;
             padding: 20px;
         }
@@ -79,76 +79,48 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            padding: 40px 30px;
+            background: #2196f3;
+            border-radius: 8px;
+            padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
         }
 
         .header h1 {
             color: white;
-            font-size: 2.8em;
+            font-size: 2.5em;
             margin-bottom: 10px;
             font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            position: relative;
-            z-index: 1;
         }
 
         .header h3 {
-            color: rgba(255, 255, 255, 0.95);
-            font-size: 1.2em;
+            color: white;
+            font-size: 1.1em;
             font-weight: 400;
             margin: 0;
-            position: relative;
-            z-index: 1;
         }
 
         .footer {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            padding: 25px;
+            background: #2196f3;
+            border-radius: 8px;
+            padding: 20px;
             margin-top: 40px;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .footer p {
             margin: 0;
             color: white;
-            font-size: 18px;
-            font-weight: 500;
+            font-size: 16px;
+            font-weight: 400;
         }
 
         .footer strong {
-            color: #ffd700;
-            font-weight: 700;
-            font-size: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
         }
 
         .key-status {
@@ -1627,6 +1599,60 @@
 
             if (input.files.length) {
                 const file = input.files[0];
+                const fileName = file.name.toLowerCase();
+                const fileSize = (file.size / 1024).toFixed(2);
+                
+                // Danh sách extension của file có thể đọc
+                const textExtensions = ['.txt', '.md', '.json', '.xml', '.csv', '.log', '.py', '.js', '.html', '.css', '.java', '.c', '.cpp', '.h'];
+                const docExtensions = ['.docx', '.pdf'];
+                const isTextFile = textExtensions.some(ext => fileName.endsWith(ext));
+                const isDocFile = docExtensions.some(ext => fileName.endsWith(ext));
+                
+                if (!isTextFile && !isDocFile) {
+                    // File binary không hỗ trợ - chỉ hiển thị thông tin
+                    content.innerHTML = `<strong style="color: #856404;">⚠️ File binary không được hỗ trợ</strong><br>
+                        <span style="font-size: 13px;">Tên file: ${file.name}</span><br>
+                        <span style="font-size: 13px;">Kích thước: ${fileSize} KB</span><br>
+                        <span style="font-size: 13px; color: #dc3545;">Chỉ hỗ trợ: .txt, .docx, .pdf và các file text khác.</span>`;
+                    preview.style.display = 'block';
+                    return;
+                }
+                
+                if (isDocFile) {
+                    // File .docx hoặc .pdf - gửi lên server để preview
+                    content.innerHTML = `<strong style="color: #2196f3;">⏳ Đang trích xuất nội dung...</strong><br>
+                        <span style="font-size: 13px;">Tên file: ${file.name}</span><br>
+                        <span style="font-size: 13px;">Kích thước: ${fileSize} KB</span>`;
+                    preview.style.display = 'block';
+                    
+                    // Gửi file lên server để preview
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    
+                    fetch('/api/preview-file', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const truncatedMsg = data.truncated ? ` (hiển thị ${data.content.length}/${data.full_length} ký tự)` : '';
+                            content.innerHTML = `<strong style="color: #28a745;">✓ Đã trích xuất nội dung${truncatedMsg}</strong><br>
+                                <div style="margin-top: 10px; padding: 10px; background: white; border-radius: 6px; max-height: 200px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;">${data.content}</div>`;
+                        } else {
+                            content.innerHTML = `<strong style="color: #dc3545;">❌ Không thể trích xuất nội dung</strong><br>
+                                <span style="font-size: 13px;">${data.error}</span>`;
+                        }
+                    })
+                    .catch(error => {
+                        content.innerHTML = `<strong style="color: #dc3545;">❌ Lỗi khi trích xuất</strong><br>
+                            <span style="font-size: 13px;">${error.message}</span>`;
+                    });
+                    
+                    return;
+                }
+                
+                // File text - đọc và hiển thị nội dung
                 const reader = new FileReader();
 
                 reader.onload = function (e) {
@@ -1637,11 +1663,11 @@
                 };
 
                 reader.onerror = function () {
-                    content.textContent = 'Không thể đọc file';
+                    content.innerHTML = '<strong style="color: #dc3545;">❌ Không thể đọc file</strong><br><span style="font-size: 13px;">File có thể bị hỏng hoặc không có quyền truy cập.</span>';
                     preview.style.display = 'block';
                 };
 
-                reader.readAsText(file);
+                reader.readAsText(file, 'UTF-8');
             } else {
                 preview.style.display = 'none';
             }
@@ -1858,18 +1884,6 @@
                 if (data.success) {
                     showDemoAlert('sign', data.message, 'success');
                     displayDemoResult(data.result, message, 'text');
-
-                    // Lưu kết quả ký để so sánh khi xác thực
-                    lastDemoSignResult = {
-                        p: data.result.params.p,
-                        q: data.result.params.q,
-                        g: data.result.params.g,
-                        y: data.result.step1.y,
-                        r: data.result.signature.r,
-                        s: data.result.signature.s,
-                        message: message
-                    };
-                    console.log('Saved sign result:', lastDemoSignResult);
                 } else {
                     // Parse error message to show on specific fields
                     const errorMsg = data.error;
@@ -2013,6 +2027,37 @@
             const typeLabel = type === 'file' ? `File: ${filename}` : 'Văn bản';
 
             const r = result;
+            
+            // Lưu kết quả ký để so sánh khi xác thực (cho cả text và file)
+            lastDemoSignResult = {
+                p: r.params.p,
+                q: r.params.q,
+                g: r.params.g,
+                y: r.step1.y,
+                r: r.signature.r,
+                s: r.signature.s,
+                message: content, // Lưu toàn bộ nội dung (text hoặc file content)
+                type: type,
+                filename: filename
+            };
+            
+            // TỰ ĐỘNG ĐIỀN CÁC GIÁ TRỊ VÀO PHẦN XÁC THỰC
+            document.getElementById('verifyP').value = r.params.p;
+            document.getElementById('verifyQ').value = r.params.q;
+            document.getElementById('verifyG').value = r.params.g;
+            document.getElementById('verifyY').value = r.step1.y;
+            document.getElementById('verifyR').value = r.signature.r;
+            document.getElementById('verifyS').value = r.signature.s;
+            
+            // Nếu là text, điền vào textarea; nếu là file, không điền (cần upload file)
+            if (type === 'text') {
+                document.getElementById('verifyMessage').value = content;
+                // Hiển thị thông báo đã tự động điền
+                showDemoAlert('verify', '✅ Đã tự động điền các giá trị vào phần Xác thực. Bạn có thể nhấn "Xác thực" ngay!', 'success');
+            } else {
+                // Với file, cần upload lại file
+                showDemoAlert('verify', '✅ Đã tự động điền các tham số. Vui lòng upload lại file gốc để xác thực.', 'success');
+            }
 
             resultDiv.innerHTML = `
                 <div class="result-box" style="border: 3px solid #28a745; background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);">
@@ -2135,6 +2180,32 @@
 
             showLoading('demoVerifyLoading', true);
 
+            // Debug: Log message để kiểm tra
+            console.log('=== DEBUG VERIFY MESSAGE ===');
+            console.log('Message to verify:', JSON.stringify(message));
+            console.log('Message length:', message.length);
+            console.log('Message bytes:', Array.from(message).map(c => c.charCodeAt(0)));
+            if (lastDemoSignResult) {
+                console.log('Original message:', JSON.stringify(lastDemoSignResult.message));
+                console.log('Original length:', lastDemoSignResult.message.length);
+                console.log('Original bytes:', Array.from(lastDemoSignResult.message).map(c => c.charCodeAt(0)));
+                console.log('Messages equal:', message === lastDemoSignResult.message);
+                
+                // Cảnh báo nếu message khác
+                if (message !== lastDemoSignResult.message) {
+                    const confirmContinue = confirm(
+                        '⚠️ CẢNH BÁO: Message khác với message gốc!\n\n' +
+                        `Message gốc: "${lastDemoSignResult.message}" (${lastDemoSignResult.message.length} ký tự)\n` +
+                        `Message hiện tại: "${message}" (${message.length} ký tự)\n\n` +
+                        'Xác thực sẽ THẤT BẠI. Bạn có muốn tiếp tục?'
+                    );
+                    if (!confirmContinue) {
+                        showLoading('demoVerifyLoading', false);
+                        return;
+                    }
+                }
+            }
+
             try {
                 // Chuẩn bị payload với thông tin gốc nếu có
                 const payload = { p, q, g, y, r, s, message };
@@ -2254,22 +2325,42 @@
 
             showLoading('demoVerifyLoading', true);
 
-            // Read file content
+            // Gửi file lên server để xử lý (không đọc ở client)
             const file = fileInput.files[0];
-            const message = await file.text();
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('p', p);
+            formData.append('q', q);
+            formData.append('g', g);
+            formData.append('y', y);
+            formData.append('r', r);
+            formData.append('s', s);
+            
+            // Gửi thông tin gốc nếu có
+            if (lastDemoSignResult) {
+                formData.append('original_p', lastDemoSignResult.p);
+                formData.append('original_q', lastDemoSignResult.q);
+                formData.append('original_g', lastDemoSignResult.g);
+                formData.append('original_y', lastDemoSignResult.y);
+                formData.append('original_r', lastDemoSignResult.r);
+                formData.append('original_s', lastDemoSignResult.s);
+                if (lastDemoSignResult.type === 'file') {
+                    formData.append('original_filename', lastDemoSignResult.filename);
+                }
+            }
 
             try {
-                const response = await fetch('/api/demo-verify', {
+                const response = await fetch('/api/demo-verify-file', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ p, q, g, y, r, s, message })
+                    body: formData
                 });
                 const data = await response.json();
 
                 showLoading('demoVerifyLoading', false);
 
                 if (data.success) {
-                    displayDemoVerifyResult(data.result, message);
+                    // Với file, không cần truyền message vì đã được xử lý ở server
+                    displayDemoVerifyResult(data.result, `[File: ${file.name}]`);
                 } else {
                     // Parse error message to show on specific fields
                     const errorMsg = data.error;
@@ -2316,6 +2407,23 @@
                         </div>
                         <div style="margin-top: 8px; font-size: 17px;"><strong>s:</strong> ${r.signature.s}</div>
                         <div style="margin-top: 12px; font-size: 17px;"><strong>Message:</strong> "${contentPreview}"</div>
+                        ${lastDemoSignResult && lastDemoSignResult.message && !message.startsWith('[File:') ? `
+                            <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; font-size: 14px;">
+                                <strong style="color: #1976d2;">🔍 Debug Info:</strong><br>
+                                <span style="font-family: monospace;">Message gốc (khi ký): "${lastDemoSignResult.message.substring(0, 50)}${lastDemoSignResult.message.length > 50 ? '...' : ''}" (${lastDemoSignResult.message.length} ký tự)</span><br>
+                                <span style="font-family: monospace;">Message hiện tại: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}" (${message.length} ký tự)</span><br>
+                                <span style="color: ${message === lastDemoSignResult.message ? '#28a745' : '#dc3545'}; font-weight: 600;">
+                                    ${message === lastDemoSignResult.message ? '✓ Message khớp chính xác' : '✗ Message KHÁC NHAU - Đây là nguyên nhân xác thực thất bại!'}
+                                </span>
+                            </div>
+                        ` : ''}
+                        ${message.startsWith('[File:') ? `
+                            <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; font-size: 14px;">
+                                <strong style="color: #1976d2;">ℹ️ Lưu ý:</strong><br>
+                                <span style="font-size: 13px;">Với file, nội dung được đọc và hash trực tiếp từ file bạn upload.</span><br>
+                                <span style="font-size: 13px;">Đảm bảo upload đúng file gốc để xác thực thành công.</span>
+                            </div>
+                        ` : ''}
                     </div>
 
                     <!-- BƯỚC XÁC THỰC -->
