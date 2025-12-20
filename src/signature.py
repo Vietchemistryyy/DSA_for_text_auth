@@ -95,19 +95,28 @@ class DSASignature:
     def sign_file(self, input_filepath: str, output_filepath: str = None,
                   hash_algorithm: str = 'sha256') -> Tuple[int, int]:
         """
-        Ký file văn bản
+        Ký file (hỗ trợ text, .docx, .pdf)
 
         Args:
-            input_filepath: Đường dẫn file văn bản
+            input_filepath: Đường dẫn file
             output_filepath: Đường dẫn lưu chữ ký (mặc định: input_filepath + .sig)
             hash_algorithm: Thuật toán hash
 
         Returns:
             Tuple[int, int]: Chữ ký (r, s)
         """
-        # Đọc nội dung file
-        with open(input_filepath, 'r', encoding='utf-8') as f:
-            message = f.read()
+        # Đọc nội dung file (hỗ trợ nhiều định dạng)
+        try:
+            from .file_reader import read_file_content
+            with open(input_filepath, 'rb') as f:
+                message, is_text = read_file_content(f, input_filepath)
+            
+            if message.startswith('[Không thể đọc') or message.startswith('[File binary'):
+                raise ValueError(f"Không thể đọc file: {message}")
+        except ImportError:
+            # Fallback: đọc như text file
+            with open(input_filepath, 'r', encoding='utf-8') as f:
+                message = f.read()
 
         # Ký
         signature = self.sign_message(message, hash_algorithm)
@@ -138,8 +147,29 @@ class DSASignature:
 
     def verify_file(self, input_filepath: str, signature_filepath: str,
                     public_key: int = None) -> bool:
-        with open(input_filepath, 'r', encoding='utf-8') as f:
-            message = f.read()
+        """
+        Xác thực file (hỗ trợ text, .docx, .pdf)
+        
+        Args:
+            input_filepath: Đường dẫn file cần xác thực
+            signature_filepath: Đường dẫn file chữ ký
+            public_key: Public key (dùng key trong signature file nếu None)
+            
+        Returns:
+            bool: True nếu chữ ký hợp lệ
+        """
+        # Đọc nội dung file (hỗ trợ nhiều định dạng)
+        try:
+            from .file_reader import read_file_content
+            with open(input_filepath, 'rb') as f:
+                message, is_text = read_file_content(f, input_filepath)
+            
+            if message.startswith('[Không thể đọc') or message.startswith('[File binary'):
+                raise ValueError(f"Không thể đọc file: {message}")
+        except ImportError:
+            # Fallback: đọc như text file
+            with open(input_filepath, 'r', encoding='utf-8') as f:
+                message = f.read()
 
         with open(signature_filepath, 'r') as f:
             signature_data = json.load(f)
