@@ -537,6 +537,45 @@ def clear_keys():
         }), 500
 
 
+@app.route('/api/preview-file', methods=['POST'])
+def preview_file():
+    """API preview nội dung file"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({
+                'success': False,
+                'error': 'Không có file!'
+            }), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({
+                'success': False,
+                'error': 'Chưa chọn file!'
+            }), 400
+        
+        # Đọc nội dung file
+        from src.file_reader import read_file_content
+        content, is_text_file = read_file_content(file, file.filename)
+        
+        # Tạo preview (giới hạn 500 ký tự)
+        preview = content[:500] if len(content) > 500 else content
+        
+        return jsonify({
+            'success': True,
+            'content': preview,
+            'full_length': len(content),
+            'is_text_file': is_text_file,
+            'truncated': len(content) > 500
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Lỗi: {str(e)}'
+        }), 500
+
+
 @app.route('/api/demo-sign', methods=['POST'])
 def demo_sign():
     """API demo ký với tham số thủ công - CHỈ ĐỂ DEMO, KHÔNG VALIDATE CHẶT"""
@@ -571,7 +610,11 @@ def demo_sign():
         k = parse_number(data.get('k'))
         message = data.get('message', '')
         
-        print(f"DEBUG: Parsed values - p={p}, q={q}, g={g}, x={x}, k={k}, message={message[:20] if message else 'empty'}")
+        print(f"DEBUG: Parsed values - p={p}, q={q}, g={g}, x={x}, k={k}")
+        print(f"DEBUG: Message: '{message}'")
+        print(f"DEBUG: Message length: {len(message)}")
+        print(f"DEBUG: Message repr: {repr(message)}")
+        print(f"DEBUG: Message bytes: {message.encode('utf-8')}")
         
         # Kiểm tra tham số cơ bản
         missing_params = []
@@ -778,7 +821,28 @@ def demo_sign_file():
             }), 400
         
         # Đọc nội dung file
-        content = file.read().decode('utf-8')
+        try:
+            from src.file_reader import read_file_content
+            content, is_text_file = read_file_content(file, file.filename)
+            
+            if content.startswith('[Không thể đọc') or content.startswith('[File binary'):
+                return jsonify({
+                    'success': False,
+                    'error': content
+                }), 400
+            
+            print(f"\n=== DEBUG DEMO-SIGN-FILE ===")
+            print(f"File: {file.filename}")
+            print(f"Is text file: {is_text_file}")
+            print(f"Content length: {len(content)}")
+            print(f"Content preview: {repr(content[:100]) if len(content) > 100 else repr(content)}")
+            print(f"Content type: {type(content)}")
+            
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'error': f'Không thể đọc file: {str(e)}'
+            }), 400
         
         # Kiểm tra từng tham số cụ thể
         missing_params = []
@@ -810,6 +874,14 @@ def demo_sign_file():
         # Hash message
         from src.utils import hash_message, mod_inverse
         message_hash = hash_message(content, 'sha256')
+        
+        # Tạo preview content cho response (chỉ với text file)
+        if is_text_file:
+            content_preview = content[:200] + ('...' if len(content) > 200 else '')
+            content_short = content[:50] + ('...' if len(content) > 50 else '')
+        else:
+            content_preview = f'[File binary: {file.filename}, {len(content)} bytes]'
+            content_short = f'[Binary file: {file.filename}]'
         
         # Nếu không có k, tạo ngẫu nhiên
         if not k:
@@ -857,7 +929,8 @@ def demo_sign_file():
             'success': True,
             'message': 'Đã ký file thành công!',
             'filename': file.filename,
-            'file_content': content[:200] + ('...' if len(content) > 200 else ''),
+            'file_content': content_preview,
+            'is_text_file': is_text_file,
             'result': {
                 'params': {
                     'p': str(p),
@@ -871,7 +944,7 @@ def demo_sign_file():
                     'formula': f'y = g^x mod p = {g}^{x} mod {p} = {y}'
                 },
                 'step2': {
-                    'message': content[:50] + ('...' if len(content) > 50 else ''),
+                    'message': content_short,
                     'hash': str(message_hash),
                     'formula': f'H(m) = SHA256(file_content) = {message_hash}'
                 },
@@ -916,6 +989,233 @@ def demo_sign_file():
         }), 500
 
 
+@app.route('/api/demo-verify-file', methods=['POST'])
+def demo_verify_file():
+    """API demo xác thực file với tham số thủ công"""
+    try:
+        # Parse số
+        def parse_number(value):
+            if not value:
+                return None
+            value = str(value).strip()
+            if value.startswith('0x') or value.startswith('0X'):
+                return int(value, 16)
+            try:
+                return int(value, 10)
+            except:
+                try:
+                    return int(value, 16)
+                except:
+                    raise ValueError(f"Không thể parse giá trị: {value}")
+        
+        # Lấy tham số từ form
+        p = parse_number(request.form.get('p'))
+        q = parse_number(request.form.get('q'))
+        g = parse_number(request.form.get('g'))
+        y = parse_number(request.form.get('y'))
+        r = parse_number(request.form.get('r'))
+        s = parse_number(request.form.get('s'))
+        
+        # Lấy file
+        if 'file' not in request.files:
+            return jsonify({
+                'success': False,
+                'error': 'Thiếu file! Vui lòng chọn file cần xác thực.'
+            }), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({
+                'success': False,
+                'error': 'Chưa chọn file! Vui lòng chọn file cần xác thực.'
+            }), 400
+        
+        # Đọc nội dung file
+        try:
+            from src.file_reader import read_file_content
+            message, is_text_file = read_file_content(file, file.filename)
+            
+            if message.startswith('[Không thể đọc') or message.startswith('[File binary'):
+                return jsonify({
+                    'success': False,
+                    'error': message
+                }), 400
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'error': f'Không thể đọc file: {str(e)}'
+            }), 400
+        
+        print(f"\n=== DEBUG DEMO-VERIFY-FILE ===")
+        print(f"File: {file.filename}")
+        print(f"Is text file: {is_text_file}")
+        print(f"Message length: {len(message)}")
+        print(f"Message preview: {repr(message[:100]) if len(message) > 100 else repr(message)}")
+        print(f"Message type: {type(message)}")
+        
+        # Kiểm tra tham số
+        missing_params = []
+        if p is None:
+            missing_params.append('p')
+        if q is None:
+            missing_params.append('q')
+        if g is None:
+            missing_params.append('g')
+        if y is None:
+            missing_params.append('y')
+        if r is None:
+            missing_params.append('r')
+        if s is None:
+            missing_params.append('s')
+        
+        if missing_params:
+            error_msg = f'Thiếu tham số: {", ".join(missing_params)}. Vui lòng nhập đầy đủ.'
+            return jsonify({
+                'success': False,
+                'error': error_msg
+            }), 400
+        
+        # Hash message
+        from src.utils import hash_message, mod_inverse
+        message_hash = hash_message(message, 'sha256')
+        
+        print(f"Message hash: {message_hash}")
+        
+        # BƯỚC XÁC THỰC
+        w = mod_inverse(s, q)
+        u1 = (message_hash * w) % q
+        u2 = (r * w) % q
+        g_u1 = pow(g, u1, p)
+        y_u2 = pow(y, u2, p)
+        g_u1_y_u2 = (g_u1 * y_u2) % p
+        v = g_u1_y_u2 % q
+        
+        is_valid = (v == r)
+        
+        print(f"Verification result: v={v}, r={r}, is_valid={is_valid}")
+        print(f"=== END DEBUG ===\n")
+        
+        # Phân tích lỗi
+        error_hints = []
+        error_type = None
+        
+        # Lấy thông tin gốc nếu có
+        original_p = parse_number(request.form.get('original_p'))
+        original_q = parse_number(request.form.get('original_q'))
+        original_g = parse_number(request.form.get('original_g'))
+        original_y = parse_number(request.form.get('original_y'))
+        original_r = parse_number(request.form.get('original_r'))
+        original_s = parse_number(request.form.get('original_s'))
+        original_filename = request.form.get('original_filename', '')
+        
+        if not is_valid:
+            if r <= 0 or r >= q:
+                error_hints.append(f'❌ Chữ ký r = {r} không hợp lệ (yêu cầu: 0 < r < q = {q})')
+                error_type = 'INVALID_R'
+            if s <= 0 or s >= q:
+                error_hints.append(f'❌ Chữ ký s = {s} không hợp lệ (yêu cầu: 0 < s < q = {q})')
+                error_type = 'INVALID_S'
+            if y <= 0 or y >= p:
+                error_hints.append(f'❌ Public key y = {y} không hợp lệ (yêu cầu: 0 < y < p = {p})')
+                error_type = 'INVALID_Y'
+            
+            # So sánh với giá trị gốc
+            if not error_hints and original_p is not None:
+                changed_params = []
+                if p != original_p:
+                    changed_params.append(f'p: {original_p} → {p}')
+                    error_type = 'PARAM_P_CHANGED'
+                if q != original_q:
+                    changed_params.append(f'q: {original_q} → {q}')
+                    error_type = 'PARAM_Q_CHANGED'
+                if g != original_g:
+                    changed_params.append(f'g: {original_g} → {g}')
+                    error_type = 'PARAM_G_CHANGED'
+                if y != original_y:
+                    changed_params.append(f'y: {original_y} → {y}')
+                    error_type = 'PUBLIC_KEY_CHANGED'
+                if r != original_r:
+                    changed_params.append(f'r: {original_r} → {r}')
+                    error_type = 'SIGNATURE_R_CHANGED'
+                if s != original_s:
+                    changed_params.append(f's: {original_s} → {s}')
+                    error_type = 'SIGNATURE_S_CHANGED'
+                
+                if original_filename and file.filename != original_filename:
+                    error_hints.append(f'⚠️ FILE KHÁC NHAU!')
+                    error_hints.append(f'   File gốc: {original_filename}')
+                    error_hints.append(f'   File hiện tại: {file.filename}')
+                    error_hints.append(f'   Nội dung có thể đã thay đổi.')
+                    error_type = 'FILE_CHANGED'
+                
+                if changed_params:
+                    error_hints.append('❌ GIÁ TRỊ ĐÃ BỊ THAY ĐỔI so với phần ký:')
+                    for param in changed_params:
+                        error_hints.append(f'   • {param}')
+                
+                if not error_hints:
+                    error_hints.append('❌ XÁC THỰC THẤT BẠI - v ≠ r')
+                    error_hints.append('   Nguyên nhân có thể:')
+                    error_hints.append('   1. Nội dung file đã bị thay đổi')
+                    error_hints.append('   2. Chữ ký không khớp với file này')
+                    error_hints.append('   3. Tham số DSA không đúng')
+                    error_type = 'VERIFICATION_FAILED'
+            else:
+                if not error_hints:
+                    error_hints.append('❌ XÁC THỰC THẤT BẠI - v ≠ r')
+                    error_type = 'UNKNOWN'
+        
+        return jsonify({
+            'success': True,
+            'result': {
+                'params': {
+                    'p': str(p),
+                    'q': str(q),
+                    'g': str(g),
+                    'y': str(y)
+                },
+                'signature': {
+                    'r': str(r),
+                    's': str(s)
+                },
+                'step1': {
+                    'hash': str(message_hash),
+                    'formula': f'H(m) = SHA256(file_content) = {message_hash}'
+                },
+                'step2': {
+                    'w': str(w),
+                    'formula': f'w = s^(-1) mod q = {s}^(-1) mod {q} = {w}'
+                },
+                'step3': {
+                    'u1': str(u1),
+                    'formula': f'u1 = H(m) * w mod q = {message_hash} * {w} mod {q} = {u1}'
+                },
+                'step4': {
+                    'u2': str(u2),
+                    'formula': f'u2 = r * w mod q = {r} * {w} mod {q} = {u2}'
+                },
+                'step5': {
+                    'g_u1': str(g_u1),
+                    'y_u2': str(y_u2),
+                    'g_u1_y_u2': str(g_u1_y_u2),
+                    'v': str(v)
+                },
+                'is_valid': is_valid,
+                'error_hints': error_hints,
+                'error_type': error_type
+            }
+        })
+        
+    except Exception as e:
+        import traceback
+        print(f"ERROR in demo_verify_file: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({
+            'success': False,
+            'error': f'Lỗi: {str(e)}'
+        }), 500
+
+
 @app.route('/api/demo-verify', methods=['POST'])
 def demo_verify():
     """API demo xác thực với tham số thủ công"""
@@ -923,7 +1223,7 @@ def demo_verify():
         data = request.json
         
         print(f"\n=== DEBUG DEMO-VERIFY ===")
-        print(f"Received data: {data}")
+        print(f"Received data keys: {data.keys()}")
         
         # Parse số
         def parse_number(value):
@@ -950,6 +1250,26 @@ def demo_verify():
         
         print(f"Message received: '{message}'")
         print(f"Message length: {len(message)}")
+        print(f"Message repr: {repr(message)}")
+        print(f"Message bytes: {message.encode('utf-8')}")
+        
+        # So sánh với original message nếu có
+        original_message = data.get('original_message', '')
+        if original_message:
+            print(f"\nOriginal message: '{original_message}'")
+            print(f"Original length: {len(original_message)}")
+            print(f"Original repr: {repr(original_message)}")
+            print(f"Original bytes: {original_message.encode('utf-8')}")
+            print(f"Messages equal: {message == original_message}")
+            
+            if message != original_message:
+                print("\n!!! MESSAGES ARE DIFFERENT !!!")
+                print(f"Difference in length: {len(message)} vs {len(original_message)}")
+                # Tìm vị trí khác biệt
+                for i, (c1, c2) in enumerate(zip(message, original_message)):
+                    if c1 != c2:
+                        print(f"First difference at position {i}: '{c1}' (ord={ord(c1)}) vs '{c2}' (ord={ord(c2)})")
+                        break
         
         # Kiểm tra từng tham số cụ thể
         missing_params = []
