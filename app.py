@@ -330,28 +330,18 @@ def verify_file():
                             try:
                                 original_pubkey = int(sig_data['public_key'], 16)
                                 if original_pubkey != public_key:
-                                    error_hints.append('Public key bạn đang dùng không khớp với public key của người ký.')
-                                    error_hints.append('Bạn cần import đúng public key của người đã ký file này.')
+                                    error_hints.append('Không hợp lệ: Public key không khớp với người ký')
                                     error_type = 'PUBLIC_KEY_MISMATCH'
                                 else:
                                     # Public key khớp nhưng vẫn fail → file bị thay đổi
-                                    error_hints.append('File hiện tại khác với file gốc khi được ký.')
-                                    error_hints.append('Hash hiện tại không khớp với hash khi ký.')
-                                    error_hints.append('File có thể đã bị chỉnh sửa hoặc bị hỏng trong quá trình truyền tải.')
+                                    error_hints.append('Không hợp lệ: File đã bị sửa đổi')
                                     error_type = 'FILE_MODIFIED'
                             except:
-                                error_hints.append('❌ KHÔNG THỂ XÁC ĐỊNH NGUYÊN NHÂN CHÍNH XÁC')
-                                error_hints.append('   Có thể do: File bị thay đổi HOẶC Public key không đúng.')
+                                error_hints.append('Không hợp lệ: File bị sửa đổi hoặc Public key sai')
                                 error_type = 'UNKNOWN'
                         else:
                             # Không có public key trong signature để so sánh
-                            error_hints.append('❌ XÁC THỰC THẤT BẠI - v ≠ r')
-                            error_hints.append(f'   • Giá trị tính được v = {v}')
-                            error_hints.append(f'   • Giá trị chữ ký r = {sig_r}')
-                            error_hints.append('   Nguyên nhân có thể:')
-                            error_hints.append('   1. File đã bị thay đổi sau khi ký')
-                            error_hints.append('   2. Public key không đúng (không phải của người ký)')
-                            error_hints.append('   3. File chữ ký không khớp với file này')
+                            error_hints.append('Không hợp lệ: Chữ ký không đúng hoặc file bị sửa đổi')
                             error_type = 'VERIFICATION_FAILED'
                 except Exception as calc_error:
                     print(f"Error during manual verification: {calc_error}")
@@ -362,7 +352,7 @@ def verify_file():
         return jsonify({
             'success': True,
             'valid': is_valid,
-            'message': 'File hợp lệ!' if is_valid else 'File không hợp lệ!',
+            'message': 'Hợp lệ' if is_valid else 'Không hợp lệ',
             'public_key_used': public_key_info,
             'error_hints': error_hints,
             'error_type': error_type
@@ -502,6 +492,18 @@ def get_key_status():
         if km.has_public_key():
             status['public_key'] = format_hex(km.get_public_key())[:20] + '...'
 
+        # Thêm tham số DSA
+        dsa_params = km.dsa.get_params()
+        status['dsa_params'] = {
+            'p': str(dsa_params['p']),
+            'q': str(dsa_params['q']),
+            'g': str(dsa_params['g'])
+        }
+        
+        # Thêm public key đầy đủ nếu có
+        if km.has_public_key():
+            status['dsa_params']['y'] = str(km.get_public_key())
+
         return jsonify({
             'success': True,
             'status': status
@@ -637,7 +639,75 @@ def demo_sign():
                 'error': error_msg
             }), 400
         
-        # DEMO MODE - Chỉ kiểm tra cơ bản, không validate chặt
+        # DEMO MODE - Validation cơ bản
+        warnings = []
+        
+        # Hàm kiểm tra số nguyên tố đơn giản
+        def is_prime(n):
+            if n < 2:
+                return False
+            if n == 2:
+                return True
+            if n % 2 == 0:
+                return False
+            for i in range(3, int(n**0.5) + 1, 2):
+                if n % i == 0:
+                    return False
+            return True
+        
+        # 1. Kiểm tra q phải là số nguyên tố
+        if q < 2:
+            return jsonify({
+                'success': False,
+                'error': f'q phải là số nguyên tố > 1. Bạn nhập q={q}'
+            }), 400
+        
+        if not is_prime(q):
+            return jsonify({
+                'success': False,
+                'error': f'q={q} KHÔNG phải số nguyên tố! Thuật toán DSA yêu cầu q là số nguyên tố.',
+                'field': 'q'
+            }), 400
+        
+        # 2. Kiểm tra p > q
+        if p <= q:
+            return jsonify({
+                'success': False,
+                'error': f'p phải lớn hơn q. Bạn nhập p={p}, q={q}'
+            }), 400
+        
+        # 3. Kiểm tra p phải là số nguyên tố
+        if not is_prime(p):
+            return jsonify({
+                'success': False,
+                'error': f'p={p} KHÔNG phải số nguyên tố! Thuật toán DSA yêu cầu p là số nguyên tố.',
+                'field': 'p'
+            }), 400
+        
+        # 4. Kiểm tra (p-1) chia hết cho q
+        if (p - 1) % q != 0:
+            return jsonify({
+                'success': False,
+                'error': f'(p-1) mod q = {(p-1) % q} ≠ 0. Thuật toán DSA yêu cầu q là ước của (p-1).',
+                'field': 'q'
+            }), 400
+        
+        # 5. Kiểm tra g trong khoảng hợp lệ
+        if g <= 1 or g >= p:
+            return jsonify({
+                'success': False,
+                'error': f'g phải nằm trong khoảng (1, {p}). Bạn nhập g={g}'
+            }), 400
+        
+        # 6. Kiểm tra g^q mod p = 1
+        if pow(g, q, p) != 1:
+            return jsonify({
+                'success': False,
+                'error': f'g^q mod p = {pow(g, q, p)} ≠ 1. Tham số g không hợp lệ với p và q đã cho.',
+                'field': 'g'
+            }), 400
+        
+        # 7. Kiểm tra x
         if x <= 0 or x >= q:
             error_msg = f'Private key x phải nằm trong khoảng (1, {q-1}). Bạn nhập x={x}, q={q}'
             print(f"DEBUG: x validation error: {error_msg}")
@@ -707,9 +777,10 @@ def demo_sign():
         is_valid = (v == r)
         
         # Trả về TẤT CẢ các giá trị tính toán
-        return jsonify({
+        response_data = {
             'success': True,
             'message': 'Đã ký thành công!',
+            'warnings': warnings if warnings else None,
             'result': {
                 # Tham số đầu vào
                 'params': {
@@ -766,7 +837,9 @@ def demo_sign():
                     'check': f'v == r? {v} == {r}? {is_valid}'
                 }
             }
-        })
+        }
+        
+        return jsonify(response_data)
         
     except ValueError as e:
         return jsonify({
@@ -858,14 +931,92 @@ def demo_sign_file():
         if missing_params:
             return jsonify({
                 'success': False,
-                'error': f'Thiếu tham số: {", ".join(missing_params)}. Vui lòng nhập đầy đủ.'
+                'error': f'Thiếu tham số: {", ".join(missing_params)}. Vui lòng nhập đầy đủ.',
+                'field': missing_params[0]  # Trả về field đầu tiên bị thiếu
             }), 400
         
-        # DEMO MODE - Chỉ kiểm tra cơ bản
+        # VALIDATION ĐẦY ĐỦ - giống demo_sign
+        def is_prime(n):
+            if n < 2:
+                return False
+            if n == 2:
+                return True
+            if n % 2 == 0:
+                return False
+            limit = min(int(n**0.5) + 1, 100000)
+            for i in range(3, limit, 2):
+                if n % i == 0:
+                    return False
+            return True
+        
+        # 1. Kiểm tra q phải là số nguyên tố
+        if q < 2:
+            return jsonify({
+                'success': False,
+                'error': f'q phải là số nguyên tố lớn hơn 1. Bạn nhập q={q}',
+                'field': 'q'
+            }), 400
+        
+        if not is_prime(q):
+            return jsonify({
+                'success': False,
+                'error': f'q={q} KHÔNG phải số nguyên tố! Thuật toán DSA yêu cầu q là số nguyên tố.',
+                'field': 'q'
+            }), 400
+        
+        # 2. Kiểm tra p > q
+        if p <= q:
+            return jsonify({
+                'success': False,
+                'error': f'p phải lớn hơn q. Bạn nhập p={p}, q={q}',
+                'field': 'p'
+            }), 400
+        
+        # 3. Kiểm tra p phải là số nguyên tố
+        if p < 2:
+            return jsonify({
+                'success': False,
+                'error': f'p phải là số nguyên tố lớn hơn 1. Bạn nhập p={p}',
+                'field': 'p'
+            }), 400
+        
+        if not is_prime(p):
+            return jsonify({
+                'success': False,
+                'error': f'p={p} KHÔNG phải số nguyên tố! Thuật toán DSA yêu cầu p là số nguyên tố.',
+                'field': 'p'
+            }), 400
+        
+        # 4. Kiểm tra (p-1) chia hết cho q
+        if (p - 1) % q != 0:
+            return jsonify({
+                'success': False,
+                'error': f'(p-1) mod q = {(p-1) % q} ≠ 0. Thuật toán DSA yêu cầu q là ước của (p-1).',
+                'field': 'q'
+            }), 400
+        
+        # 5. Kiểm tra g trong khoảng hợp lệ
+        if g <= 1 or g >= p:
+            return jsonify({
+                'success': False,
+                'error': f'g phải nằm trong khoảng (1, {p}). Bạn nhập g={g}',
+                'field': 'g'
+            }), 400
+        
+        # 6. Kiểm tra g^q mod p = 1
+        if pow(g, q, p) != 1:
+            return jsonify({
+                'success': False,
+                'error': f'g^q mod p = {pow(g, q, p)} ≠ 1. Tham số g không hợp lệ với p và q đã cho.',
+                'field': 'g'
+            }), 400
+        
+        # 7. Kiểm tra x
         if x <= 0 or x >= q:
             return jsonify({
                 'success': False,
-                'error': f'Private key x phải nằm trong khoảng (1, {q-1}). Bạn nhập x={x}, q={q}'
+                'error': f'Private key x phải nằm trong khoảng (1, {q-1}). Bạn nhập x={x}, q={q}',
+                'field': 'x'
             }), 400
         
         # Tính public key
@@ -890,7 +1041,8 @@ def demo_sign_file():
             if k <= 0 or k >= q:
                 return jsonify({
                     'success': False,
-                    'error': f'k phải nằm trong khoảng (1, {q-1}). Bạn nhập k={k}, q={q}'
+                    'error': f'k phải nằm trong khoảng (1, {q-1}). Bạn nhập k={k}, q={q}',
+                    'field': 'k'
                 }), 400
         
         # BƯỚC KÝ
@@ -900,7 +1052,8 @@ def demo_sign_file():
         if r == 0:
             return jsonify({
                 'success': False,
-                'error': f'r = 0 (g^k mod p = {g_k_mod_p}), vui lòng chọn k khác!'
+                'error': f'r = 0 (g^k mod p = {g_k_mod_p}), vui lòng chọn k khác!',
+                'field': 'k'
             }), 400
         
         k_inv = mod_inverse(k, q)
@@ -911,7 +1064,8 @@ def demo_sign_file():
         if s == 0:
             return jsonify({
                 'success': False,
-                'error': 's = 0, vui lòng chọn k khác!'
+                'error': 's = 0, vui lòng chọn k khác!',
+                'field': 'k'
             }), 400
         
         # BƯỚC XÁC THỰC
