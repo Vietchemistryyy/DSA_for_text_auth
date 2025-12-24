@@ -570,7 +570,7 @@
                     <button class="guide-toggle" id="demoGuideIcon">▼</button>
                 </div>
                 <div class="guide-content collapsed" id="demoGuide"
-                    style="color: #0d47a1; line-height: 1.8; font-size: 16px; margin-top: 12px;">
+                    style="color: #0d47a1; line-height: 1.8; font-size: 17px; margin-top: 12px;">
                     <p style="margin: 0 0 10px 0;"><strong>Mục đích:</strong> Demo chi tiết từng bước tính toán của
                         thuật toán DSA với tham số tùy chỉnh.</p>
                     <ol style="margin: 0 0 10px 0; padding-left: 25px;">
@@ -583,7 +583,7 @@
                         <li><strong>Bước 4:</strong> Thử thay đổi các giá trị để kiểm tra xác thực thất bại.</li>
                     </ol>
                     <p
-                        style="margin: 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; font-size: 15px;">
+                        style="margin: 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; font-size: 16px;">
                         💡 Sử dụng số nguyên nhỏ (< 1000) để dễ kiểm tra tính toán thủ công.</p>
                 </div>
             </div>
@@ -672,6 +672,7 @@
                             <label style="color: #2e7d32; font-weight: 600;">File cần ký:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="demoFile"
+                                    onclick="resetFileInput('demoFile')"
                                     onchange="updateFileName('demoFile', 'demoFileName'); previewFileContent('demoFile', 'demoFilePreview', 'demoFileContent')">
                                 <label for="demoFile" class="file-input-label">
                                     Chọn File
@@ -784,6 +785,7 @@
                             <label style="color: #1565c0; font-weight: 600;">File cần xác thực:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="verifyFile"
+                                    onclick="resetFileInput('verifyFile')"
                                     onchange="updateFileName('verifyFile', 'verifyFileName'); previewFileContent('verifyFile', 'verifyFilePreview', 'verifyFileContent')">
                                 <label for="verifyFile" class="file-input-label">
                                     Chọn File
@@ -843,16 +845,16 @@
                     </button>
                     <button class="btn btn-success" id="exportPublicBtn" onclick="exportKey('public')" disabled
                         title="Chia sẻ cho người khác để họ xác thực chữ ký của bạn">
-                        Export Public Key
+                        Xuất Public Key
                     </button>
                     <button class="btn btn-success" id="exportPrivateBtn" onclick="exportKey('private')"
                         style="background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%); box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);"
                         disabled title="Sao lưu để ký trên thiết bị khác (BẢO MẬT!)">
-                        Export Private Key
+                        Xuất Private Key
                     </button>
                     <button class="btn btn-secondary" onclick="document.getElementById('importKeyFile').click()"
-                        title="Import Public Key (xác thực) hoặc Private Key (ký)">
-                        Import Key
+                        title="Nhập Public Key (xác thực) hoặc Private Key (ký)">
+                        Nhập Key
                     </button>
                     <button class="btn btn-danger" id="clearKeysBtn" onclick="clearKeys()" disabled
                         title="Xóa tất cả khóa khỏi session">
@@ -860,6 +862,42 @@
                     </button>
                 </div>
                 <input type="file" id="importKeyFile" style="display:none" accept=".json" onchange="importKey(this)">
+            </div>
+
+            <!-- DSA Parameters Display -->
+            <div class="key-status" id="dsaParamsSection" style="display: none;">
+                <h3>Tham số DSA</h3>
+                <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border: 2px solid #667eea; border-radius: 12px; padding: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div style="background: white; border-radius: 8px; padding: 15px; border: 1px solid #dee2e6;">
+                            <strong style="color: #667eea; font-size: 16px;">Tham số p (số nguyên tố):</strong>
+                            <div id="dsaParamP" style="font-family: monospace; font-size: 13px; color: #333; margin-top: 8px; word-break: break-all; line-height: 1.5;">-</div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 15px; border: 1px solid #dee2e6;">
+                            <strong style="color: #667eea; font-size: 16px;">Tham số q (số nguyên tố):</strong>
+                            <div id="dsaParamQ" style="font-family: monospace; font-size: 13px; color: #333; margin-top: 8px; word-break: break-all; line-height: 1.5;">-</div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div style="background: white; border-radius: 8px; padding: 15px; border: 1px solid #dee2e6;">
+                            <strong style="color: #667eea; font-size: 16px;">Tham số g (generator):</strong>
+                            <div id="dsaParamG" style="font-family: monospace; font-size: 13px; color: #333; margin-top: 8px; word-break: break-all; line-height: 1.5;">-</div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 15px; border: 1px solid #28a745;">
+                            <strong style="color: #28a745; font-size: 16px;">Public Key y (duy nhất):</strong>
+                            <div id="dsaParamY" style="font-family: monospace; font-size: 13px; color: #333; margin-top: 8px; word-break: break-all; line-height: 1.5;">-</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #2196f3; border-radius: 8px;">
+                        <strong style="color: #1565c0; font-size: 15px;">📌 Giải thích:</strong>
+                        <ul style="margin: 10px 0 0 20px; color: #0d47a1; font-size: 14px; line-height: 1.8;">
+                            <li><strong>p, q, g</strong> là <strong>Domain Parameters</strong> theo tiêu chuẩn <strong>FIPS 186-4</strong> (được NIST công nhận) - cố định và chia sẻ chung cho tất cả người dùng.</li>
+                            <li><strong>Public Key (y)</strong> là giá trị <strong>DUY NHẤT</strong> cho mỗi người dùng, được tính từ Private Key: y = g^x mod p</li>
+                            <li>Việc dùng tham số chuẩn FIPS 186-4 đảm bảo tính an toàn đã được kiểm chứng và tương thích với các hệ thống DSA khác.</li>
+                            <li><strong>Độ dài khóa:</strong> p = 1024 bits, q = 160 bits (mức bảo mật chuẩn)</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <div
@@ -870,7 +908,7 @@
                     <button class="guide-toggle" id="fileGuideIcon">▼</button>
                 </div>
                 <div class="guide-content collapsed" id="fileGuide"
-                    style="color: #0d47a1; line-height: 1.8; font-size: 16px; margin-top: 12px;">
+                    style="color: #0d47a1; line-height: 1.8; font-size: 17px; margin-top: 12px;">
                     <p style="margin: 0 0 10px 0;"><strong>Mục đích:</strong> Ký và xác thực file thực tế với khóa DSA
                         tự động sinh (bảo mật cao).</p>
                     <ol style="margin: 0 0 10px 0; padding-left: 25px;">
@@ -884,7 +922,7 @@
                         </li>
                     </ol>
                     <p
-                        style="margin: 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; font-size: 15px;">
+                        style="margin: 0; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 6px; font-size: 16px;">
                         🔒 Private Key dùng để KÝ (giữ bí mật). Public Key dùng để XÁC THỰC (có thể chia sẻ).</p>
                 </div>
             </div>
@@ -955,12 +993,20 @@
                         <label style="color: #1565c0; font-weight: 600;">File gốc:</label>
                         <div class="file-input-wrapper">
                             <input type="file" id="fileToVerify"
-                                onchange="updateFileName('fileToVerify', 'fileToVerifyName')">
+                                onclick="resetFileInput('fileToVerify')"
+                                onchange="updateFileName('fileToVerify', 'fileToVerifyName'); previewFileContent('fileToVerify', 'fileVerifyPreview', 'fileVerifyContent')">
                             <label for="fileToVerify" class="file-input-label">
                                 Chọn File
                             </label>
                             <span class="file-name" id="fileToVerifyName">Chưa chọn file</span>
                         </div>
+                    </div>
+
+                    <div id="fileVerifyPreview"
+                        style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 15px; display: none; max-height: 200px; overflow-y: auto;">
+                        <strong style="color: #1565c0;">Nội dung file:</strong>
+                        <pre id="fileVerifyContent"
+                            style="margin: 10px 0 0 0; font-size: 14px; white-space: pre-wrap; word-wrap: break-word; font-family: 'Inter', sans-serif;"></pre>
                     </div>
 
                     <div class="form-group">
@@ -1006,6 +1052,87 @@
 
             event.target.classList.add('active');
             document.getElementById(tabId).classList.add('active');
+
+            // Reset dữ liệu khi chuyển tab
+            if (tabId === 'demo-algorithm') {
+                // Chuyển sang Demo Algorithm - reset tất cả
+                resetDemoAlgorithm();
+            } else if (tabId === 'sign-file') {
+                // Chuyển sang DSA với khóa tự động - reset tất cả
+                resetAutoKeySection();
+            }
+        }
+
+        // Reset phần Demo Algorithm
+        function resetDemoAlgorithm() {
+            // Reset tất cả input fields
+            document.getElementById('demoP').value = '';
+            document.getElementById('demoQ').value = '';
+            document.getElementById('demoG').value = '';
+            document.getElementById('demoX').value = '';
+            document.getElementById('demoK').value = '';
+            document.getElementById('demoMessage').value = '';
+            document.getElementById('demoFile').value = '';
+            document.getElementById('demoFileName').textContent = 'Chưa chọn file';
+            document.getElementById('demoFilePreview').style.display = 'none';
+            
+            // Reset verify fields
+            document.getElementById('verifyP').value = '';
+            document.getElementById('verifyQ').value = '';
+            document.getElementById('verifyG').value = '';
+            document.getElementById('verifyY').value = '';
+            document.getElementById('verifyR').value = '';
+            document.getElementById('verifyS').value = '';
+            document.getElementById('verifyMessage').value = '';
+            document.getElementById('verifyFile').value = '';
+            document.getElementById('verifyFileName').textContent = 'Chưa chọn file';
+            document.getElementById('verifyFilePreview').style.display = 'none';
+            
+            // Clear results
+            document.getElementById('demoResult').innerHTML = '';
+            document.getElementById('demoVerifyResult').innerHTML = '';
+            
+            // Clear all errors
+            clearAllDemoErrors();
+            clearFieldError('verifyP');
+            clearFieldError('verifyQ');
+            clearFieldError('verifyG');
+            clearFieldError('verifyY');
+            clearFieldError('verifyR');
+            clearFieldError('verifyS');
+            clearFieldError('verifyMessage');
+            clearFieldError('verifyFile');
+            
+            // Clear alerts
+            const signAlert = document.getElementById('demoSignAlert');
+            const verifyAlert = document.getElementById('demoVerifyAlert');
+            if (signAlert) signAlert.classList.remove('show');
+            if (verifyAlert) verifyAlert.classList.remove('show');
+        }
+
+        // Reset phần DSA với khóa tự động
+        function resetAutoKeySection() {
+            // Reset file inputs
+            document.getElementById('fileToSign').value = '';
+            document.getElementById('fileToSignName').textContent = 'Chưa chọn file';
+            document.getElementById('fileSignPreview').style.display = 'none';
+            
+            document.getElementById('fileToVerify').value = '';
+            document.getElementById('fileToVerifyName').textContent = 'Chưa chọn file';
+            document.getElementById('fileVerifyPreview').style.display = 'none';
+            
+            document.getElementById('signatureFile').value = '';
+            document.getElementById('signatureFileName').textContent = 'Chưa chọn file';
+            
+            // Clear results
+            document.getElementById('signFileResult').innerHTML = '';
+            document.getElementById('verifyFileResult').innerHTML = '';
+            
+            // Clear alerts
+            const signAlert = document.getElementById('signFileAlert');
+            const verifyAlert = document.getElementById('verifyFileAlert');
+            if (signAlert) signAlert.classList.remove('show');
+            if (verifyAlert) verifyAlert.classList.remove('show');
         }
 
         // Toggle guide sections
@@ -1051,6 +1178,9 @@
                         publicKeyText.textContent = 'Chưa có';
                     }
 
+                    // Update DSA parameters display
+                    updateDSAParams(status);
+
                     // Update button states
                     updateButtonStates(status);
 
@@ -1059,6 +1189,25 @@
                 }
             } catch (error) {
                 console.error('Error updating key status:', error);
+            }
+        }
+
+        // Update DSA parameters display
+        function updateDSAParams(status) {
+            const dsaSection = document.getElementById('dsaParamsSection');
+            
+            if (status.dsa_params) {
+                // Hiển thị section
+                dsaSection.style.display = 'block';
+                
+                // Cập nhật các giá trị
+                document.getElementById('dsaParamP').textContent = status.dsa_params.p || '-';
+                document.getElementById('dsaParamQ').textContent = status.dsa_params.q || '-';
+                document.getElementById('dsaParamG').textContent = status.dsa_params.g || '-';
+                document.getElementById('dsaParamY').textContent = status.dsa_params.y || '-';
+            } else {
+                // Ẩn section nếu không có tham số
+                dsaSection.style.display = 'none';
             }
         }
 
@@ -1238,10 +1387,10 @@
                             ${sigDisplay}
                             <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
                             <button class="btn btn-success" style="margin-top: 15px;" onclick="downloadCurrentSignature()">
-                                Download File Chữ Ký (.sig)
+                                Tải xuống File Chữ Ký (.sig)
                             </button>
                             <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian ký: ${new Date().toLocaleString('vi-VN')}</em></p>
-                            <p style="margin-top: 5px; font-size: 14px; color: #28a745;"><strong>Lưu ý:</strong> Download file chữ ký để có thể xác thực sau này</p>
+                            <p style="margin-top: 5px; font-size: 14px; color: #28a745;"><strong>Lưu ý:</strong> Tải xuống file chữ ký để có thể xác thực sau này</p>
                         </div>
                     `;
                 } else {
@@ -1303,62 +1452,44 @@
 
                     const statusColor = data.valid ? '#28a745' : '#dc3545';
 
-                    // Xác định tiêu đề lỗi cụ thể dựa trên error_type
-                    let errorTitle = 'Nguyên nhân:';
-                    let errorBgColor = '#fff3cd';
-                    let errorBorderColor = '#ffc107';
-                    let errorTextColor = '#856404';
-
+                    // Xác định thông báo lỗi cụ thể
+                    let errorMessage = '';
+                    
                     if (!data.valid && data.error_type) {
                         switch (data.error_type) {
                             case 'PUBLIC_KEY_MISMATCH':
-                                errorTitle = 'LỖI: PUBLIC KEY KHÔNG KHỚP';
-                                errorBgColor = '#f8d7da';
-                                errorBorderColor = '#dc3545';
-                                errorTextColor = '#721c24';
+                                errorMessage = 'Public Key không khớp với người ký';
                                 break;
                             case 'FILE_MODIFIED':
-                                errorTitle = 'LỖI: FILE ĐÃ BỊ THAY ĐỔI';
-                                errorBgColor = '#f8d7da';
-                                errorBorderColor = '#dc3545';
-                                errorTextColor = '#721c24';
+                                errorMessage = 'File đã bị thay đổi';
                                 break;
                             case 'INVALID_SIGNATURE_R':
                             case 'INVALID_SIGNATURE_S':
-                                errorTitle = 'LỖI: CHỮ KÝ KHÔNG HỢP LỆ';
-                                errorBgColor = '#f8d7da';
-                                errorBorderColor = '#dc3545';
-                                errorTextColor = '#721c24';
+                                errorMessage = 'Chữ ký không hợp lệ';
                                 break;
                             case 'INVALID_PUBLIC_KEY':
-                                errorTitle = 'LỖI: PUBLIC KEY KHÔNG HỢP LỆ';
-                                errorBgColor = '#f8d7da';
-                                errorBorderColor = '#dc3545';
-                                errorTextColor = '#721c24';
+                                errorMessage = 'Public Key không hợp lệ';
                                 break;
                             case 'VERIFICATION_FAILED':
                             case 'UNKNOWN':
                             default:
-                                errorTitle = 'XÁC THỰC THẤT BẠI';
+                                errorMessage = 'Xác thực thất bại';
                                 break;
                         }
                     }
 
-                    // Error hints section với styling cải tiến
-                    const errorHintsHtml = (!data.valid && data.error_hints && data.error_hints.length > 0) ? `
-                        <div style="margin-top: 15px; background: ${errorBgColor}; border: 2px solid ${errorBorderColor}; border-radius: 8px; padding: 16px; word-break: break-word;">
-                            <strong style="color: ${errorTextColor}; font-size: 18px; display: block; margin-bottom: 12px;">${errorTitle}</strong>
-                            <div style="color: ${errorTextColor}; font-size: 16px; line-height: 1.8; word-break: break-word;">
-                                ${data.error_hints.map(hint => `<div style="margin-bottom: 8px;">• ${hint}</div>`).join('')}
-                            </div>
+                    // Error message section
+                    const errorHtml = (!data.valid && errorMessage) ? `
+                        <div style="margin-top: 15px; background: #f8d7da; border: 2px solid #dc3545; border-radius: 8px; padding: 16px;">
+                            <strong style="color: #721c24; font-size: 18px; display: block;">❌ ${errorMessage}</strong>
                         </div>
                     ` : '';
 
                     resultDiv.innerHTML = `
                         <div class="result-box" style="border-color: ${statusColor};">
                             <h4 style="color: ${statusColor};">Kết quả: ${data.valid ? '✅ HỢP LỆ' : '❌ KHÔNG HỢP LỆ'}</h4>
-                            <p style="margin-bottom: 10px; font-size: 16px;">${data.valid ? 'File chưa bị thay đổi và chữ ký đúng.' : 'Xác thực thất bại - Xem chi tiết bên dưới.'}</p>
-                            ${errorHintsHtml}
+                            <p style="margin-bottom: 10px; font-size: 16px;">${data.valid ? 'File chưa bị thay đổi, chữ ký hợp lệ.' : ''}</p>
+                            ${errorHtml}
                             <hr style="margin: 15px 0; border: none; border-top: 1px solid #dee2e6;">
                             ${publicKeyInfo}
                             <p style="margin-top: 10px; font-size: 14px; color: #6c757d;"><em>Thời gian xác thực: ${new Date().toLocaleString('vi-VN')}</em></p>
@@ -1378,7 +1509,7 @@
             // Check if button is disabled
             const btn = type === 'public' ? document.getElementById('exportPublicBtn') : document.getElementById('exportPrivateBtn');
             if (btn.disabled) {
-                alert(`Chưa có ${type === 'public' ? 'public' : 'private'} key để export!`);
+                alert(`Chưa có ${type === 'public' ? 'public' : 'private'} key để xuất!`);
                 return;
             }
 
@@ -1597,6 +1728,10 @@
             const preview = document.getElementById(previewId);
             const content = document.getElementById(contentId);
 
+            // Xóa nội dung cũ trước
+            content.innerHTML = '';
+            preview.style.display = 'none';
+
             if (input.files.length) {
                 const file = input.files[0];
                 const fileName = file.name.toLowerCase();
@@ -1673,6 +1808,14 @@
             }
         }
 
+        // Hàm reset file input để đảm bảo onchange luôn được kích hoạt
+        function resetFileInput(inputId) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.value = '';
+            }
+        }
+
         // Error handling functions
         function clearFieldError(fieldId) {
             const field = document.getElementById(fieldId);
@@ -1722,47 +1865,48 @@
 
         // Demo Algorithm Functions
         function loadSimpleParams() {
-            // Danh sách các tổ hợp tham số DSA hợp lệ (tất cả < 1000)
+            // Danh sách các tổ hợp tham số DSA hợp lệ (ĐÃ KIỂM TRA: g^q mod p = 1)
             const paramSets = [
+                { p: 11, q: 5, g: 3, desc: 'p=11, q=5' },
+                { p: 31, q: 5, g: 2, desc: 'p=31, q=5' },
+                { p: 41, q: 5, g: 10, desc: 'p=41, q=5' },
+                { p: 61, q: 5, g: 9, desc: 'p=61, q=5' },
+                { p: 71, q: 5, g: 5, desc: 'p=71, q=5' },
+                { p: 271, q: 5, g: 10, desc: 'p=271, q=5' },
+                { p: 311, q: 5, g: 6, desc: 'p=311, q=5' },
+                { p: 911, q: 5, g: 19, desc: 'p=911, q=5' },
+                { p: 29, q: 7, g: 7, desc: 'p=29, q=7' },
+                { p: 43, q: 7, g: 4, desc: 'p=43, q=7' },
+                { p: 113, q: 7, g: 16, desc: 'p=113, q=7' },
+                { p: 127, q: 7, g: 2, desc: 'p=127, q=7' },
+                { p: 239, q: 7, g: 10, desc: 'p=239, q=7' },
+                { p: 337, q: 7, g: 8, desc: 'p=337, q=7' },
+                { p: 449, q: 7, g: 18, desc: 'p=449, q=7' },
+                { p: 547, q: 7, g: 9, desc: 'p=547, q=7' },
+                { p: 659, q: 7, g: 12, desc: 'p=659, q=7' },
+                { p: 701, q: 7, g: 19, desc: 'p=701, q=7' },
                 { p: 23, q: 11, g: 2, desc: 'p=23, q=11' },
-                { p: 47, q: 23, g: 2, desc: 'p=47, q=23' },
-                { p: 59, q: 29, g: 2, desc: 'p=59, q=29' },
-                { p: 71, q: 5, g: 3, desc: 'p=71, q=5' },
-                { p: 71, q: 7, g: 2, desc: 'p=71, q=7' },
-                { p: 83, q: 41, g: 2, desc: 'p=83, q=41' },
-                { p: 107, q: 53, g: 2, desc: 'p=107, q=53' },
-                { p: 131, q: 13, g: 2, desc: 'p=131, q=13' },
-                { p: 139, q: 23, g: 2, desc: 'p=139, q=23' },
-                { p: 167, q: 83, g: 2, desc: 'p=167, q=83' },
-                { p: 179, q: 89, g: 2, desc: 'p=179, q=89' },
-                { p: 191, q: 19, g: 2, desc: 'p=191, q=19' },
-                { p: 227, q: 113, g: 2, desc: 'p=227, q=113' },
-                { p: 239, q: 7, g: 3, desc: 'p=239, q=7' },
-                { p: 263, q: 131, g: 2, desc: 'p=263, q=131' },
-                { p: 283, q: 47, g: 2, desc: 'p=283, q=47' },
-                { p: 347, q: 173, g: 2, desc: 'p=347, q=173' },
-                { p: 359, q: 179, g: 2, desc: 'p=359, q=179' },
-                { p: 383, q: 191, g: 2, desc: 'p=383, q=191' },
-                { p: 419, q: 11, g: 2, desc: 'p=419, q=11' },
-                { p: 431, q: 43, g: 2, desc: 'p=431, q=43' },
-                { p: 467, q: 233, g: 2, desc: 'p=467, q=233' },
-                { p: 479, q: 239, g: 2, desc: 'p=479, q=239' },
-                { p: 491, q: 7, g: 2, desc: 'p=491, q=7' },
-                { p: 503, q: 251, g: 2, desc: 'p=503, q=251' },
-                { p: 563, q: 281, g: 2, desc: 'p=563, q=281' },
-                { p: 587, q: 293, g: 2, desc: 'p=587, q=293' },
-                { p: 599, q: 13, g: 2, desc: 'p=599, q=13' },
-                { p: 647, q: 17, g: 2, desc: 'p=647, q=17' },
-                { p: 659, q: 7, g: 2, desc: 'p=659, q=7' },
-                { p: 719, q: 359, g: 2, desc: 'p=719, q=359' },
-                { p: 743, q: 53, g: 2, desc: 'p=743, q=53' },
-                { p: 787, q: 393, g: 2, desc: 'p=787, q=393' },
-                { p: 839, q: 419, g: 2, desc: 'p=839, q=419' },
-                { p: 863, q: 431, g: 2, desc: 'p=863, q=431' },
-                { p: 887, q: 443, g: 2, desc: 'p=887, q=443' },
-                { p: 911, q: 7, g: 3, desc: 'p=911, q=7' },
-                { p: 947, q: 11, g: 2, desc: 'p=947, q=11' },
-                { p: 971, q: 97, g: 2, desc: 'p=971, q=97' }
+                { p: 67, q: 11, g: 9, desc: 'p=67, q=11' },
+                { p: 89, q: 11, g: 2, desc: 'p=89, q=11' },
+                { p: 199, q: 11, g: 18, desc: 'p=199, q=11' },
+                { p: 397, q: 11, g: 16, desc: 'p=397, q=11' },
+                { p: 419, q: 11, g: 13, desc: 'p=419, q=11' },
+                { p: 463, q: 11, g: 15, desc: 'p=463, q=11' },
+                { p: 661, q: 11, g: 9, desc: 'p=661, q=11' },
+                { p: 683, q: 11, g: 4, desc: 'p=683, q=11' },
+                { p: 859, q: 11, g: 13, desc: 'p=859, q=11' },
+                { p: 53, q: 13, g: 10, desc: 'p=53, q=13' },
+                { p: 79, q: 13, g: 8, desc: 'p=79, q=13' },
+                { p: 157, q: 13, g: 14, desc: 'p=157, q=13' },
+                { p: 521, q: 13, g: 18, desc: 'p=521, q=13' },
+                { p: 599, q: 13, g: 19, desc: 'p=599, q=13' },
+                { p: 103, q: 17, g: 8, desc: 'p=103, q=17' },
+                { p: 137, q: 17, g: 16, desc: 'p=137, q=17' },
+                { p: 239, q: 17, g: 6, desc: 'p=239, q=17' },
+                { p: 307, q: 17, g: 9, desc: 'p=307, q=17' },
+                { p: 409, q: 17, g: 5, desc: 'p=409, q=17' },
+                { p: 443, q: 17, g: 13, desc: 'p=443, q=17' },
+                { p: 953, q: 17, g: 16, desc: 'p=953, q=17' }
             ];
 
             // Random chọn một tổ hợp
@@ -1778,7 +1922,7 @@
             document.getElementById('demoX').value = x.toString();
             document.getElementById('demoK').value = k.toString();
 
-            showDemoAlert('sign', `Đã tải tham số: ${randomSet.desc}, x=${x}, k=${k}`, 'success');
+            showDemoAlert('sign', `Đã tải tham số: ${randomSet.desc}, g=${randomSet.g}, x=${x}, k=${k}`, 'success');
         }
 
         // Toggle between text and file input for signing
@@ -1786,6 +1930,23 @@
             const type = document.querySelector('input[name="demoSignType"]:checked').value;
             const textInput = document.getElementById('demoTextInput');
             const fileInput = document.getElementById('demoFileInput');
+
+            // Xóa TẤT CẢ nội dung và tham số
+            document.getElementById('demoP').value = '';
+            document.getElementById('demoQ').value = '';
+            document.getElementById('demoG').value = '';
+            document.getElementById('demoX').value = '';
+            document.getElementById('demoK').value = '';
+            document.getElementById('demoMessage').value = '';
+            document.getElementById('demoFile').value = '';
+            document.getElementById('demoFileName').textContent = 'Chưa chọn file';
+            document.getElementById('demoFilePreview').style.display = 'none';
+            
+            // Xóa kết quả cũ
+            document.getElementById('demoResult').innerHTML = '';
+            
+            // Xóa TẤT CẢ các lỗi
+            clearAllDemoErrors();
 
             if (type === 'text') {
                 textInput.style.display = 'block';
@@ -1801,6 +1962,31 @@
             const type = document.querySelector('input[name="demoVerifyType"]:checked').value;
             const textInput = document.getElementById('demoVerifyTextInput');
             const fileInput = document.getElementById('demoVerifyFileInput');
+
+            // Xóa TẤT CẢ nội dung và tham số
+            document.getElementById('verifyP').value = '';
+            document.getElementById('verifyQ').value = '';
+            document.getElementById('verifyG').value = '';
+            document.getElementById('verifyY').value = '';
+            document.getElementById('verifyR').value = '';
+            document.getElementById('verifyS').value = '';
+            document.getElementById('verifyMessage').value = '';
+            document.getElementById('verifyFile').value = '';
+            document.getElementById('verifyFileName').textContent = 'Chưa chọn file';
+            document.getElementById('verifyFilePreview').style.display = 'none';
+            
+            // Xóa kết quả cũ
+            document.getElementById('demoVerifyResult').innerHTML = '';
+            
+            // Xóa TẤT CẢ các lỗi xác thực
+            clearFieldError('verifyP');
+            clearFieldError('verifyQ');
+            clearFieldError('verifyG');
+            clearFieldError('verifyY');
+            clearFieldError('verifyR');
+            clearFieldError('verifyS');
+            clearFieldError('verifyMessage');
+            clearFieldError('verifyFile');
 
             if (type === 'text') {
                 textInput.style.display = 'block';
@@ -1885,30 +2071,15 @@
                     showDemoAlert('sign', data.message, 'success');
                     displayDemoResult(data.result, message, 'text');
                 } else {
-                    // Parse error message to show on specific fields
+                    // Xóa kết quả cũ khi có lỗi
+                    document.getElementById('demoResult').innerHTML = '';
+                    
+                    // Xử lý lỗi theo field cụ thể
                     const errorMsg = data.error;
+                    const field = data.field;
 
-                    if (errorMsg.includes('Thiếu tham số:')) {
-                        // Extract missing params
-                        const match = errorMsg.match(/Thiếu tham số: (.+?)\./);
-                        if (match) {
-                            const missing = match[1].split(', ');
-                            missing.forEach(param => {
-                                if (param === 'p') showFieldError('demoP', 'Thiếu tham số p');
-                                if (param === 'q') showFieldError('demoQ', 'Thiếu tham số q');
-                                if (param === 'g') showFieldError('demoG', 'Thiếu tham số g');
-                                if (param === 'x') showFieldError('demoX', 'Thiếu private key x');
-                                if (param === 'message') showFieldError('demoMessage', 'Thiếu văn bản');
-                            });
-                        }
-                    } else if (errorMsg.includes('Private key x')) {
-                        showFieldError('demoX', errorMsg);
-                    } else if (errorMsg.includes('k phải')) {
-                        showFieldError('demoK', errorMsg);
-                    } else if (errorMsg.includes('Tham số DSA không hợp lệ')) {
-                        showFieldError('demoP', 'Tham số p, q, g không hợp lệ');
-                        showFieldError('demoQ', 'Tham số p, q, g không hợp lệ');
-                        showFieldError('demoG', 'Tham số p, q, g không hợp lệ');
+                    if (field) {
+                        showFieldError('demo' + field.charAt(0).toUpperCase() + field.slice(1), errorMsg);
                     } else {
                         showDemoAlert('sign', errorMsg, 'error');
                     }
@@ -1988,28 +2159,19 @@
                     showDemoAlert('sign', data.message, 'success');
                     displayDemoResult(data.result, data.file_content, 'file', data.filename);
                 } else {
-                    // Parse error message to show on specific fields
+                    // Xóa kết quả cũ khi có lỗi
+                    document.getElementById('demoResult').innerHTML = '';
+                    
+                    // Xử lý lỗi theo field cụ thể
                     const errorMsg = data.error;
+                    const field = data.field;
 
-                    if (errorMsg.includes('Thiếu tham số:')) {
-                        const match = errorMsg.match(/Thiếu tham số: (.+?)\./);
-                        if (match) {
-                            const missing = match[1].split(', ');
-                            missing.forEach(param => {
-                                if (param === 'p') showFieldError('demoP', 'Thiếu tham số p');
-                                if (param === 'q') showFieldError('demoQ', 'Thiếu tham số q');
-                                if (param === 'g') showFieldError('demoG', 'Thiếu tham số g');
-                                if (param === 'x') showFieldError('demoX', 'Thiếu private key x');
-                            });
+                    if (field) {
+                        if (field === 'file') {
+                            showFieldError('demoFile', errorMsg);
+                        } else {
+                            showFieldError('demo' + field.charAt(0).toUpperCase() + field.slice(1), errorMsg);
                         }
-                    } else if (errorMsg.includes('Private key x')) {
-                        showFieldError('demoX', errorMsg);
-                    } else if (errorMsg.includes('k phải')) {
-                        showFieldError('demoK', errorMsg);
-                    } else if (errorMsg.includes('Tham số DSA không hợp lệ')) {
-                        showFieldError('demoP', 'Tham số p, q, g không hợp lệ');
-                        showFieldError('demoQ', 'Tham số p, q, g không hợp lệ');
-                        showFieldError('demoG', 'Tham số p, q, g không hợp lệ');
                     } else {
                         showDemoAlert('sign', errorMsg, 'error');
                     }
@@ -2180,17 +2342,7 @@
 
             showLoading('demoVerifyLoading', true);
 
-            // Debug: Log message để kiểm tra
-            console.log('=== DEBUG VERIFY MESSAGE ===');
-            console.log('Message to verify:', JSON.stringify(message));
-            console.log('Message length:', message.length);
-            console.log('Message bytes:', Array.from(message).map(c => c.charCodeAt(0)));
             if (lastDemoSignResult) {
-                console.log('Original message:', JSON.stringify(lastDemoSignResult.message));
-                console.log('Original length:', lastDemoSignResult.message.length);
-                console.log('Original bytes:', Array.from(lastDemoSignResult.message).map(c => c.charCodeAt(0)));
-                console.log('Messages equal:', message === lastDemoSignResult.message);
-                
                 // Cảnh báo nếu message khác
                 if (message !== lastDemoSignResult.message) {
                     const confirmContinue = confirm(
@@ -2486,18 +2638,8 @@
                             ${r.is_valid ? 'CHỮ KÝ HỢP LỆ' : 'CHỮ KÝ KHÔNG HỢP LỆ'}
                         </div>
                         <p style="margin-top: 10px; font-size: 17px; color: ${r.is_valid ? '#155724' : '#721c24'}; line-height: 1.5;">
-                            ${r.is_valid ? 'Văn bản chưa bị thay đổi và chữ ký hợp lệ.' : 'Xác thực thất bại!'}
+                            ${r.is_valid ? 'Văn bản chưa bị thay đổi và chữ ký hợp lệ.' : '❌ XÁC THỰC THẤT BẠI - v ≠ r<br>Văn bản đã bị thay đổi'}
                         </p>
-                        ${!r.is_valid && r.error_hints && r.error_hints.length > 0 ? `
-                            <div style="margin-top: 15px; background: ${r.error_type && r.error_type !== 'UNKNOWN' ? '#f8d7da' : '#fff3cd'}; border: 2px solid ${r.error_type && r.error_type !== 'UNKNOWN' ? '#dc3545' : '#ffc107'}; border-radius: 6px; padding: 15px;">
-                                <strong style="color: ${r.error_type && r.error_type !== 'UNKNOWN' ? '#721c24' : '#856404'}; font-size: 17px;">
-                                    ${r.error_type && r.error_type !== 'UNKNOWN' ? 'Nguyên nhân lỗi đã xác định:' : 'Nguyên nhân có thể:'}
-                                </strong>
-                                <div style="margin: 8px 0 0 0; color: ${r.error_type && r.error_type !== 'UNKNOWN' ? '#721c24' : '#856404'}; font-size: 16px; line-height: 1.5;">
-                                    ${r.error_hints.map(hint => '<div style="margin-bottom: 4px;">' + hint + '</div>').join('')}
-                                </div>
-                            </div>
-                        ` : ''}
                     </div>
                 </div>
             `;
